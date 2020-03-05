@@ -2,8 +2,8 @@ package ui.components;
 
 import javafx.scene.layout.VBox;
 
-public class MyVBox extends VBox {
-	public MyVBox() {
+public class G6VBox extends VBox {
+	public G6VBox() {
 		
 	}
 }

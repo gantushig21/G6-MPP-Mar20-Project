@@ -2,8 +2,8 @@ package ui.components;
 
 import javafx.scene.layout.HBox;
 
-public class MyHBox extends HBox {
-	public MyHBox() {
+public class G6HBox extends HBox {
+	public G6HBox() {
 		super();
 	}
 }

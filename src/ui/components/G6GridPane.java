@@ -2,8 +2,8 @@ package ui.components;
 
 import javafx.scene.layout.GridPane;
 
-public class MyGridPane extends GridPane {
-	public MyGridPane() {
+public class G6GridPane extends GridPane {
+	public G6GridPane() {
 		super();
 	}
 }
