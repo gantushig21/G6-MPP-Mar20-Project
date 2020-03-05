@@ -41,7 +41,9 @@ public class Start extends Application {
 	private static Stage[] allWindows = { 
 		LoginWindow.INSTANCE,
 		AllMembersWindow.INSTANCE,	
-		AllBooksWindow.INSTANCE
+		AllBooksWindow.INSTANCE,
+		AddMemberWindow.INSTANCE,
+		AddBookWindow.INSTANCE
 	};
 	
 	public static void hideAllWindows() {
@@ -133,7 +135,35 @@ public class Start extends Application {
 				AllMembersWindow.INSTANCE.show();
             }
 		});	
-		optionsMenu.getItems().addAll(login, bookIds, memberIds);
+		
+		MenuItem addMember = new MenuItem("Add Member");
+		addMember.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+            	hideAllWindows();
+    			if(!AddMemberWindow.INSTANCE.isInitialized()) {
+    				AddMemberWindow.INSTANCE.init();
+    			}
+    			AddMemberWindow.INSTANCE.clear();
+    			AddMemberWindow.INSTANCE.show();
+            }
+        });		
+		
+		MenuItem addBook = new MenuItem("Add Book");
+		addBook.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+            	hideAllWindows();
+    			if(!AddBookWindow.INSTANCE.isInitialized()) {
+    				AddBookWindow.INSTANCE.init();
+    			}
+    			AddBookWindow.INSTANCE.clear();
+    			AddBookWindow.INSTANCE.show();
+            }
+        });		
+
+		
+		optionsMenu.getItems().addAll(login, bookIds, memberIds, addMember, addBook);
 
 		mainMenu.getMenus().addAll(optionsMenu);
 		Scene scene = new Scene(topContainer, 420, 375);
