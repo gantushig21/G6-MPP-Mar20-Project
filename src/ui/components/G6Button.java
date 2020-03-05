@@ -2,8 +2,8 @@ package ui.components;
 
 import javafx.scene.control.Button;
 
-public class MyButton extends Button {
-	public MyButton(String txt) {
+public class G6Button extends Button {
+	public G6Button(String txt) {
 		super(txt);
 	}
 }

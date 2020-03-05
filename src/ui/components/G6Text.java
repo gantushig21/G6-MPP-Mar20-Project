@@ -2,8 +2,8 @@ package ui.components;
 
 import javafx.scene.text.Text;
 
-public class MyText extends Text {
-	public MyText(String txt) {
+public class G6Text extends Text {
+	public G6Text(String txt) {
 		super(txt);
 	}
 }

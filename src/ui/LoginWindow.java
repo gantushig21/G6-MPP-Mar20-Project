@@ -18,7 +18,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import ui.components.MyButton;
+import ui.components.G6Button;
 
 public class LoginWindow extends Stage implements LibWindow {
 	public static final LoginWindow INSTANCE = new LoginWindow();
@@ -66,7 +66,7 @@ public class LoginWindow extends Stage implements LibWindow {
         PasswordField pwBox = new PasswordField();
         grid.add(pwBox, 1, 2);
 
-        MyButton loginBtn = new MyButton("Log in");
+        G6Button loginBtn = new G6Button("Log in");
         HBox hbBtn = new HBox(10);
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
         hbBtn.getChildren().add(loginBtn);
