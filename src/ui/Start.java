@@ -4,7 +4,9 @@ import java.util.Collections;
 import java.util.List;
 
 import business.ControllerInterface;
+import business.LibraryMember;
 import business.SystemController;
+import config.Constants;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -22,6 +24,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import ui.members.MemberInfoWindow;
+import ui.members.MembersWindow;
 
 
 public class Start extends Application {
@@ -34,14 +38,16 @@ public class Start extends Application {
 	}
 	
 	public static class Colors {
-		static Color green = Color.web("#034220");
-		static Color red = Color.FIREBRICK;
+		public static Color green = Color.web("#034220");
+		public static Color red = Color.FIREBRICK;
 	}
 	
 	private static Stage[] allWindows = { 
 		LoginWindow.INSTANCE,
 		AllMembersWindow.INSTANCE,	
-		AllBooksWindow.INSTANCE
+		AllBooksWindow.INSTANCE,
+		MemberInfoWindow.INSTANCE,
+		MembersWindow.INSTANCE
 	};
 	
 	public static void hideAllWindows() {
@@ -49,6 +55,21 @@ public class Start extends Application {
 		for(Stage st: allWindows) {
 			st.hide();
 		}
+	}
+	
+	public static void getMembers() {
+    	hideAllWindows();
+		if(!MembersWindow.INSTANCE.isInitialized()) {
+			MembersWindow.INSTANCE.init();
+		}
+		ControllerInterface ci = new SystemController();
+		List<LibraryMember> members = ci.allMembers();
+		Collections.sort(members);
+		
+		MembersWindow.INSTANCE.setData(members);
+		
+		MembersWindow.INSTANCE.clear();
+		MembersWindow.INSTANCE.show();
 	}
 	
 	@Override
@@ -134,10 +155,34 @@ public class Start extends Application {
             }
 		});	
 		
-		optionsMenu.getItems().addAll(login, bookIds, memberIds);
+		MenuItem addMember = new MenuItem("Add Member");
+		
+		addMember.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+            	hideAllWindows();
+    			if(!MemberInfoWindow.INSTANCE.isInitialized()) {
+    				MemberInfoWindow.INSTANCE.init();
+    			}
+    			MemberInfoWindow.INSTANCE.clear();
+    			MemberInfoWindow.INSTANCE.show();
+            }
+        });			
+
+		MenuItem getMembers = new MenuItem("Get Members");
+		
+		getMembers.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+            	getMembers();
+            }
+        });			
+
+		
+		optionsMenu.getItems().addAll(login, bookIds, memberIds, addMember, getMembers);
 
 		mainMenu.getMenus().addAll(optionsMenu);
-		Scene scene = new Scene(topContainer, 420, 375);
+		Scene scene = new Scene(topContainer, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
 		primaryStage.setScene(scene);
 		scene.getStylesheets().add(getClass().getResource("library.css").toExternalForm());
 		primaryStage.show();
