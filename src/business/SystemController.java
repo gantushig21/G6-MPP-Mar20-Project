@@ -55,22 +55,46 @@ public class SystemController implements ControllerInterface {
 	@Override
 	public void addMember(LibraryMember member) throws AlreadyExistException {
 		DataAccess da = new DataAccessFacade();
-		
 		boolean result = da.saveNewMember(member);		
-		
 		if (!result)
 			throw new AlreadyExistException("The member with this ID is already exists!");
 	}
 	@Override
 	public void deleteMember(String memberId) {
 		DataAccess da = new DataAccessFacade();
-		
 		da.deleteMember(memberId);				
 	}
 	@Override
 	public void updateMember(LibraryMember member) {
 		DataAccess da = new DataAccessFacade();
-		
 		da.updateMember(member);				
 	}	
+	
+	
+	// AUTHOR START
+	@Override
+	public List<Author> allAuthors() {
+		DataAccess da = new DataAccessFacade();
+		Collection<Author> authors = da.readAuthorMap().values();
+		return new ArrayList<Author>(authors);
+	}
+	
+	@Override
+	public void addAuthor(Author author) throws AlreadyExistException {
+		DataAccess da = new DataAccessFacade();
+		boolean result = da.saveNewAuthor(author);		
+		if (!result)
+			throw new AlreadyExistException("The author with this ID is already exists!");
+	}
+	@Override
+	public void deleteAuthor(String id) {
+		DataAccess da = new DataAccessFacade();
+		da.deleteAuthor(id);				
+	}
+	@Override
+	public void updateAuthor(Author author) {
+		DataAccess da = new DataAccessFacade();
+		da.updateAuthor(author);				
+	}	
+	// AUTHOR END
 }
