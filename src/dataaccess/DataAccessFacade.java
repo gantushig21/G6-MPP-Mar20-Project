@@ -26,11 +26,28 @@ public class DataAccessFacade implements DataAccess {
 	public static final String DATE_PATTERN = "MM/dd/yyyy";
 	
 	//implement: other save operations
-	public void saveNewMember(LibraryMember member) {
+	public boolean saveNewMember(LibraryMember member) {
 		HashMap<String, LibraryMember> mems = readMemberMap();
 		String memberId = member.getMemberId();
-		mems.put(memberId, member);
+		if (!mems.containsKey(memberId)) {
+			mems.put(memberId, member);
+			saveToStorage(StorageType.MEMBERS, mems);	
+			
+			return true;
+		}
+		return false;
+	}
+	
+	public void deleteMember(String memberId) {
+		HashMap<String, LibraryMember> mems = readMemberMap();
+		mems.remove(memberId);
 		saveToStorage(StorageType.MEMBERS, mems);	
+	}
+	
+	public void updateMember(LibraryMember member) {
+		HashMap<String, LibraryMember> mems = readMemberMap();
+		mems.put(member.getMemberId(), member);
+		saveToStorage(StorageType.MEMBERS, mems);
 	}
 	
 	@SuppressWarnings("unchecked")

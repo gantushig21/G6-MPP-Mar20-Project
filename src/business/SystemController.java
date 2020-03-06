@@ -1,6 +1,7 @@
 package business;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,5 +42,35 @@ public class SystemController implements ControllerInterface {
 		return retval;
 	}
 	
+	@Override
+	public List<LibraryMember> allMembers() {
+		DataAccess da = new DataAccessFacade();
+		
+		Collection<LibraryMember> members = da.readMemberMap().values();
+		
+		
+		return new ArrayList<LibraryMember>(members);
+	}
 	
+	@Override
+	public void addMember(LibraryMember member) throws AlreadyExistException {
+		DataAccess da = new DataAccessFacade();
+		
+		boolean result = da.saveNewMember(member);		
+		
+		if (!result)
+			throw new AlreadyExistException("The member with this ID is already exists!");
+	}
+	@Override
+	public void deleteMember(String memberId) {
+		DataAccess da = new DataAccessFacade();
+		
+		da.deleteMember(memberId);				
+	}
+	@Override
+	public void updateMember(LibraryMember member) {
+		DataAccess da = new DataAccessFacade();
+		
+		da.updateMember(member);				
+	}	
 }

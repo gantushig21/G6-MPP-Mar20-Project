@@ -93,7 +93,7 @@ public class LoginWindow extends Stage implements LibWindow {
         	}
         });
 
-        Button backBtn = new Button("<= Back to Main");
+        Button backBtn = new Button("Back to Main");
         backBtn.setOnAction(new EventHandler<ActionEvent>() {
         	@Override
         	public void handle(ActionEvent e) {
