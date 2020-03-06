@@ -84,8 +84,12 @@ public class MemberInfoWindow extends Stage implements LibWindow {
 		phoneNumberTxtf.setText("");
 	}
 	
+	public void addMember() {
+		actionBtn.setText("Add");
+	}
+	
 	public void updateMember(LibraryMember member) {
-		scenetitle.setText("Update member ID " + member.getMemberId());
+		scenetitle.setText("ID " + member.getMemberId());
 		actionBtn.setText("Update");
 		
 		firstNameTxtf.setText(member.getFirstName()); 
@@ -224,7 +228,7 @@ public class MemberInfoWindow extends Stage implements LibWindow {
        					if (result.get() == ButtonType.OK) {       						
        	            	   ControllerInterface c = new SystemController();
        	            	   c.addMember(new LibraryMember(
-       	            			   "611611", 
+       	            			   "ST" + (System.currentTimeMillis() / 1000), 
        	            			   firstNameStr, 
        	            			   lastNameStr, 
        	            			   phoneNumberStr, 
@@ -233,6 +237,7 @@ public class MemberInfoWindow extends Stage implements LibWindow {
        	            	   result = new G6Alert(AlertType.NONE, "Success", "The member is added successful", ButtonType.OK).showAndWait();	       					
        	            	   if (result.get() == ButtonType.OK) {
 	           					clearFields();
+	           					Start.showMembers(true);
        	            	   }       	            	   
        					} else {
        						System.out.println("Canceled");
@@ -252,7 +257,7 @@ public class MemberInfoWindow extends Stage implements LibWindow {
 	        				ControllerInterface c = new SystemController();
 	        				c.updateMember(currentMember);
 	        				
-	        				Start.showMembers();
+	        				Start.showMembers(true);
 	        			}
 	        			
 	        		}
@@ -268,13 +273,7 @@ public class MemberInfoWindow extends Stage implements LibWindow {
         backBtn.setOnAction(new EventHandler<ActionEvent>() {
         	@Override
         	public void handle(ActionEvent e) {
-        		Start.hideAllWindows();
-        		if (actionBtn.getText().equals("Add")) {
-            		Start.primStage().show();        			
-        		} else if (actionBtn.getText().equals("Update")) {
-        			MembersWindow.INSTANCE.clear();
-        			MembersWindow.INSTANCE.show();
-        		}
+        		Start.showMembers(false);
         	}
         });
         Scene scene = new Scene(vbox, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
