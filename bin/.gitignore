@@ -1,3 +1,7 @@
-/ui/
-/dataaccess/
 /business/
+/config/
+/dataaccess/
+/docs/
+/rulesets/
+/text.txt
+/ui/
