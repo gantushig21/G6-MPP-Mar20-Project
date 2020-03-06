@@ -12,14 +12,26 @@ public interface ControllerInterface {
 	public List<String> allBookIds();
 
 	
+	public List<LibraryMember> allMembers();
+	public List<Book> allBooks();
+
+
+	
 	public List<String> allMemberIds();
 	public void addMember(LibraryMember member)  throws AlreadyExistException;
 	public void deleteMember(String memberId);
 	public void updateMember(LibraryMember member);
-	public List<LibraryMember> allMembers();
+
+	
+	public void addBook(Book book) throws AlreadyExistException;
+	public void deleteBook(String isbn);
+	public void updateBook(Book book);
+	
+
 	
 	public void addAuthor(Author author)  throws AlreadyExistException;
 	public void deleteAuthor(String id);
 	public void updateAuthor(Author author);
 	public List<Author> allAuthors();
+
 }

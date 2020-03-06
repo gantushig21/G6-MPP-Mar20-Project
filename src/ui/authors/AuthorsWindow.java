@@ -86,8 +86,7 @@ public class AuthorsWindow extends Stage implements LibWindow {
 		backBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				Start.hideAllWindows();
-				Start.primStage().show();
+				Start.homeWindow();;
 			}
 		});
 

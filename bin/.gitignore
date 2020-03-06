@@ -1,5 +1,9 @@
 /ui/
 /dataaccess/
 /business/
+<<<<<<< HEAD
+/config/
+=======
 /.DS_Store
 /text.txt
+>>>>>>> master

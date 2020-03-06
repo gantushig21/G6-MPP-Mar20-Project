@@ -21,6 +21,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -36,6 +37,7 @@ import ui.components.G6Button;
 import ui.components.G6HBox;
 import ui.components.G6TableView;
 import ui.components.G6Text;
+import ui.components.G6TextField;
 import ui.components.G6VBox;
 
 public class MembersWindow extends Stage implements LibWindow {
@@ -84,11 +86,18 @@ public class MembersWindow extends Stage implements LibWindow {
         backBtn.setOnAction(new EventHandler<ActionEvent>() {
         	@Override
         	public void handle(ActionEvent e) {
-        		Start.hideAllWindows();
-        		Start.primStage().show();
+        		Start.homeWindow();
         	}
         });
 
+        BorderPane searchAddMemberPane = new BorderPane();
+        
+        G6Button addMemberBtn = new G6Button("Add member");
+        G6TextField searchInput = new G6TextField(Constants.TEXT_FIELD_WIDTH_MEDUIM);
+        searchAddMemberPane.setLeft(searchInput);
+        searchAddMemberPane.setRight(addMemberBtn);
+        
+        topPane.setBottom(searchAddMemberPane);
         
         G6HBox hBack = new G6HBox(10);
         hBack.setAlignment(Pos.BOTTOM_LEFT);

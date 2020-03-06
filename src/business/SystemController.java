@@ -53,11 +53,24 @@ public class SystemController implements ControllerInterface {
 	}
 	
 	@Override
+	public List<Book> allBooks() {
+		DataAccess da = new DataAccessFacade();
+		
+		return new ArrayList<Book>(da.readBooksMap().values());
+	}
+//	@Override
+//	public List<Author> allAuthors() {
+//		DataAccess da = new DataAccessFacade();
+//		
+//		return new ArrayList<Author>(da.readAuthorsMap().values());
+//	}	
+	
+	@Override
 	public void addMember(LibraryMember member) throws AlreadyExistException {
 		DataAccess da = new DataAccessFacade();
 		boolean result = da.saveNewMember(member);		
 		if (!result)
-			throw new AlreadyExistException("The member with this ID is already exists!");
+			throw new AlreadyExistException("The member with this ID already exists!");
 	}
 	@Override
 	public void deleteMember(String memberId) {
@@ -68,14 +81,57 @@ public class SystemController implements ControllerInterface {
 	public void updateMember(LibraryMember member) {
 		DataAccess da = new DataAccessFacade();
 		da.updateMember(member);				
-	}	
+	}
+	@Override
+	public void addBook(Book book) throws AlreadyExistException {
+		DataAccess da = new DataAccessFacade();
+		
+		boolean result = da.saveNewBook(book);
+		
+		if (!result)
+			throw new AlreadyExistException("The book with this isbn already exists");
+		
+	}
+	@Override
+	public void deleteBook(String isbn) {
+		DataAccess da = new DataAccessFacade();
+		
+		da.deleteBook(isbn);
+	}
+	@Override
+	public void updateBook(Book book) {
+		DataAccess da = new DataAccessFacade();
+		
+		da.updateBook(book);
+	}
+//	@Override
+//	public void addAuthor(Author author) throws AlreadyExistException {
+//		DataAccess da = new DataAccessFacade();
+//		
+//		boolean result = da.saveNewAuthor(author);
+//		
+//		if (!result)
+//			throw new AlreadyExistException("The author with this id already exists");
+//	}
+//	@Override
+//	public void deleteAuthor(String authorId) {
+//		DataAccess da = new DataAccessFacade();
+//		
+//		da.deleteAuthor(authorId);
+//	}
+//	@Override
+//	public void updateBook(Author author) {
+//		DataAccess da = new DataAccessFacade();
+//		
+//		da.updateAuthor(author);
+//	}	
 	
 	
 	// AUTHOR START
 	@Override
 	public List<Author> allAuthors() {
 		DataAccess da = new DataAccessFacade();
-		Collection<Author> authors = da.readAuthorMap().values();
+		Collection<Author> authors = da.readAuthorsMap().values();
 		return new ArrayList<Author>(authors);
 	}
 	

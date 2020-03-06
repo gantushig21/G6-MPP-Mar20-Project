@@ -283,7 +283,7 @@ public class AuthorInfoWindow extends Stage implements LibWindow {
 	        				ControllerInterface c = new SystemController();
 	        				c.updateAuthor(currentAuthor);
 	        				
-	        				Start.getAuthors();
+	        				Start.showAuthors();
 	        			}
 	        			
 	        		}

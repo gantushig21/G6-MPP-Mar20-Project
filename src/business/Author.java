@@ -34,7 +34,12 @@ final public class Author extends Person implements Serializable {
 	public Author(String f, String l, String t, Address a, String bio) {
 		super(f, l, t, a);
 		this.bio = bio;
+		this.id = "Author_" + (System.currentTimeMillis() / 1000); 
 	}
 
+	public String getAuthorId() {
+		return id;
+	}
+	
 	private static final long serialVersionUID = 7508481940058530471L;
 }

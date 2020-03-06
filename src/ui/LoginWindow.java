@@ -3,6 +3,7 @@ package ui;
 import business.ControllerInterface;
 import business.LoginException;
 import business.SystemController;
+import config.Constants;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -85,6 +86,7 @@ public class LoginWindow extends Stage implements LibWindow {
         			c.login(userTextField.getText().trim(), pwBox.getText().trim());
         			messageBar.setFill(Start.Colors.green);
              	    messageBar.setText("Login successful");
+             	    Start.homeWindow();
         		} catch(LoginException ex) {
         			messageBar.setFill(Start.Colors.red);
         			messageBar.setText("Error! " + ex.getMessage());
@@ -105,7 +107,7 @@ public class LoginWindow extends Stage implements LibWindow {
         hBack.setAlignment(Pos.BOTTOM_LEFT);
         hBack.getChildren().add(backBtn);
         grid.add(hBack, 0, 7);
-        Scene scene = new Scene(grid);
+        Scene scene = new Scene(grid, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
         scene.getStylesheets().add(getClass().getResource("library.css").toExternalForm());
         setScene(scene);
         

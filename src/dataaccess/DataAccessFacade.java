@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 
+
 import business.Address;
 import business.Author;
 import business.Book;
@@ -62,6 +63,40 @@ public class DataAccessFacade implements DataAccess {
 		mems.put(member.getMemberId(), member);
 		saveToStorage(StorageType.MEMBERS, mems);
 	}
+
+	
+	public boolean saveNewBook(Book book) {
+		HashMap<String, Book> books = readBooksMap();
+		String isbn = book.getIsbn();
+		if (!books.containsKey(isbn)) {
+			books.put(isbn, book);
+			saveToStorage(StorageType.BOOKS, books);
+			
+			return true;
+		}
+		return false;
+	}
+	
+	public void deleteBook(String isbn) {
+		HashMap<String, Book> books = readBooksMap();
+		books.remove(isbn);
+		saveToStorage(StorageType.BOOKS, books);
+	}
+	
+	public void updateBook(Book book) {
+		HashMap<String, Book> books = readBooksMap();
+		books.put(book.getIsbn(), book);
+		saveToStorage(StorageType.BOOKS, books);
+	}
+	
+
+	@SuppressWarnings("unchecked")
+	public  HashMap<String,Author> readAuthorsMap() {
+		//Returns a Map with name/value pairs being
+		//   isbn -> Book
+		return (HashMap<String,Author>) readFromStorage(StorageType.AUTHORS);
+	}
+	
 
 	@SuppressWarnings("unchecked")
 	public HashMap<String, Book> readBooksMap() {
