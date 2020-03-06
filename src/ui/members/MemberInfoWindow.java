@@ -139,12 +139,12 @@ public class MemberInfoWindow extends Stage implements LibWindow {
         
         G6Label firstNameLbl = new G6Label("First Name: ");         
         grid.add(firstNameLbl, 0, 3);
-        firstNameTxtf = new G6TextField();
+        firstNameTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
         grid.add(firstNameTxtf, 1, 3);
 
         G6Label lastNameLbl = new G6Label("Last Name: ");         
         grid.add(lastNameLbl, 0, 4);
-        lastNameTxtf = new G6TextField();
+        lastNameTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
         grid.add(lastNameTxtf, 1, 4);
         
         // Address Section
@@ -153,22 +153,22 @@ public class MemberInfoWindow extends Stage implements LibWindow {
         
         G6Label StreetLbl = new G6Label("Street: ");         
         grid.add(StreetLbl, 0, 7);
-        streetTxtf = new G6TextField();
+        streetTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
         grid.add(streetTxtf, 1, 7);
 
         G6Label CityLbl = new G6Label("City: ");         
         grid.add(CityLbl, 0, 8);
-        cityTxtf = new G6TextField();
+        cityTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
         grid.add(cityTxtf, 1, 8);
 
         G6Label StateLbl = new G6Label("State: ");         
         grid.add(StateLbl, 0, 9);
-        stateTxtf = new G6TextField();
+        stateTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
         grid.add(stateTxtf, 1, 9);
 
         G6Label ZipLbl = new G6Label("Zip: ");         
         grid.add(ZipLbl, 0, 10);
-        zipTxtf = new G6TextField();
+        zipTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
         grid.add(zipTxtf, 1, 10);
         
         // Contact Section
@@ -177,7 +177,7 @@ public class MemberInfoWindow extends Stage implements LibWindow {
         
         G6Label PhoneNumberLbl = new G6Label("Phone Number: ");         
         grid.add(PhoneNumberLbl, 0, 13);
-        phoneNumberTxtf = new G6TextField();
+        phoneNumberTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
         grid.add(phoneNumberTxtf, 1, 13);
 
         actionBtn = new G6Button("Add");
@@ -252,7 +252,7 @@ public class MemberInfoWindow extends Stage implements LibWindow {
 	        				ControllerInterface c = new SystemController();
 	        				c.updateMember(currentMember);
 	        				
-	        				Start.getMembers();
+	        				Start.showMembers();
 	        			}
 	        			
 	        		}

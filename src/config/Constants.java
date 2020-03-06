@@ -9,5 +9,10 @@ public final class Constants {
 	public final static int PANE_TITLE_FONT_SIZE = 25;
 	
 	// Text Field
-	public final static int TEXT_FIELD_WIDTH = 300;
+	public final static int TEXT_FIELD_WIDTH_LONG = 300;
+	public final static int TEXT_FIELD_WIDTH_MEDUIM = 200;
+	public final static int TEXT_FIELD_WIDTH_SHORT = 100;
+	
+	// Button
+	public final static int BUTTON_LONG_LENGTH = 200;
 }

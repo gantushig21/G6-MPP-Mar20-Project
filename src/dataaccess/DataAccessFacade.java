@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 
+import business.Author;
 import business.Book;
 import business.BookCopy;
 import business.LibraryMember;
@@ -18,7 +19,7 @@ import dataaccess.DataAccessFacade.StorageType;
 public class DataAccessFacade implements DataAccess {
 	
 	enum StorageType {
-		BOOKS, MEMBERS, USERS;
+		BOOKS, MEMBERS, USERS, AUTHORS;
 	}
 	
 	public static final String OUTPUT_DIR = System.getProperty("user.dir") 
@@ -48,6 +49,61 @@ public class DataAccessFacade implements DataAccess {
 		HashMap<String, LibraryMember> mems = readMemberMap();
 		mems.put(member.getMemberId(), member);
 		saveToStorage(StorageType.MEMBERS, mems);
+	}
+	
+	public boolean saveNewBook(Book book) {
+		HashMap<String, Book> books = readBooksMap();
+		String isbn = book.getIsbn();
+		if (!books.containsKey(isbn)) {
+			books.put(isbn, book);
+			saveToStorage(StorageType.BOOKS, books);
+			
+			return true;
+		}
+		return false;
+	}
+	
+	public void deleteBook(String isbn) {
+		HashMap<String, Book> books = readBooksMap();
+		books.remove(isbn);
+		saveToStorage(StorageType.BOOKS, books);
+	}
+	
+	public void updateBook(Book book) {
+		HashMap<String, Book> books = readBooksMap();
+		books.put(book.getIsbn(), book);
+		saveToStorage(StorageType.BOOKS, books);
+	}
+	
+	public boolean saveNewAuthor(Author author) {
+		HashMap<String, Author> authors = readAuthorsMap();
+		String authorId = author.getAuthorId();
+		if (!authors.containsKey(authorId)) {
+			authors.put(authorId, author);
+			saveToStorage(StorageType.AUTHORS, authors);
+			
+			return true;
+		}
+		return false;
+	}
+	
+	public void deleteAuthor(String authorId) {
+		HashMap<String, Author> authors = readAuthorsMap();
+		authors.remove(authorId);
+		saveToStorage(StorageType.AUTHORS, authors);
+	}
+	
+	public void updateAuthor(Author author) {
+		HashMap<String, Author> authors = readAuthorsMap();
+		authors.put(author.getAuthorId(), author);
+		saveToStorage(StorageType.AUTHORS, authors);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public  HashMap<String,Author> readAuthorsMap() {
+		//Returns a Map with name/value pairs being
+		//   isbn -> Book
+		return (HashMap<String,Author>) readFromStorage(StorageType.AUTHORS);
 	}
 	
 	@SuppressWarnings("unchecked")
