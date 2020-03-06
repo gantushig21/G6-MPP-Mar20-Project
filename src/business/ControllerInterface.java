@@ -28,10 +28,15 @@ public interface ControllerInterface {
 	public void updateBook(Book book);
 	
 
-	
 	public void addAuthor(Author author)  throws AlreadyExistException;
 	public void deleteAuthor(String id);
 	public void updateAuthor(Author author);
 	public List<Author> allAuthors();
+	
+	
+	public void addBookCopy(BookCopy bookCopy)  throws AlreadyExistException;
+	public void deleteBookCopy(String id);
+	public void updateBookCopy(BookCopy bookCopy);
+	public List<BookCopy> allBookCopies();
 
 }

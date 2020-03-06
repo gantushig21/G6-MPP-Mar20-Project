@@ -7,6 +7,7 @@ import java.util.List;
 
 import business.Address;
 import business.Author;
+import business.BookCopy;
 import business.ControllerInterface;
 import business.LibraryMember;
 import business.SystemController;
@@ -38,7 +39,8 @@ import ui.components.G6VBox;
 
 import ui.authors.AuthorInfoWindow;
 import ui.authors.AuthorsWindow;
-
+import ui.bookcopies.BookCopiesWindow;
+import ui.bookcopies.BookCopyInfoWindow;
 import ui.members.MemberInfoWindow;
 import ui.members.MembersWindow;
 
@@ -65,7 +67,8 @@ public class Start extends Application {
 		MemberInfoWindow.INSTANCE,
 		MembersWindow.INSTANCE,
 		HomeWindow.INSTANCE,
-		 AuthorInfoWindow.INSTANCE, AuthorsWindow.INSTANCE 
+		 AuthorInfoWindow.INSTANCE, AuthorsWindow.INSTANCE ,
+	 	BookCopyInfoWindow.INSTANCE, BookCopiesWindow.INSTANCE ,
 	};
 	
 
@@ -146,6 +149,23 @@ public class Start extends Application {
 		AuthorsWindow.INSTANCE.clear();
 		AuthorsWindow.INSTANCE.show();
 	}
+	
+	public static void showBookCopies() {
+		hideAllWindows();
+		if (!BookCopiesWindow.INSTANCE.isInitialized()) {
+			BookCopiesWindow.INSTANCE.init();
+		}
+		ControllerInterface ci = new SystemController();
+		List<BookCopy> bookCopies = ci.allBookCopies();
+		for(BookCopy bc: bookCopies) {
+			System.out.println(bc.getIsAvailable());
+		}
+		BookCopiesWindow.INSTANCE.setData(bookCopies);
+
+		BookCopiesWindow.INSTANCE.clear();
+		BookCopiesWindow.INSTANCE.show();
+	}
+
 
 	
 	public static void showCheckouts() {
@@ -172,8 +192,10 @@ public class Start extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) {
-		
+		//TODO: remove these later
 		(new DataAccessFacade()).initAuthors();
+		(new DataAccessFacade()).initBookCopies();
+		
 		primStage = primaryStage;
 		primaryStage.setTitle("Main Page");
 
