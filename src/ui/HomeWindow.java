@@ -44,9 +44,20 @@ public class HomeWindow extends Stage implements LibWindow {
 		G6VBox centerPane = new G6VBox(10);
 		centerPane.setAlignment(Pos.CENTER);
 		
+		G6Button checkoutBtn = G6Button.createButtonWithLength("Checkout management", Constants.BUTTON_LONG_LENGTH);
 		G6Button membersBtn = G6Button.createButtonWithLength("Members management", Constants.BUTTON_LONG_LENGTH);
 		G6Button booksBtn = G6Button.createButtonWithLength("Books management", Constants.BUTTON_LONG_LENGTH);
 		G6Button authorsBtn = G6Button.createButtonWithLength("Authors management", Constants.BUTTON_LONG_LENGTH);
+		G6Button overdueBookReportBtn = G6Button.createButtonWithLength("Overdue book report", Constants.BUTTON_LONG_LENGTH);
+
+		checkoutBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				Start.showCheckouts();
+			}
+			
+		});
 		
 		membersBtn.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -57,7 +68,33 @@ public class HomeWindow extends Stage implements LibWindow {
 			
 		});
 		
-		centerPane.getChildren().addAll(membersBtn, booksBtn, authorsBtn);
+		booksBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				Start.showBooks();
+			}
+		});
+		
+		authorsBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				Start.showAuthors();
+			}
+			
+		});
+
+		overdueBookReportBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				Start.showOverdueBookReports();
+			}
+			
+		});
+
+		
+		centerPane.getChildren().addAll(checkoutBtn, membersBtn, booksBtn, authorsBtn, overdueBookReportBtn);
 				
 		G6Button logoutBtn = new G6Button("Logout");
 		logoutBtn.setOnAction(new EventHandler<ActionEvent>() {

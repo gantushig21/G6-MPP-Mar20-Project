@@ -58,32 +58,28 @@ public class SystemController implements ControllerInterface {
 		
 		return new ArrayList<Book>(da.readBooksMap().values());
 	}
-	@Override
-	public List<Author> allAuthors() {
-		DataAccess da = new DataAccessFacade();
-		
-		return new ArrayList<Author>(da.readAuthorsMap().values());
-	}	
+//	@Override
+//	public List<Author> allAuthors() {
+//		DataAccess da = new DataAccessFacade();
+//		
+//		return new ArrayList<Author>(da.readAuthorsMap().values());
+//	}	
 	
 	@Override
 	public void addMember(LibraryMember member) throws AlreadyExistException {
 		DataAccess da = new DataAccessFacade();
-		
 		boolean result = da.saveNewMember(member);		
-		
 		if (!result)
 			throw new AlreadyExistException("The member with this ID already exists!");
 	}
 	@Override
 	public void deleteMember(String memberId) {
 		DataAccess da = new DataAccessFacade();
-		
 		da.deleteMember(memberId);				
 	}
 	@Override
 	public void updateMember(LibraryMember member) {
 		DataAccess da = new DataAccessFacade();
-		
 		da.updateMember(member);				
 	}
 	@Override
@@ -108,25 +104,53 @@ public class SystemController implements ControllerInterface {
 		
 		da.updateBook(book);
 	}
+//	@Override
+//	public void addAuthor(Author author) throws AlreadyExistException {
+//		DataAccess da = new DataAccessFacade();
+//		
+//		boolean result = da.saveNewAuthor(author);
+//		
+//		if (!result)
+//			throw new AlreadyExistException("The author with this id already exists");
+//	}
+//	@Override
+//	public void deleteAuthor(String authorId) {
+//		DataAccess da = new DataAccessFacade();
+//		
+//		da.deleteAuthor(authorId);
+//	}
+//	@Override
+//	public void updateBook(Author author) {
+//		DataAccess da = new DataAccessFacade();
+//		
+//		da.updateAuthor(author);
+//	}	
+	
+	
+	// AUTHOR START
+	@Override
+	public List<Author> allAuthors() {
+		DataAccess da = new DataAccessFacade();
+		Collection<Author> authors = da.readAuthorsMap().values();
+		return new ArrayList<Author>(authors);
+	}
+	
 	@Override
 	public void addAuthor(Author author) throws AlreadyExistException {
 		DataAccess da = new DataAccessFacade();
-		
-		boolean result = da.saveNewAuthor(author);
-		
+		boolean result = da.saveNewAuthor(author);		
 		if (!result)
-			throw new AlreadyExistException("The author with this id already exists");
+			throw new AlreadyExistException("The author with this ID is already exists!");
 	}
 	@Override
-	public void deleteAuthor(String authorId) {
+	public void deleteAuthor(String id) {
 		DataAccess da = new DataAccessFacade();
-		
-		da.deleteAuthor(authorId);
+		da.deleteAuthor(id);				
 	}
 	@Override
-	public void updateBook(Author author) {
+	public void updateAuthor(Author author) {
 		DataAccess da = new DataAccessFacade();
-		
-		da.updateAuthor(author);
+		da.updateAuthor(author);				
 	}	
+	// AUTHOR END
 }
