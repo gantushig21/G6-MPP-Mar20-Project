@@ -1,7 +1,7 @@
 package config;
 
 public final class Constants {
-	public final static int PAGE_LIMIT = 5;
+	public final static int PAGE_LIMIT = 10;
 	
 	// Window
 	public final static int WINDOW_WIDTH = 900;

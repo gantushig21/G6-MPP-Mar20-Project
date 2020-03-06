@@ -85,7 +85,6 @@ public class Start extends Application {
 		}
 		
 		if (refresh) {
-			System.out.println("Show members called");
 			ControllerInterface ci = new SystemController();
 			List<LibraryMember> members = ci.allMembers();
 			Collections.sort(members);
