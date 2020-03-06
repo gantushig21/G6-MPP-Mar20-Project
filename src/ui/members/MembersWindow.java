@@ -21,6 +21,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -36,6 +37,7 @@ import ui.components.G6Button;
 import ui.components.G6HBox;
 import ui.components.G6TableView;
 import ui.components.G6Text;
+import ui.components.G6TextField;
 import ui.components.G6VBox;
 
 public class MembersWindow extends Stage implements LibWindow {
@@ -66,35 +68,59 @@ public class MembersWindow extends Stage implements LibWindow {
     private MembersWindow () {}
     
     public void init() {
+    	isInitialized(true);
+    	
     	G6BorderPane mainPane = new G6BorderPane();
     	mainPane.setPadding(new Insets(25));
     	mainPane.setId("top-container");
     	
     	// Rendering top
+    	G6VBox topPane = new G6VBox(15);
+    	topPane.setPadding(new Insets(15, 0, 15, 0));
+    	
+    	G6BorderPane top1 = new G6BorderPane();
         Text scenetitle = new Text("Manage members");
-        StackPane sceneTitlePane = G6Text.withPaddings(scenetitle, new Insets(0));
         
         scenetitle.setFont(Font.font("Harlow Solid Italic", FontWeight.NORMAL, Constants.PANE_TITLE_FONT_SIZE)); 
-        G6BorderPane topPane = new G6BorderPane();
-        topPane.setCenter(sceneTitlePane);
-        topPane.setPadding(new Insets(0, 10, 20, 0));
         
         G6Button backBtn = new G6Button("Back");
         
         backBtn.setOnAction(new EventHandler<ActionEvent>() {
         	@Override
         	public void handle(ActionEvent e) {
-        		Start.hideAllWindows();
-        		Start.primStage().show();
+        		Start.homeWindow();
         	}
         });
 
+    	top1.setLeft(backBtn);
+    	top1.setCenter(scenetitle);
+    	
+    	G6BorderPane top2 = new G6BorderPane();
+        G6TextField searchInput = new G6TextField(Constants.TEXT_FIELD_WIDTH_MEDUIM);
+        searchInput.setPromptText("Search");
         
-        G6HBox hBack = new G6HBox(10);
-        hBack.setAlignment(Pos.BOTTOM_LEFT);
-        hBack.getChildren().add(backBtn);
-        topPane.setLeft(hBack);
+        searchInput.setOnAction(new EventHandler<ActionEvent>() {
+        	@Override
+        	public void handle(ActionEvent e) {
+        		Start.searchMembers(searchInput.getText().trim().toLowerCase());
+        	}
+		});
+        
+        G6Button addMemberBtn = new G6Button("Add member");
+        
+        addMemberBtn.setOnAction(new EventHandler<ActionEvent>() {
+        	@Override
+        	public void handle(ActionEvent e) {
+        		Start.addMember();
+        	}
+        });
+        
+    	top2.setLeft(searchInput);
+    	top2.setRight(addMemberBtn);
 
+        
+        topPane.getChildren().addAll(top1, top2);
+                
         mainPane.setTop(topPane);
     	
     	// Rendering center

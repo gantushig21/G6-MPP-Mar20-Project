@@ -1,13 +1,14 @@
-package ui.members;
+package ui.authors;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.swing.JOptionPane;
 
 import business.Address;
 import business.AlreadyExistException;
 import business.ControllerInterface;
-import business.LibraryMember;
+import business.Author;
 import business.LoginException;
 import business.SystemController;
 import config.Constants;
@@ -41,8 +42,8 @@ import ui.components.G6Text;
 import ui.components.G6TextField;
 import ui.components.G6VBox;
 
-public class MemberInfoWindow extends Stage implements LibWindow {
-	public static final MemberInfoWindow INSTANCE = new MemberInfoWindow();
+public class AuthorInfoWindow extends Stage implements LibWindow {
+	public static final AuthorInfoWindow INSTANCE = new AuthorInfoWindow();
 	
 	private boolean isInitialized = false;
 	
@@ -57,6 +58,9 @@ public class MemberInfoWindow extends Stage implements LibWindow {
 	private G6TextField zipTxtf;
 	private G6TextField phoneNumberTxtf;
 	
+	private G6TextField bioTxtf;
+	private G6TextField credentialsTxtf;
+	
 	public boolean isInitialized() {
 		return isInitialized;
 	}
@@ -69,9 +73,9 @@ public class MemberInfoWindow extends Stage implements LibWindow {
 	}
 	
 	/* This class is a singleton */
-	private LibraryMember currentMember;
+	private Author currentAuthor;
 	
-    private MemberInfoWindow () {
+    private AuthorInfoWindow () {
     }
     
 	private void clearFields() {
@@ -82,28 +86,27 @@ public class MemberInfoWindow extends Stage implements LibWindow {
 		stateTxtf.setText("");
 		zipTxtf.setText("");
 		phoneNumberTxtf.setText("");
+		bioTxtf.setText("");
+		credentialsTxtf.setText("");
 	}
 	
-	public void addMember() {
-		actionBtn.setText("Add");
-	}
-	
-	public void updateMember(LibraryMember member) {
-		scenetitle.setText("ID " + member.getMemberId());
+	public void updateAuthor(Author author) {
+		scenetitle.setText("Update Author ID " + author.getId());
 		actionBtn.setText("Update");
 		
-		firstNameTxtf.setText(member.getFirstName()); 
-		lastNameTxtf.setText(member.getLastName());
+		firstNameTxtf.setText(author.getFirstName()); 
+		lastNameTxtf.setText(author.getLastName());
 		
-		Address address = member.getAddress();
+		Address address = author.getAddress();
 		
 		streetTxtf.setText(address.getStreet());
 		cityTxtf.setText(address.getCity());
 		stateTxtf.setText(address.getState());
 		zipTxtf.setText(address.getZip());
-		phoneNumberTxtf.setText(member.getTelephone());
-		
-		currentMember = member;
+		phoneNumberTxtf.setText(author.getTelephone());
+		bioTxtf.setText(author.getBio());
+		credentialsTxtf.setText("");
+		currentAuthor = author;
 	}
     
     public void init() {
@@ -111,7 +114,7 @@ public class MemberInfoWindow extends Stage implements LibWindow {
     	vbox.setPadding(new Insets(25));
     	vbox.setId("top-container");
     	
-        scenetitle = new G6Text("Add new member");
+        scenetitle = new G6Text("Add new Author");
         StackPane sceneTitlePane = G6Text.withPaddings(scenetitle, new Insets(0));
         
         scenetitle.setFont(Font.font("Harlow Solid Italic", FontWeight.NORMAL, Constants.PANE_TITLE_FONT_SIZE)); 
@@ -143,52 +146,66 @@ public class MemberInfoWindow extends Stage implements LibWindow {
         
         G6Label firstNameLbl = new G6Label("First Name: ");         
         grid.add(firstNameLbl, 0, 3);
-        firstNameTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
+        firstNameTxtf = new G6TextField();
         grid.add(firstNameTxtf, 1, 3);
 
         G6Label lastNameLbl = new G6Label("Last Name: ");         
         grid.add(lastNameLbl, 0, 4);
-        lastNameTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
+        lastNameTxtf = new G6TextField();
         grid.add(lastNameTxtf, 1, 4);
+        
+        // Information section
+        G6SubTitle informationTxt = new G6SubTitle("Information");
+        grid.add(informationTxt, 0, 5);
+        
+        G6Label credentialsLbl = new G6Label("Credentials: ");         
+        grid.add(credentialsLbl, 0, 6);
+        credentialsTxtf = new G6TextField();
+        grid.add(credentialsTxtf, 1, 6);
+
+        G6Label bioLbl = new G6Label("Short bio: ");         
+        grid.add(bioLbl, 0, 7);
+        bioTxtf = new G6TextField();
+        grid.add(bioTxtf, 1, 7);
         
         // Address Section
         G6SubTitle addressTxt = new G6SubTitle("Address");
-        grid.add(addressTxt, 0, 6);
+        grid.add(addressTxt, 0, 8);
         
         G6Label StreetLbl = new G6Label("Street: ");         
-        grid.add(StreetLbl, 0, 7);
-        streetTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
-        grid.add(streetTxtf, 1, 7);
+        grid.add(StreetLbl, 0, 9);
+        streetTxtf = new G6TextField();
+        grid.add(streetTxtf, 1, 9);
 
         G6Label CityLbl = new G6Label("City: ");         
-        grid.add(CityLbl, 0, 8);
-        cityTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
-        grid.add(cityTxtf, 1, 8);
+        grid.add(CityLbl, 0, 10);
+        cityTxtf = new G6TextField();
+        grid.add(cityTxtf, 1, 10);
 
         G6Label StateLbl = new G6Label("State: ");         
-        grid.add(StateLbl, 0, 9);
-        stateTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
-        grid.add(stateTxtf, 1, 9);
+        grid.add(StateLbl, 0, 11);
+        stateTxtf = new G6TextField();
+        grid.add(stateTxtf, 1, 11);
 
         G6Label ZipLbl = new G6Label("Zip: ");         
-        grid.add(ZipLbl, 0, 10);
-        zipTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
-        grid.add(zipTxtf, 1, 10);
+        grid.add(ZipLbl, 0, 12);
+        zipTxtf = new G6TextField();
+        grid.add(zipTxtf, 1, 12);
         
         // Contact Section
         G6SubTitle contactTxt = new G6SubTitle("Contact");
-        grid.add(contactTxt, 0, 12);
+        grid.add(contactTxt, 0, 13);
         
         G6Label PhoneNumberLbl = new G6Label("Phone Number: ");         
-        grid.add(PhoneNumberLbl, 0, 13);
-        phoneNumberTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
-        grid.add(phoneNumberTxtf, 1, 13);
+        grid.add(PhoneNumberLbl, 0, 14);
+        phoneNumberTxtf = new G6TextField();
+        grid.add(phoneNumberTxtf, 1, 14);
 
         actionBtn = new G6Button("Add");
         HBox hbBtn = new HBox(11);
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
         hbBtn.getChildren().add(actionBtn);
-        grid.add(hbBtn, 1, 15);
+        grid.add(hbBtn, 1, 18);
 
         HBox messageBox = new HBox(10);
         messageBox.setAlignment(Pos.BOTTOM_RIGHT);
@@ -205,10 +222,12 @@ public class MemberInfoWindow extends Stage implements LibWindow {
          	   String stateStr = stateTxtf.getText().trim();
          	   String zipStr = zipTxtf.getText().trim();
          	   String phoneNumberStr = phoneNumberTxtf.getText().trim();
-         	   
+         	   String bioStr = bioTxtf.getText().trim();
+         	   String credentialsStr = credentialsTxtf.getText().trim();
+         	 
          	   try {
-					RuleSet ruleSet = RuleSetFactory.getRuleSet(MemberInfoWindow.this);
-					ruleSet.applyRules(MemberInfoWindow.this);
+					RuleSet ruleSet = RuleSetFactory.getRuleSet(AuthorInfoWindow.this);
+					ruleSet.applyRules(AuthorInfoWindow.this);
 					
 					Optional<ButtonType> result;
 					
@@ -219,45 +238,52 @@ public class MemberInfoWindow extends Stage implements LibWindow {
 	            			   cityStr + " " +
 	            			   stateStr + " " +
 	            			   zipStr + " " + 
-	            			   phoneNumberStr
+	            			   phoneNumberStr + " " + 
+	            			   bioStr + " " + 
+	            			   credentialsStr
 	            	   );
             	   
        					
-       					result = new G6Alert(AlertType.CONFIRMATION, "Confirmation", "Are you sure to create a new member?").showAndWait();
+       					result = new G6Alert(AlertType.CONFIRMATION, "Confirmation", "Are you sure to create a new author?").showAndWait();
        					
        					if (result.get() == ButtonType.OK) {       						
        	            	   ControllerInterface c = new SystemController();
-       	            	   c.addMember(new LibraryMember(
-       	            			   "ST" + (System.currentTimeMillis() / 1000), 
+       	            	   Author author =new Author(
        	            			   firstNameStr, 
        	            			   lastNameStr, 
        	            			   phoneNumberStr, 
-       	            			   new Address(streetStr, cityStr, stateStr, zipStr)));
+       	            			   new Address(streetStr, cityStr, stateStr, zipStr), bioStr);
+            			   author.setCredentials(credentialsStr);
+
+       	            	   c.addAuthor(author);
        	            	   
-       	            	   result = new G6Alert(AlertType.NONE, "Success", "The member is added successful", ButtonType.OK).showAndWait();	       					
+       	            	   result = new G6Alert(AlertType.NONE, "Success", "The author is added successful", ButtonType.OK).showAndWait();	       					
        	            	   if (result.get() == ButtonType.OK) {
 	           					clearFields();
-	           					Start.showMembers(true);
        	            	   }       	            	   
        					} else {
        						System.out.println("Canceled");
        					}
        					
 	        		} else if (actionBtn.getText().equals("Update")) {
-	        			currentMember.setFirstName(firstNameStr);
-	        			currentMember.setLastName(lastNameStr);
-	        			currentMember.setTelephone(phoneNumberStr);
-	        			currentMember.getAddress().setStreet(streetStr);
-	        			currentMember.getAddress().setState(stateStr);
-	        			currentMember.getAddress().setCity(cityStr);
-	        			currentMember.getAddress().setZip(zipStr);
+	        			currentAuthor.setFirstName(firstNameStr);
+	        			currentAuthor.setLastName(lastNameStr);
+	        			currentAuthor.setTelephone(phoneNumberStr);
+	        			currentAuthor.getAddress().setStreet(streetStr);
+	        			currentAuthor.getAddress().setState(stateStr);
+	        			currentAuthor.getAddress().setCity(cityStr);
+	        			currentAuthor.getAddress().setZip(zipStr);
 	        			
-	        			result = new G6Alert(AlertType.CONFIRMATION, "Confirmation", "Are you sure to update this memeber").showAndWait();
+	        			currentAuthor.setBio(bioStr);
+	        			currentAuthor.setCredentials(credentialsStr);
+
+	        			
+	        			result = new G6Alert(AlertType.CONFIRMATION, "Confirmation", "Are you sure to update this author").showAndWait();
 	        			if (result.get() == ButtonType.OK) {
 	        				ControllerInterface c = new SystemController();
-	        				c.updateMember(currentMember);
+	        				c.updateAuthor(currentAuthor);
 	        				
-	        				Start.showMembers(true);
+	        				Start.showAuthors();
 	        			}
 	        			
 	        		}
@@ -273,7 +299,13 @@ public class MemberInfoWindow extends Stage implements LibWindow {
         backBtn.setOnAction(new EventHandler<ActionEvent>() {
         	@Override
         	public void handle(ActionEvent e) {
-        		Start.showMembers(false);
+        		Start.hideAllWindows();
+        		if (actionBtn.getText().equals("Add")) {
+            		Start.primStage().show();        			
+        		} else if (actionBtn.getText().equals("Update")) {
+        			AuthorsWindow.INSTANCE.clear();
+        			AuthorsWindow.INSTANCE.show();
+        		}
         	}
         });
         Scene scene = new Scene(vbox, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
@@ -315,8 +347,14 @@ public class MemberInfoWindow extends Stage implements LibWindow {
 	public String getPhoneNumberValue() {
 		return phoneNumberTxtf.getText();
 	}
+	public String getBioValue() {
+		return bioTxtf.getText();
+	}
+	public String getCredentialsValue() {
+		return credentialsTxtf.getText();
+	}
 	
-	public static MemberInfoWindow getInstance() {
+	public static AuthorInfoWindow getInstance() {
 		return INSTANCE;
 	}
 	public Text getMessageBar() {

@@ -32,7 +32,7 @@ final public class LibraryMember extends Person implements Serializable, Compara
 
 	@Override
 	public int compareTo(LibraryMember o) {
-		return memberId.compareTo(o.getMemberId()) > 0 ? 1 : -1;
+		return memberId.compareTo(o.getMemberId()) > 0 ? -1 : 1;
 	}
 	
 	
