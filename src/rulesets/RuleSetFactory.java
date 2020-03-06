@@ -3,6 +3,7 @@ package rulesets;
 import java.util.HashMap;
 
 import javafx.stage.Stage;
+import ui.authors.AuthorInfoWindow;
 import ui.members.MemberInfoWindow;
 
 public class RuleSetFactory {
@@ -13,7 +14,7 @@ public class RuleSetFactory {
 	
 	static {
 		map.put(MemberInfoWindow.class, new MemberInfoRuleSet());
-		
+		map.put(AuthorInfoWindow.class, new AuthorRuleSet());
 	}
 	
 	public static RuleSet getRuleSet(Stage stage) {
