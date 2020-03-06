@@ -21,7 +21,7 @@ import dataaccess.DataAccessFacade.StorageType;
 public class DataAccessFacade implements DataAccess {
 
 	enum StorageType {
-		BOOKS, MEMBERS, USERS, AUTHORS;
+		BOOKS, MEMBERS, USERS, AUTHORS, BOOKCOPIES;
 	}
 
 	public static final String OUTPUT_DIR = System.getProperty("user.dir") + "/src/dataaccess/storage";
@@ -29,7 +29,7 @@ public class DataAccessFacade implements DataAccess {
 
 	public void printHashMap(HashMap hm) {
       System.out.println("Deserialized HashMap");
-      // Display content using Iterator
+      // Display content using IteratorF
       Set set = hm.entrySet();
       Iterator iterator = set.iterator();
       while(iterator.hasNext()) {
@@ -267,5 +267,61 @@ public class DataAccessFacade implements DataAccess {
 		return (HashMap<String, Author>) readFromStorage(StorageType.AUTHORS);
 	}
 	// AUTHOR END
+	
+	// BOOKCOPY START
+		public boolean initBookCopies() {
+			
+			try {
+				HashMap<String, BookCopy> bookCopies = new HashMap();
+				Address a = new Address("test", "test", "test", "test");
+				Author author = new Author("test", "test", "test", a, "test");
+				List<Author> authors = new ArrayList<Author>();
+				authors.add(author);
+				Book book = new Book("text", "text" , 1 , authors);
+				BookCopy bookCopy = new BookCopy(book, 10);
+				
+				bookCopies.put("test", bookCopy);
+				printHashMap(bookCopies);
+				saveToStorage(StorageType.BOOKCOPIES, bookCopies);
+				return true;}
+				catch(Exception e) {
+					e.printStackTrace();
+				};
+				return false;
+			
+		}
+
+		public boolean saveNewBookCopy(BookCopy bookCopy) {
+			HashMap<String, BookCopy> bookCopies = readBookCopiesMap();
+			String id = bookCopy.getId();
+			if (!bookCopies.containsKey(id)) {
+				bookCopies.put(id, bookCopy);
+				saveToStorage(StorageType.BOOKCOPIES, bookCopies);
+
+				return true;
+			}
+			return false;
+		}
+
+		public void deleteBookCopy(String id) {
+			try {
+			HashMap<String, BookCopy> bookCopies = readBookCopiesMap();
+			bookCopies.remove(id);
+			saveToStorage(StorageType.BOOKCOPIES, bookCopies);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		public void updateBookCopy(BookCopy bookCopy) {
+			HashMap<String, BookCopy> bookCopies = readBookCopiesMap();
+			bookCopies.put(bookCopy.getId(), bookCopy);
+			saveToStorage(StorageType.BOOKCOPIES, bookCopies);
+		}
+
+		public HashMap<String, BookCopy> readBookCopiesMap() {
+			return (HashMap<String, BookCopy>) readFromStorage(StorageType.BOOKCOPIES);
+		}
+		// BOOKCOPY END
 
 }
