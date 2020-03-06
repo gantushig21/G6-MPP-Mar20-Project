@@ -1,5 +1,6 @@
 package ui;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,7 +18,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -62,17 +62,45 @@ public class Start extends Application {
 		}
 	}
 
-	public static void showMembers() {
+	public static void showMembers(boolean refresh) {
 		hideAllWindows();
 		if (!MembersWindow.INSTANCE.isInitialized()) {
 
 			MembersWindow.INSTANCE.init();
 		}
+
+		if (refresh) {
+			System.out.println("Show members called");
+			ControllerInterface ci = new SystemController();
+			List<LibraryMember> members = ci.allMembers();
+			Collections.sort(members);
+			MembersWindow.INSTANCE.setData(members);
+		}
+
+		MembersWindow.INSTANCE.clear();
+		MembersWindow.INSTANCE.show();
+	}
+
+	public static void searchMembers(String key) {
+		hideAllWindows();
+		if (!MembersWindow.INSTANCE.isInitialized()) {
+
+			MembersWindow.INSTANCE.init();
+		}
+
 		ControllerInterface ci = new SystemController();
 		List<LibraryMember> members = ci.allMembers();
 		Collections.sort(members);
 
-		MembersWindow.INSTANCE.setData(members);
+		List<LibraryMember> filteredMembers = new ArrayList<LibraryMember>();
+		for (LibraryMember member : members) {
+			if (member.getFirstName().toLowerCase().contains(key) || member.getMemberId().toLowerCase().contains(key)
+					|| member.getLastName().toLowerCase().contains(key)
+					|| member.getTelephone().toLowerCase().contains(key)) {
+				filteredMembers.add(member);
+			}
+		}
+		MembersWindow.INSTANCE.setData(filteredMembers);
 
 		MembersWindow.INSTANCE.clear();
 		MembersWindow.INSTANCE.show();
@@ -121,6 +149,16 @@ public class Start extends Application {
 
 	public static void showOverdueBookReports() {
 
+	}
+
+	public static void addMember() {
+		hideAllWindows();
+		if (!MemberInfoWindow.INSTANCE.isInitialized()) {
+			MemberInfoWindow.INSTANCE.init();
+		}
+		MemberInfoWindow.INSTANCE.clear();
+		MemberInfoWindow.INSTANCE.show();
+		MemberInfoWindow.INSTANCE.addMember();
 	}
 
 	@Override
@@ -284,96 +322,96 @@ public class Start extends Application {
 //			}
 //		});
 
-		MenuItem bookIds = new MenuItem("All Book Ids");
-		bookIds.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				hideAllWindows();
-				if (!AllBooksWindow.INSTANCE.isInitialized()) {
-					AllBooksWindow.INSTANCE.init();
-				}
-				ControllerInterface ci = new SystemController();
-				List<String> ids = ci.allBookIds();
-				Collections.sort(ids);
-				StringBuilder sb = new StringBuilder();
-				for (String s : ids) {
-					sb.append(s + "\n");
-				}
-				AllBooksWindow.INSTANCE.setData(sb.toString());
-				AllBooksWindow.INSTANCE.show();
-			}
-		});
-
-		MenuItem memberIds = new MenuItem("All Member Ids");
-		memberIds.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				hideAllWindows();
-				if (!AllMembersWindow.INSTANCE.isInitialized()) {
-					AllMembersWindow.INSTANCE.init();
-				}
-				ControllerInterface ci = new SystemController();
-				List<String> ids = ci.allMemberIds();
-				Collections.sort(ids);
-				System.out.println(ids);
-				StringBuilder sb = new StringBuilder();
-				for (String s : ids) {
-					sb.append(s + "\n");
-				}
-				System.out.println(sb.toString());
-				AllMembersWindow.INSTANCE.setData(sb.toString());
-				AllMembersWindow.INSTANCE.show();
-			}
-		});
-
-		MenuItem addMember = new MenuItem("Add Member");
-
-		addMember.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				hideAllWindows();
-				if (!MemberInfoWindow.INSTANCE.isInitialized()) {
-					MemberInfoWindow.INSTANCE.init();
-				}
-				MemberInfoWindow.INSTANCE.clear();
-				MemberInfoWindow.INSTANCE.show();
-			}
-		});
-
-		MenuItem getMembers = new MenuItem("Get Members");
-
-		getMembers.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				showMembers();
-			}
-		});
-
-		// AUTHOR START
-		MenuItem addAuthor = new MenuItem("Add Author");
-		addAuthor.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				hideAllWindows();
-				if (!AuthorInfoWindow.INSTANCE.isInitialized()) {
-					AuthorInfoWindow.INSTANCE.init();
-				}
-				AuthorInfoWindow.INSTANCE.clear();
-				AuthorInfoWindow.INSTANCE.show();
-			}
-		});
-
-		MenuItem getAuthors = new MenuItem("GetAuthors");
-
-		getAuthors.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				showAuthors();
-			}
-		});
+//		MenuItem bookIds = new MenuItem("All Book Ids");
+//		bookIds.setOnAction(new EventHandler<ActionEvent>() {
+//			@Override
+//			public void handle(ActionEvent e) {
+//				hideAllWindows();
+//				if (!AllBooksWindow.INSTANCE.isInitialized()) {
+//					AllBooksWindow.INSTANCE.init();
+//				}
+//				ControllerInterface ci = new SystemController();
+//				List<String> ids = ci.allBookIds();
+//				Collections.sort(ids);
+//				StringBuilder sb = new StringBuilder();
+//				for (String s : ids) {
+//					sb.append(s + "\n");
+//				}
+//				AllBooksWindow.INSTANCE.setData(sb.toString());
+//				AllBooksWindow.INSTANCE.show();
+//			}
+//		});
+//
+//		MenuItem memberIds = new MenuItem("All Member Ids");
+//		memberIds.setOnAction(new EventHandler<ActionEvent>() {
+//			@Override
+//			public void handle(ActionEvent e) {
+//				hideAllWindows();
+//				if (!AllMembersWindow.INSTANCE.isInitialized()) {
+//					AllMembersWindow.INSTANCE.init();
+//				}
+//				ControllerInterface ci = new SystemController();
+//				List<String> ids = ci.allMemberIds();
+//				Collections.sort(ids);
+//				System.out.println(ids);
+//				StringBuilder sb = new StringBuilder();
+//				for (String s : ids) {
+//					sb.append(s + "\n");
+//				}
+//				System.out.println(sb.toString());
+//				AllMembersWindow.INSTANCE.setData(sb.toString());
+//				AllMembersWindow.INSTANCE.show();
+//			}
+//		});
+//
+//		MenuItem addMember = new MenuItem("Add Member");
+//
+//		addMember.setOnAction(new EventHandler<ActionEvent>() {
+//			@Override
+//			public void handle(ActionEvent e) {
+//				hideAllWindows();
+//				if (!MemberInfoWindow.INSTANCE.isInitialized()) {
+//					MemberInfoWindow.INSTANCE.init();
+//				}
+//				MemberInfoWindow.INSTANCE.clear();
+//				MemberInfoWindow.INSTANCE.show();
+//			}
+//		});
+//
+//		MenuItem getMembers = new MenuItem("Get Members");
+//
+//		getMembers.setOnAction(new EventHandler<ActionEvent>() {
+//			@Override
+//			public void handle(ActionEvent e) {
+//				showMembers();
+//			}
+//		});
+//
+//		// AUTHOR START
+//		MenuItem addAuthor = new MenuItem("Add Author");
+//		addAuthor.setOnAction(new EventHandler<ActionEvent>() {
+//			@Override
+//			public void handle(ActionEvent e) {
+//				hideAllWindows();
+//				if (!AuthorInfoWindow.INSTANCE.isInitialized()) {
+//					AuthorInfoWindow.INSTANCE.init();
+//				}
+//				AuthorInfoWindow.INSTANCE.clear();
+//				AuthorInfoWindow.INSTANCE.show();
+//			}
+//		});
+//
+//		MenuItem getAuthors = new MenuItem("GetAuthors");
+//
+//		getAuthors.setOnAction(new EventHandler<ActionEvent>() {
+//			@Override
+//			public void handle(ActionEvent e) {
+//				showAuthors();
+//			}
+//		});
 		// AUTHOR END
 
-		optionsMenu.getItems().addAll(bookIds, memberIds, addMember, getMembers, getAuthors);
+//		optionsMenu.getItems().addAll(bookIds, memberIds, addMember, getMembers, getAuthors);
 
 //		mainMenu.getMenus().addAll(optionsMenu);
 		Scene scene = new Scene(topContainer, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
