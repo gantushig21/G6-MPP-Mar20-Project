@@ -53,21 +53,17 @@ public class HomeWindow extends Stage implements LibWindow {
 		G6Button bookCopiesBtn = G6Button.createButtonWithLength("BookCopies management", Constants.BUTTON_LONG_LENGTH);
 
 		checkoutBtn.setOnAction(new EventHandler<ActionEvent>() {
-
 			@Override
 			public void handle(ActionEvent arg0) {
 				Start.showCheckouts();
 			}
-			
 		});
 		
 		membersBtn.setOnAction(new EventHandler<ActionEvent>() {
-
 			@Override
 			public void handle(ActionEvent arg0) {
-				Start.showMembers();
+				Start.showMembers(true);
 			}
-			
 		});
 		
 		booksBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -78,21 +74,17 @@ public class HomeWindow extends Stage implements LibWindow {
 		});
 		
 		authorsBtn.setOnAction(new EventHandler<ActionEvent>() {
-
 			@Override
 			public void handle(ActionEvent arg0) {
 				Start.showAuthors();
 			}
-			
 		});
 
 		overdueBookReportBtn.setOnAction(new EventHandler<ActionEvent>() {
-
 			@Override
 			public void handle(ActionEvent arg0) {
 				Start.showOverdueBookReports();
 			}
-			
 		});
 		
 		bookCopiesBtn.setOnAction(new EventHandler<ActionEvent>() {
