@@ -13,12 +13,12 @@ public class BookRuleSet implements RuleSet {
 		// zipCodeRule();
 	}
 
-//	private void nonemptyRule() throws RuleException {
-//		if (booksInfoWindow.getTitleValue().trim().isEmpty() || booksInfoWindow.getIsbnValue().trim().isEmpty()
-//				|| booksInfoWindow.getAuthorsValue() == 0 || booksInfoWindow.getMaximumLengthValue()) {
-//			throw new RuleException("All fields must be non-empty!");
-//		}
-//	}
+	private void nonemptyRule() throws RuleException {
+		if (booksInfoWindow.getTitleValue().trim().isEmpty() || booksInfoWindow.getIsbnValue().trim().isEmpty()
+				|| booksInfoWindow.getAuthorsValue() == 0) {
+			throw new RuleException("All fields must be non-empty!");
+		}
+	}
 	/*
 	 * private void zipCodeRule() throws RuleException { String zipCode =
 	 * booksInfoWindow.getZipValue();

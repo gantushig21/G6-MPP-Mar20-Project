@@ -1,6 +1,7 @@
 package ui.books;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import business.Author;
@@ -16,6 +17,8 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -30,6 +33,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import ui.LibWindow;
 import ui.Start;
+import ui.components.G6Alert;
 import ui.components.G6BorderPane;
 import ui.components.G6Button;
 import ui.components.G6HBox;
@@ -57,6 +61,12 @@ public class BooksWindow extends Stage implements LibWindow {
 		tblBooks.setItems(FXCollections.observableList(data));
 	}
 
+	private Text messageBar = new Text();
+
+	public void clear() {
+		messageBar.setText("");
+	}
+
 	private BooksWindow() {
 	}
 
@@ -65,44 +75,23 @@ public class BooksWindow extends Stage implements LibWindow {
 		G6BorderPane mainPane = new G6BorderPane();
 		mainPane.setPadding(new Insets(25));
 		mainPane.setId("top-container");
-		/*
-		 * G6GridPane grid = new G6GridPane(); grid.setAlignment(Pos.CENTER);
-		 * grid.setHgap(10); grid.setVgap(10); grid.setPadding(new Insets(25, 25, 25,
-		 * 25));
-		 * 
-		 * G6Text scenetitle = new G6Text("Manage Books");
-		 * scenetitle.setFont(Font.font("Harlow Solid Bold", FontWeight.NORMAL, 20));
-		 * 
-		 * G6Button btnBack = new G6Button("Back");
-		 * 
-		 * G6HBox hbox = new G6HBox(10); hbox.setAlignment(Pos.TOP_CENTER);
-		 * hbox.getChildren().addAll(btnBack, scenetitle);
-		 * 
-		 * G6Button btnAdd = new G6Button("Add new Book"); btnAdd.setOnAction(new
-		 * EventHandler<ActionEvent>() {
-		 * 
-		 * @Override public void handle(ActionEvent event) {
-		 * 
-		 * } });
-		 * 
-		 * G6HBox vbox = new G6HBox(10); vbox.getChildren().addAll(new SearchBox(),
-		 * btnAdd);
-		 */
-		Text scenetitle = new Text("Manage Books");
+
+		// Rendering top
+		Text scenetitle = new Text("Manage book");
 		StackPane sceneTitlePane = G6Text.withPaddings(scenetitle, new Insets(0));
 
 		scenetitle.setFont(Font.font("Harlow Solid Italic", FontWeight.NORMAL, Constants.PANE_TITLE_FONT_SIZE));
 		G6BorderPane topPane = new G6BorderPane();
 		topPane.setCenter(sceneTitlePane);
-		topPane.setPadding(new Insets(0, 10, 10, 0));
+		topPane.setPadding(new Insets(0, 10, 20, 0));
 
 		G6Button backBtn = new G6Button("Back");
 
 		backBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				Start.hideAllWindows();
-				Start.primStage().show();
+				Start.homeWindow();
+				;
 			}
 		});
 
@@ -190,32 +179,36 @@ public class BooksWindow extends Stage implements LibWindow {
 							G6HBox hbox = new G6HBox(5);
 
 							btnUpdate.setOnAction(event -> {
-								/*
-								 * Book member = getTableView().getItems().get(getIndex());
-								 * 
-								 * Start.hideAllWindows(); if (!MemberInfoWindow.INSTANCE.isInitialized()) {
-								 * MemberInfoWindow.INSTANCE.init(); } MemberInfoWindow.INSTANCE.clear();
-								 * MemberInfoWindow.INSTANCE.show();
-								 * MemberInfoWindow.INSTANCE.updateMember(member);
-								 * 
-								 * System.out.println("update");
-								 */
+
+								Book book = getTableView().getItems().get(getIndex());
+
+								Start.hideAllWindows();
+								if (!BooksInfoWindow.INSTANCE.isInitialized()) {
+									BooksInfoWindow.INSTANCE.init();
+								}
+								BooksInfoWindow.INSTANCE.show();
+								BooksInfoWindow.INSTANCE.updateBook(book);
+
+								System.out.println("update");
+
 							});
 
 							btnDelete.setOnAction(event -> {
-								/*
-								 * LibraryMember member = getTableView().getItems().get(getIndex());
-								 *
-								 * Optional<ButtonType> result = new G6Alert(AlertType.CONFIRMATION,
-								 * "Confirmation", "Are you sure to delete this record").showAndWait();
-								 * 
-								 * if (result.get() == ButtonType.OK) { ControllerInterface c = new
-								 * SystemController(); c.deleteMember(member.getMemberId());
-								 * 
-								 * tblBooks.getItems().remove(getIndex()); }
-								 * 
-								 * System.out.println("delete" + getIndex());
-								 */
+
+								Book book = getTableView().getItems().get(getIndex());
+
+								Optional<ButtonType> result = new G6Alert(AlertType.CONFIRMATION, "Confirmation",
+										"Are you sure to delete this book").showAndWait();
+
+								if (result.get() == ButtonType.OK) {
+									ControllerInterface c = new SystemController();
+									c.deleteBook(book.getIsbn());
+
+									tblBooks.getItems().remove(getIndex());
+								}
+
+								System.out.println("delete" + getIndex());
+
 							});
 
 							btnCheckout.setOnAction(event -> {
