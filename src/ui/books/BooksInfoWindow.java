@@ -10,7 +10,6 @@ import business.Book;
 import business.ControllerInterface;
 import business.SystemController;
 import config.Constants;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -19,7 +18,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -72,7 +70,7 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 	private Book currentBook;
 
 	public void setData(List<Author> data) {
-		tblAuthors.setItems(FXCollections.observableList(data));
+		// tblAuthors.setItems(FXCollections.observableList(data));
 	}
 
 	private void clearFields() {
@@ -156,37 +154,17 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 				}
 			}
 		});
-		/*
-		 * List<Hyperlink> links = new ArrayList<>(); ControllerInterface ci = new
-		 * SystemController(); List<Author> data = ci.allAuthors(); List<String> names =
-		 * new ArrayList<>();
-		 * 
-		 * for (Author a : data) { names.add(a.getFirstName()); }
-		 */
-		/*
-		 * TableColumn<Author, List<Hyperlink>> col1 = new TableColumn<>("Authors");
-		 * PropertyValueFactory<Author, List<Hyperlink>> thirdColFactory = new
-		 * PropertyValueFactory<>(new Hyperlink("auhtor"));
-		 * col1.setCellValueFactory(thirdColFactory);
-		 */
-		/*
-		 * col1.setCellFactory(col -> new TableCell<Author, List<Author>>() {
-		 * 
-		 * @Override public void updateItem(List<Author> authors, boolean empty) {
-		 * super.updateItem(authors, empty); if (empty) { setText(null); } else {
-		 * setText(authors.stream().map(Author::getFirstName).toString()); } } });
-		 */
-		// tblAuthors.getColumns().addAll(col1);
 
-		// listView.getItems().addAll(links);
 		grid.add(listView, 1, 5);
 
 		ControllerInterface ci = new SystemController();
 		List<Author> data = ci.allAuthors();
 		cmbAuthors = new ComboBox<Author>();
 		cmbAuthors.getItems().addAll(data);
+		cmbAuthors.setPrefWidth(130);
 		cmbAuthors.getSelectionModel().selectFirst();
 		cmbAuthors.setButtonCell(new ListCell<Author>() {
+
 			@Override
 			protected void updateItem(Author t, boolean bln) {
 				super.updateItem(t, bln);
@@ -199,14 +177,16 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 		});
 
 		cmbAuthors.setCellFactory(new Callback<ListView<Author>, ListCell<Author>>() {
+
 			@Override
 			public ListCell<Author> call(ListView<Author> p) {
 				return new ListCell<Author>() {
+
 					@Override
 					protected void updateItem(Author t, boolean bln) {
 						super.updateItem(t, bln);
 						if (t != null) {
-							setText(t.getFirstName());
+							setText(t.getFirstName()); //
 							// System.out.println("SET PROPERTY " + t.nomeProperty().toString());
 						} else {
 							setText(null);
@@ -217,10 +197,7 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 			}
 		});
 
-		grid.add(cmbAuthors, 1, 6, 2, 1);
-
 		G6Button btnSelect = new G6Button("Select");
-		btnSelect.setAlignment(Pos.BASELINE_LEFT);
 		btnSelect.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -235,31 +212,59 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 				}
 				if (!check)
 					listView.getItems().add(cmbAuthors.getValue());
+				else {
+					Optional<ButtonType> result;
+					result = new G6Alert(AlertType.NONE, "Error", "The author already added", ButtonType.OK)
+							.showAndWait();
+				}
+
 			}
 		});
 
-		HBox boxCombo = new HBox();
-		boxCombo.getChildren().addAll(cmbAuthors, btnSelect);
-		// grid.add(cmbAuthors, 1, 6, 2, 1);
-		grid.add(btnSelect, 1, 7, 2, 1);
+		G6Button btnDelete = new G6Button("Delete");
+		btnDelete.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				final int selectedIdx = listView.getSelectionModel().getSelectedIndex();
+				if (selectedIdx != -1) {
+					Author itemToRemove = listView.getSelectionModel().getSelectedItem();
+
+					final int newSelectedIdx = (selectedIdx == listView.getItems().size() - 1) ? selectedIdx - 1
+							: selectedIdx;
+
+					listView.getItems().remove(selectedIdx);
+					listView.getSelectionModel().select(newSelectedIdx);
+				}
+			}
+		});
+
+		HBox boxCombo = new HBox(5);
+		boxCombo.getChildren().addAll(cmbAuthors, btnSelect, btnDelete);
+		grid.add(boxCombo, 1, 6);
+		// grid.add(btnSelect, 1, 7);
 
 		G6Label lblLength = new G6Label("Maximum checkout length: ");
-		grid.add(lblLength, 0, 8);
+		lblLength.setWrapText(true);
+		HBox boxLength = new HBox(5);
+		boxLength.setAlignment(Pos.TOP_LEFT);
+		boxLength.getChildren().add(lblLength);
+		boxLength.setPrefHeight(250);
+		boxLength.setPrefWidth(80);
+		grid.add(boxLength, 0, 8);
 		cmbLength = new ComboBox<Integer>();
 		cmbLength.getItems().addAll(numbers);
+		cmbLength.setPrefWidth(130);
 		cmbLength.getSelectionModel().selectFirst();
-		grid.add(cmbLength, 1, 8);
-
-		G6Label lblAvailable = new G6Label("Available: ");
-		grid.add(lblAvailable, 0, 9);
-		CheckBox chkAvailable = new CheckBox("is available");
-		grid.add(chkAvailable, 1, 9);
+		HBox boxComb = new HBox(5);
+		boxComb.setAlignment(Pos.TOP_LEFT);
+		boxComb.getChildren().add(cmbLength);
+		grid.add(boxComb, 1, 8);
 
 		actionBtn = new G6Button("Add");
 		HBox hbBtn = new HBox(11);
 		hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
 		hbBtn.getChildren().add(actionBtn);
-		grid.add(hbBtn, 1, 15);
+		grid.add(hbBtn, 1, 9);
 
 		HBox messageBox = new HBox(10);
 		messageBox.setAlignment(Pos.BOTTOM_RIGHT);
@@ -286,6 +291,9 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 								"Are you sure to create a new book?").showAndWait();
 
 						if (result.get() == ButtonType.OK) {
+							// System.out.println("add book" + " " + title + " " + isbn + " " + maxLength +
+							// " "
+							// + authors.get(0).getFirstName());
 							ControllerInterface c = new SystemController();
 							Book book = new Book(isbn, title, maxLength, authors);
 							System.out.println(book);
@@ -329,9 +337,9 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 			public void handle(ActionEvent e) {
 				Start.hideAllWindows();
 				if (actionBtn.getText().equals("Add")) {
-					BooksWindow.INSTANCE.show();
+					Start.showBooks();
 				} else if (actionBtn.getText().equals("Update")) {
-					BooksWindow.INSTANCE.show();
+					Start.showBooks();
 				}
 			}
 		});

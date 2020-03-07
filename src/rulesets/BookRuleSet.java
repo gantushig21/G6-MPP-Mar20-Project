@@ -9,7 +9,7 @@ public class BookRuleSet implements RuleSet {
 	@Override
 	public void applyRules(Stage ob) throws RuleException {
 		booksInfoWindow = (BooksInfoWindow) ob;
-//		nonemptyRule();
+		nonemptyRule();
 		// zipCodeRule();
 	}
 
