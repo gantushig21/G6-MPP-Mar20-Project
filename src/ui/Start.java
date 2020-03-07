@@ -6,6 +6,7 @@ import java.util.List;
 
 import business.Author;
 import business.Book;
+import business.BookCopy;
 import business.ControllerInterface;
 import business.LibraryMember;
 import business.SystemController;
@@ -27,6 +28,8 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import ui.authors.AuthorInfoWindow;
 import ui.authors.AuthorsWindow;
+import ui.bookcopies.BookCopiesWindow;
+import ui.bookcopies.BookCopyInfoWindow;
 import ui.books.BooksInfoWindow;
 import ui.books.BooksWindow;
 import ui.components.G6Button;
@@ -53,7 +56,8 @@ public class Start extends Application {
 
 	private static Stage[] allWindows = { LoginWindow.INSTANCE, AllMembersWindow.INSTANCE, AllBooksWindow.INSTANCE,
 			MemberInfoWindow.INSTANCE, MembersWindow.INSTANCE, HomeWindow.INSTANCE, AuthorInfoWindow.INSTANCE,
-			AuthorsWindow.INSTANCE, BooksInfoWindow.INSTANCE, BooksWindow.INSTANCE };
+			AuthorsWindow.INSTANCE, BooksInfoWindow.INSTANCE, BooksWindow.INSTANCE, BookCopyInfoWindow.INSTANCE,
+			BookCopiesWindow.INSTANCE };
 
 	public static void hideAllWindows() {
 		primStage.hide();
@@ -129,6 +133,22 @@ public class Start extends Application {
 		AuthorsWindow.INSTANCE.show();
 	}
 
+	public static void showBookCopies() {
+		hideAllWindows();
+		if (!BookCopiesWindow.INSTANCE.isInitialized()) {
+			BookCopiesWindow.INSTANCE.init();
+		}
+		ControllerInterface ci = new SystemController();
+		List<BookCopy> bookCopies = ci.allBookCopies();
+		for (BookCopy bc : bookCopies) {
+			System.out.println(bc.getIsAvailable());
+		}
+		BookCopiesWindow.INSTANCE.setData(bookCopies);
+
+		BookCopiesWindow.INSTANCE.clear();
+		BookCopiesWindow.INSTANCE.show();
+	}
+
 	public static void showCheckouts() {
 		// implement this for checkouts like authors
 	}
@@ -164,8 +184,11 @@ public class Start extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 
+		// TODO: remove these later
 		(new DataAccessFacade()).initBooks();
 		(new DataAccessFacade()).initAuthors();
+		(new DataAccessFacade()).initBookCopies();
+
 		primStage = primaryStage;
 		primaryStage.setTitle("Main Page");
 

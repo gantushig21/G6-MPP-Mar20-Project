@@ -69,7 +69,9 @@ final public class Book implements Serializable {
 		if (copies == null) {
 			return false;
 		}
-		return Arrays.stream(copies).map(l -> l.isAvailable()).reduce(false, (x, y) -> x || y);
+
+		return Arrays.stream(copies).map(l -> l.getIsAvailable()).reduce(false, (x, y) -> x || y);
+
 	}
 
 	@Override
@@ -102,7 +104,7 @@ final public class Book implements Serializable {
 	}
 
 	public BookCopy getNextAvailableCopy() {
-		Optional<BookCopy> optional = Arrays.stream(copies).filter(x -> x.isAvailable()).findFirst();
+		Optional<BookCopy> optional = Arrays.stream(copies).filter(x -> x.getIsAvailable()).findFirst();
 		return optional.isPresent() ? optional.get() : null;
 	}
 
