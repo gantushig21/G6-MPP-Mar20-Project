@@ -76,7 +76,7 @@ public class HomeWindow extends Stage implements LibWindow {
 		authorsBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				Start.showAuthors();
+				Start.showAuthors(true);
 			}
 		});
 
@@ -115,7 +115,7 @@ public class HomeWindow extends Stage implements LibWindow {
         mainPane.setBottom(hBottom);
                 
 		Scene scene = new Scene(mainPane, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
-		scene.getStylesheets().add(getClass().getResource("library.css").toExternalForm());
+//		scene.getStylesheets().add(getClass().getResource("library.css").toExternalForm());
         setScene(scene);
 	}
 }
