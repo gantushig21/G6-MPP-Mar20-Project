@@ -121,4 +121,28 @@ final public class Book implements Serializable {
 		return maxCheckoutLength;
 	}
 
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setCopies(BookCopy[] copies) {
+		this.copies = copies;
+	}
+
+	public void setAuthors(List<Author> authors) {
+		this.authors = authors;
+	}
+
+	public void setIsbn(String isbn) {
+		this.isbn = isbn;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setMaxCheckoutLength(int maxCheckoutLength) {
+		this.maxCheckoutLength = maxCheckoutLength;
+	}
+
 }
