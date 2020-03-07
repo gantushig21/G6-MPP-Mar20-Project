@@ -137,6 +137,7 @@ public class Start extends Application {
 
 	public static void showBookCopies(Book book) {
 		hideAllWindows();
+		BookCopiesWindow.INSTANCE.setData(book);
 		if (!BookCopiesWindow.INSTANCE.isInitialized()) {
 			BookCopiesWindow.INSTANCE.init();
 		}
@@ -145,7 +146,7 @@ public class Start extends Application {
 		for (BookCopy bc : bookCopies) {
 			System.out.println(bc.getIsAvailable());
 		}
-		BookCopiesWindow.INSTANCE.setData(book, bookCopies);
+	
 		BookCopiesWindow.INSTANCE.clear();
 		BookCopiesWindow.INSTANCE.show();
 	}
