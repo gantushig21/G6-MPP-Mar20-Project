@@ -1,11 +1,11 @@
-package ui.authors;
+package ui.bookcopies;
 
 import java.util.List;
 import java.util.Optional;
 
 import business.Address;
 import business.ControllerInterface;
-import business.Author;
+import business.BookCopy;
 import business.SystemController;
 import config.Constants;
 import javafx.collections.FXCollections;
@@ -36,11 +36,10 @@ import ui.components.G6Button;
 import ui.components.G6HBox;
 import ui.components.G6TableView;
 import ui.components.G6Text;
-import ui.components.G6TextField;
 import ui.components.G6VBox;
 
-public class AuthorsWindow extends Stage implements LibWindow {
-	public static final AuthorsWindow INSTANCE = new AuthorsWindow();
+public class BookCopiesWindow extends Stage implements LibWindow {
+	public static final BookCopiesWindow INSTANCE = new BookCopiesWindow();
 
 	private boolean isInitialized = false;
 
@@ -58,32 +57,30 @@ public class AuthorsWindow extends Stage implements LibWindow {
 		messageBar.setText("");
 	}
 
-	private TableView<Author> tableView;
+	private TableView<BookCopy> tableView;
 
-	public void setData(List<Author> data) {
+	public void setData(List<BookCopy> data) {
 		tableView.setItems(FXCollections.observableList(data));
 	}
 
 	/* This class is a singleton */
-	private AuthorsWindow() {
+	private BookCopiesWindow() {
 	}
 
 	public void init() {
-		isInitialized(true);
-		
 		G6BorderPane mainPane = new G6BorderPane();
 		mainPane.setPadding(new Insets(25));
 		mainPane.setId("top-container");
 
 		// Rendering top
-		G6VBox topPane = new G6VBox(15);
-		topPane.setPadding(new Insets(15, 0, 15, 0));
-		
-		G6BorderPane top1 = new G6BorderPane();
-		Text scenetitle = new Text("Manage authors");
-		
+		Text scenetitle = new Text("Manage bookCopies");
+		StackPane sceneTitlePane = G6Text.withPaddings(scenetitle, new Insets(0));
+
 		scenetitle.setFont(Font.font("Harlow Solid Italic", FontWeight.NORMAL, Constants.PANE_TITLE_FONT_SIZE));
-		
+		G6BorderPane topPane = new G6BorderPane();
+		topPane.setCenter(sceneTitlePane);
+		topPane.setPadding(new Insets(0, 10, 20, 0));
+
 		G6Button backBtn = new G6Button("Back");
 
 		backBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -93,68 +90,46 @@ public class AuthorsWindow extends Stage implements LibWindow {
 			}
 		});
 
-		top1.setLeft(backBtn);
-		top1.setCenter(scenetitle);
-		
-		G6BorderPane top2 = new G6BorderPane();
-        G6TextField searchInput = new G6TextField(Constants.TEXT_FIELD_WIDTH_MEDUIM);
-        searchInput.setPromptText("Search");
-        
-        searchInput.setOnAction(new EventHandler<ActionEvent>() {
-        	@Override
-        	public void handle(ActionEvent e) {
-//        		Start.searchAuthors(searchInput.getText().trim().toLowerCase());
-        	}
-		});
-
-		
-		G6Button addBtn = new G6Button("Add a new author");
+		G6Button addBtn = new G6Button("Add a new bookCopy");
 
 		addBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				Start.addAuthor();
+				Start.hideAllWindows();
+				if (!BookCopyInfoWindow.INSTANCE.isInitialized()) {
+					BookCopyInfoWindow.INSTANCE.init();
+				}
+				BookCopyInfoWindow.INSTANCE.clear();
+				BookCopyInfoWindow.INSTANCE.show();
 			}
 		});
-		
-		top2.setLeft(searchInput);
-		top2.setRight(addBtn);
 
-		topPane.getChildren().addAll(top1, top2);
+		G6VBox vTopButtons = new G6VBox(10);
+		vTopButtons.setAlignment(Pos.BOTTOM_LEFT);
+		vTopButtons.getChildren().addAll(backBtn, addBtn);
+		topPane.setLeft(vTopButtons);
 
 		mainPane.setTop(topPane);
 
 		// Rendering center
 		tableView = new TableView<>();
 
-		TableColumn<Author, String> column0 = new TableColumn<>("ID");
+		TableColumn<BookCopy, String> column0 = new TableColumn<>("ID");
 		column0.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-		TableColumn<Author, String> column1 = new TableColumn<>("First Name");
-		column1.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+		TableColumn<BookCopy, String> column1 = new TableColumn<>("Copy Number");
+		column1.setCellValueFactory(new PropertyValueFactory<>("copyNum"));
+		
+		TableColumn<BookCopy, Boolean> column2 = new TableColumn<>("Available");
+		column2.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
+		
+		TableColumn<BookCopy, String> actionColumn = new TableColumn<>("Action");
 
-		TableColumn<Author, String> column2 = new TableColumn<>("Last Name");
-		column2.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-
-		TableColumn<Author, String> column3 = new TableColumn<>("Credentials");
-		column3.setCellValueFactory(new PropertyValueFactory<>("credentials"));
-
-		TableColumn<Author, String> column4 = new TableColumn<>("Short bio");
-		column4.setCellValueFactory(new PropertyValueFactory<>("bio"));
-
-		TableColumn<Author, String> column5 = new TableColumn<>("Address");
-		column5.setCellValueFactory(new PropertyValueFactory<>("address"));
-
-		TableColumn<Author, String> column6 = new TableColumn<>("Phone Number");
-		column6.setCellValueFactory(new PropertyValueFactory<>("telephone"));
-
-		TableColumn<Author, String> actionColumn = new TableColumn<>("Action");
-
-		Callback<TableColumn<Author, String>, TableCell<Author, String>> cellFactory = new Callback<TableColumn<Author, String>, TableCell<Author, String>>() {
+		Callback<TableColumn<BookCopy, String>, TableCell<BookCopy, String>> cellFactory = new Callback<TableColumn<BookCopy, String>, TableCell<BookCopy, String>>() {
 
 			@Override
-			public TableCell<Author, String> call(TableColumn<Author, String> arg0) {
-				final TableCell<Author, String> cell = new TableCell<Author, String>() {
+			public TableCell<BookCopy, String> call(TableColumn<BookCopy, String> arg0) {
+				final TableCell<BookCopy, String> cell = new TableCell<BookCopy, String>() {
 
 					final G6Button btnUpdate = new G6Button("Update");
 					final G6Button btnDelete = new G6Button("Delete");
@@ -170,30 +145,30 @@ public class AuthorsWindow extends Stage implements LibWindow {
 							G6HBox hbox = new G6HBox(5);
 
 							btnUpdate.setOnAction(event -> {
-								Author author = getTableView().getItems().get(getIndex());
+								BookCopy bookCopy = getTableView().getItems().get(getIndex());
 
 								Start.hideAllWindows();
-								if (!AuthorInfoWindow.INSTANCE.isInitialized()) {
-									AuthorInfoWindow.INSTANCE.init();
+								if (!BookCopyInfoWindow.INSTANCE.isInitialized()) {
+									BookCopyInfoWindow.INSTANCE.init();
 								}
-								AuthorInfoWindow.INSTANCE.clear();
-								AuthorInfoWindow.INSTANCE.show();
-								AuthorInfoWindow.INSTANCE.updateAuthor(author);
+								BookCopyInfoWindow.INSTANCE.clear();
+								BookCopyInfoWindow.INSTANCE.show();
+								BookCopyInfoWindow.INSTANCE.updateBookCopy(bookCopy);
 
-//		                                System.out.println(author.getFirstName()
-//		                                        + "   " + author.getLastName());
+//		                                System.out.println(bookCopy.getFirstName()
+//		                                        + "   " + bookCopy.getLastName());
 								System.out.println("update");
 							});
 
 							btnDelete.setOnAction(event -> {
-								Author author = getTableView().getItems().get(getIndex());
+								BookCopy bookCopy = getTableView().getItems().get(getIndex());
 
 								Optional<ButtonType> result = new G6Alert(AlertType.CONFIRMATION, "Confirmation",
 										"Are you sure to delete this record").showAndWait();
 
 								if (result.get() == ButtonType.OK) {
 									ControllerInterface c = new SystemController();
-									c.deleteAuthor(author.getId());
+									c.deleteBookCopy(bookCopy.getId());
 									tableView.getItems().remove(getIndex());
 								}
 
@@ -201,7 +176,7 @@ public class AuthorsWindow extends Stage implements LibWindow {
 							});
 
 							btnCheckout.setOnAction(event -> {
-								Author author = getTableView().getItems().get(getIndex());
+								BookCopy bookCopy = getTableView().getItems().get(getIndex());
 								System.out.println("checkout");
 							});
 
@@ -221,10 +196,7 @@ public class AuthorsWindow extends Stage implements LibWindow {
 		tableView.getColumns().add(column0);
 		tableView.getColumns().add(column1);
 		tableView.getColumns().add(column2);
-		tableView.getColumns().add(column3);
-		tableView.getColumns().add(column4);
-		tableView.getColumns().add(column5);
-		tableView.getColumns().add(column6);
+
 		tableView.getColumns().add(actionColumn);
 
 		VBox vbox = new VBox(tableView);

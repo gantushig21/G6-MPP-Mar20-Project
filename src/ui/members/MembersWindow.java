@@ -73,16 +73,16 @@ public class MembersWindow extends Stage implements LibWindow {
 	private List<LibraryMember> list;
 	
 	public void setData(List<LibraryMember> data) {
-//		list = data;
-//		
-//		page = 1;
-//		pages = list.size() / Constants.PAGE_LIMIT;
-//		if (list.size() % Constants.PAGE_LIMIT != 0)
-//			pages++;
-//		
-//		controlPageButtonDisable();
-//		setPage(page);
-		tableView.setItems(FXCollections.observableList(data));
+		list = data;
+		
+		page = 1;
+		pages = list.size() / Constants.PAGE_LIMIT;
+		if (list.size() % Constants.PAGE_LIMIT != 0)
+			pages++;
+		
+		controlPageButtonDisable();
+		setPage(page);
+//		tableView.setItems(FXCollections.observableList(data));
 	}
 	
 	private void prevPage() {
@@ -253,7 +253,8 @@ public class MembersWindow extends Stage implements LibWindow {
 			                                ControllerInterface c = new SystemController();
 			                                c.deleteMember(member.getMemberId());
 			                                
-			                                tableView.getItems().remove(getIndex());
+			                                Start.showMembers(true);
+//			                                tableView.getItems().remove(getIndex());
 		                                }
 		                                
 		                                System.out.println("delete" + getIndex());
@@ -311,7 +312,7 @@ public class MembersWindow extends Stage implements LibWindow {
         
         bottomPane.getChildren().addAll(btnPrev, pageLbl, btnNext);
         
-//        mainPane.setBottom(bottomPane);
+        mainPane.setBottom(bottomPane);
     	
         Scene scene = new Scene(mainPane, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
         scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());

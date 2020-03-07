@@ -1,10 +1,5 @@
-/ui/
-/dataaccess/
-/business/
-<<<<<<< HEAD
 /config/
-=======
-/.DS_Store
-/text.txt
->>>>>>> master
-/controllers/
+/dataaccess/
+/rulesets/
+/ui/
+/business/

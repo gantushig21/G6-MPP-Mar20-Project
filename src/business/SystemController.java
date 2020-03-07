@@ -153,4 +153,34 @@ public class SystemController implements ControllerInterface {
 		da.updateAuthor(author);				
 	}	
 	// AUTHOR END
+	
+
+	// BOOKCOPY START
+	@Override
+	public List<BookCopy> allBookCopies() {
+		DataAccess da = new DataAccessFacade();
+		Collection<BookCopy> bookCopies = da.readBookCopiesMap().values();
+		return new ArrayList<BookCopy>(bookCopies);
+	}
+	
+	@Override
+	public void addBookCopy(BookCopy bookCopy) throws AlreadyExistException {
+		DataAccess da = new DataAccessFacade();
+		boolean result = da.saveNewBookCopy(bookCopy);		
+		if (!result)
+			throw new AlreadyExistException("The bookCopy with this ID is already exists!");
+	}
+	@Override
+	public void deleteBookCopy(String id) {
+		DataAccess da = new DataAccessFacade();
+		da.deleteBookCopy(id);				
+	}
+	@Override
+	public void updateBookCopy(BookCopy bookCopy) {
+		DataAccess da = new DataAccessFacade();
+		da.updateBookCopy(bookCopy);				
+	}	
+	// BOOKCOPY END
+	
+	
 }
