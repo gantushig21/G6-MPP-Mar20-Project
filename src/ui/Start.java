@@ -2,11 +2,10 @@ package ui;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
-import business.Address;
 import business.Author;
+import business.Book;
 import business.BookCopy;
 import business.ControllerInterface;
 import business.LibraryMember;
@@ -19,28 +18,23 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-
-import ui.components.G6Button;
-import ui.components.G6Label;
-import ui.components.G6VBox;
-
 import ui.authors.AuthorInfoWindow;
 import ui.authors.AuthorsWindow;
 import ui.bookcopies.BookCopiesWindow;
 import ui.bookcopies.BookCopyInfoWindow;
+import ui.books.BooksInfoWindow;
+import ui.books.BooksWindow;
+import ui.components.G6Button;
+import ui.components.G6Label;
+import ui.components.G6VBox;
 import ui.members.MemberInfoWindow;
 import ui.members.MembersWindow;
 
@@ -60,17 +54,10 @@ public class Start extends Application {
 		public static Color red = Color.FIREBRICK;
 	}
 
-	private static Stage[] allWindows = { 
-		LoginWindow.INSTANCE,
-		AllMembersWindow.INSTANCE,	
-		AllBooksWindow.INSTANCE,
-		MemberInfoWindow.INSTANCE,
-		MembersWindow.INSTANCE,
-		HomeWindow.INSTANCE,
-		 AuthorInfoWindow.INSTANCE, AuthorsWindow.INSTANCE ,
-	 	BookCopyInfoWindow.INSTANCE, BookCopiesWindow.INSTANCE ,
-	};
-	
+	private static Stage[] allWindows = { LoginWindow.INSTANCE, AllMembersWindow.INSTANCE, AllBooksWindow.INSTANCE,
+			MemberInfoWindow.INSTANCE, MembersWindow.INSTANCE, HomeWindow.INSTANCE, AuthorInfoWindow.INSTANCE,
+			AuthorsWindow.INSTANCE, BooksInfoWindow.INSTANCE, BooksWindow.INSTANCE, BookCopyInfoWindow.INSTANCE,
+			BookCopiesWindow.INSTANCE };
 
 	public static void hideAllWindows() {
 		primStage.hide();
@@ -79,20 +66,19 @@ public class Start extends Application {
 		}
 	}
 
-	
 	public static void showMembers(boolean refresh) {
-    	hideAllWindows();
-		if(!MembersWindow.INSTANCE.isInitialized()) {
+		hideAllWindows();
+		if (!MembersWindow.INSTANCE.isInitialized()) {
 
 			MembersWindow.INSTANCE.init();
 		}
-		
+
 		if (refresh) {
 			System.out.println("Show members called");
 			ControllerInterface ci = new SystemController();
 			List<LibraryMember> members = ci.allMembers();
 			Collections.sort(members);
-			MembersWindow.INSTANCE.setData(members);			
+			MembersWindow.INSTANCE.setData(members);
 		}
 
 		MembersWindow.INSTANCE.clear();
@@ -100,36 +86,33 @@ public class Start extends Application {
 	}
 
 	public static void searchMembers(String key) {
-    	hideAllWindows();
-		if(!MembersWindow.INSTANCE.isInitialized()) {
+		hideAllWindows();
+		if (!MembersWindow.INSTANCE.isInitialized()) {
 
 			MembersWindow.INSTANCE.init();
 		}
-		
+
 		ControllerInterface ci = new SystemController();
 		List<LibraryMember> members = ci.allMembers();
 		Collections.sort(members);
-		
+
 		List<LibraryMember> filteredMembers = new ArrayList<LibraryMember>();
-		for (LibraryMember member: members) {
-			if (member.getFirstName().toLowerCase().contains(key) ||
-				member.getMemberId().toLowerCase().contains(key) ||
-				member.getLastName().toLowerCase().contains(key) ||
-				member.getTelephone().toLowerCase().contains(key)
-			) {
+		for (LibraryMember member : members) {
+			if (member.getFirstName().toLowerCase().contains(key) || member.getMemberId().toLowerCase().contains(key)
+					|| member.getLastName().toLowerCase().contains(key)
+					|| member.getTelephone().toLowerCase().contains(key)) {
 				filteredMembers.add(member);
 			}
 		}
-		MembersWindow.INSTANCE.setData(filteredMembers);			
+		MembersWindow.INSTANCE.setData(filteredMembers);
 
 		MembersWindow.INSTANCE.clear();
 		MembersWindow.INSTANCE.show();
 	}
 
-	
 	public static void homeWindow() {
-    	hideAllWindows();
-		if(!HomeWindow.INSTANCE.isInitialized()) {
+		hideAllWindows();
+		if (!HomeWindow.INSTANCE.isInitialized()) {
 			HomeWindow.INSTANCE.init();
 		}
 		HomeWindow.INSTANCE.show();
@@ -149,7 +132,7 @@ public class Start extends Application {
 		AuthorsWindow.INSTANCE.clear();
 		AuthorsWindow.INSTANCE.show();
 	}
-	
+
 	public static void showBookCopies() {
 		hideAllWindows();
 		if (!BookCopiesWindow.INSTANCE.isInitialized()) {
@@ -157,7 +140,7 @@ public class Start extends Application {
 		}
 		ControllerInterface ci = new SystemController();
 		List<BookCopy> bookCopies = ci.allBookCopies();
-		for(BookCopy bc: bookCopies) {
+		for (BookCopy bc : bookCopies) {
 			System.out.println(bc.getIsAvailable());
 		}
 		BookCopiesWindow.INSTANCE.setData(bookCopies);
@@ -166,66 +149,75 @@ public class Start extends Application {
 		BookCopiesWindow.INSTANCE.show();
 	}
 
-
-	
 	public static void showCheckouts() {
 		// implement this for checkouts like authors
 	}
-	
+
 	public static void showBooks() {
-		// implement this for books like authors
+		hideAllWindows();
+		if (!BooksWindow.INSTANCE.isInitialized()) {
+			BooksWindow.INSTANCE.init();
+		}
+		ControllerInterface ci = new SystemController();
+		List<Book> authors = ci.allBooks();
+//		Collections.sort(authors);
+
+		BooksWindow.INSTANCE.setData(authors);
+
+		BooksWindow.INSTANCE.show();
 	}
-	
+
 	public static void showOverdueBookReports() {
-		
+
 	}
-	
+
 	public static void addMember() {
-    	hideAllWindows();
-		if(!MemberInfoWindow.INSTANCE.isInitialized()) {
+		hideAllWindows();
+		if (!MemberInfoWindow.INSTANCE.isInitialized()) {
 			MemberInfoWindow.INSTANCE.init();
 		}
 		MemberInfoWindow.INSTANCE.clear();
 		MemberInfoWindow.INSTANCE.show();
 		MemberInfoWindow.INSTANCE.addMember();
 	}
-	
+
 	@Override
 	public void start(Stage primaryStage) {
-		//TODO: remove these later
+
+		// TODO: remove these later
+		(new DataAccessFacade()).initBooks();
 		(new DataAccessFacade()).initAuthors();
 		(new DataAccessFacade()).initBookCopies();
-		
+
 		primStage = primaryStage;
 		primaryStage.setTitle("Main Page");
-
 
 		BorderPane topContainer = new BorderPane();
 		topContainer.setPadding(new Insets(30));
 
 		topContainer.setId("top-container");
-		
-        HBox splashBox = new HBox();
-        G6Label splashLabel = new G6Label("The Library System");
-        splashLabel.setFont(Font.font("Kalam", FontWeight.BOLD, 30));
-        splashBox.getChildren().add(splashLabel);
-        splashBox.setAlignment(Pos.CENTER);
-		
-        topContainer.setTop(splashBox);
-		
-        G6Button login = G6Button.createButtonWithLength("Login", Constants.BUTTON_LONG_LENGTH);
+
+		HBox splashBox = new HBox();
+		G6Label splashLabel = new G6Label("The Library System");
+		splashLabel.setFont(Font.font("Kalam", FontWeight.BOLD, 30));
+		splashBox.getChildren().add(splashLabel);
+		splashBox.setAlignment(Pos.CENTER);
+
+		topContainer.setTop(splashBox);
+
+		G6Button login = G6Button.createButtonWithLength("Login", Constants.BUTTON_LONG_LENGTH);
 		login.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-            	hideAllWindows();
-    			if(!LoginWindow.INSTANCE.isInitialized()) {
-    				LoginWindow.INSTANCE.init();
-    			}
-    			LoginWindow.INSTANCE.clear();
-    			LoginWindow.INSTANCE.show();
-            }
-        });			
-							
+			@Override
+			public void handle(ActionEvent e) {
+				hideAllWindows();
+				if (!LoginWindow.INSTANCE.isInitialized()) {
+					LoginWindow.INSTANCE.init();
+				}
+				LoginWindow.INSTANCE.clear();
+				LoginWindow.INSTANCE.show();
+			}
+		});
+
 //		MenuItem bookIds = new MenuItem("All Book Ids");
 //		bookIds.setOnAction(new EventHandler<ActionEvent>() {
 //            @Override
@@ -304,14 +296,14 @@ public class Start extends Application {
 //        });		
 
 		G6Button exit = G6Button.createButtonWithLength("Exit", Constants.BUTTON_LONG_LENGTH);
-		
+
 		G6VBox centerPane = new G6VBox(10);
 		centerPane.setAlignment(Pos.CENTER);
-		
+
 		centerPane.getChildren().addAll(login, exit);
-		
+
 		topContainer.setCenter(centerPane);
-		
+
 //		MenuItem exit = new MenuItem("Exit");
 		exit.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -320,8 +312,7 @@ public class Start extends Application {
 				primaryStage.close();
 			}
 		});
-		
-		
+
 //		optionsMenu.getItems().addAll(login, exit);
 
 		// simply displays in ImageView the image as is
@@ -443,8 +434,7 @@ public class Start extends Application {
 //		});
 		// AUTHOR END
 
-//		optionsMenu.getItems().addAll( bookIds, memberIds, addMember, getMembers, getAuthors);
-
+//		optionsMenu.getItems().addAll(bookIds, memberIds, addMember, getMembers, getAuthors);
 
 //		mainMenu.getMenus().addAll(optionsMenu);
 		Scene scene = new Scene(topContainer, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
