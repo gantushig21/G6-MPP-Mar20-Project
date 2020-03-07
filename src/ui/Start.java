@@ -125,19 +125,17 @@ public class Start extends Application {
 			AuthorsWindow.INSTANCE.init();
 		}
 		
-		if (refresh) {
+//		if (refresh) {
 			ControllerInterface ci = new SystemController();
 			List<Author> authors = ci.allAuthors();
 //			Collections.sort(authors);
-
-			AuthorsWindow.INSTANCE.setData(authors);
-		}
-
+//		}
+		AuthorsWindow.INSTANCE.setData(authors);
 		AuthorsWindow.INSTANCE.clear();
 		AuthorsWindow.INSTANCE.show();
 	}
 
-	public static void showBookCopies() {
+	public static void showBookCopies(Book book) {
 		hideAllWindows();
 		if (!BookCopiesWindow.INSTANCE.isInitialized()) {
 			BookCopiesWindow.INSTANCE.init();
@@ -147,8 +145,7 @@ public class Start extends Application {
 		for (BookCopy bc : bookCopies) {
 			System.out.println(bc.getIsAvailable());
 		}
-		BookCopiesWindow.INSTANCE.setData(bookCopies);
-
+		BookCopiesWindow.INSTANCE.setData(book, bookCopies);
 		BookCopiesWindow.INSTANCE.clear();
 		BookCopiesWindow.INSTANCE.show();
 	}

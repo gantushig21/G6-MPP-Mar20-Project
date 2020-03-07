@@ -1,9 +1,11 @@
 package ui.books;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import business.Address;
 import business.Author;
 import business.Book;
 import business.ControllerInterface;
@@ -167,7 +169,7 @@ public class BooksWindow extends Stage implements LibWindow {
 
 					final G6Button btnUpdate = new G6Button("Update");
 					final G6Button btnDelete = new G6Button("Delete");
-					final G6Button btnCheckout = new G6Button("Book Copies");
+					final G6Button btnManageCopies = new G6Button("Book Copies");
 
 					@Override
 					public void updateItem(String item, boolean empty) {
@@ -211,15 +213,12 @@ public class BooksWindow extends Stage implements LibWindow {
 
 							});
 
-							btnCheckout.setOnAction(event -> {
-								/*
-								 * LibraryMember member = getTableView().getItems().get(getIndex());
-								 * System.out.println("checkout");
-								 */
+							btnManageCopies.setOnAction(event -> {
+								Book book =  getTableView().getItems().get(getIndex());
+								System.out.println(book.getIsbn());
+								Start.showBookCopies(book);
 							});
-
-							hbox.getChildren().addAll(btnUpdate, btnDelete, btnCheckout);
-
+							hbox.getChildren().addAll(btnUpdate, btnDelete, btnManageCopies);
 							setGraphic(hbox);
 							setText(null);
 						}
@@ -333,7 +332,7 @@ public class BooksWindow extends Stage implements LibWindow {
 	 * { final TableCell<Book, String> cell = new TableCell<Book, String>() {
 	 * 
 	 * final G6Button btnUpdate = new G6Button("Update"); final G6Button btnDelete =
-	 * new G6Button("Delete"); final G6Button btnCheckout = new
+	 * new G6Button("Delete"); final G6Button btnManageCopies = new
 	 * G6Button("Checkout");
 	 * 
 	 * @Override public void updateItem(String item, boolean empty) {
@@ -369,14 +368,14 @@ public class BooksWindow extends Stage implements LibWindow {
 	 * 
 	 * });
 	 * 
-	 * btnCheckout.setOnAction(event -> {
+	 * btnManageCopies.setOnAction(event -> {
 	 * 
 	 * LibraryMember member = getTableView().getItems().get(getIndex());
 	 * System.out.println("checkout");
 	 * 
 	 * });
 	 * 
-	 * hbox.getChildren().addAll(btnUpdate, btnDelete, btnCheckout);
+	 * hbox.getChildren().addAll(btnUpdate, btnDelete, btnManageCopies);
 	 * 
 	 * setGraphic(hbox); setText(null); } } }; return cell; } };
 	 * 
