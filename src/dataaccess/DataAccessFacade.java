@@ -7,16 +7,18 @@ import java.io.Serializable;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
-
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import business.Address;
 import business.Author;
 import business.Book;
 import business.BookCopy;
 import business.LibraryMember;
-import dataaccess.DataAccessFacade.StorageType;
 
 public class DataAccessFacade implements DataAccess {
 
@@ -28,17 +30,17 @@ public class DataAccessFacade implements DataAccess {
 	public static final String DATE_PATTERN = "MM/dd/yyyy";
 
 	public void printHashMap(HashMap hm) {
-      System.out.println("Deserialized HashMap");
-      // Display content using IteratorF
-      Set set = hm.entrySet();
-      Iterator iterator = set.iterator();
-      while(iterator.hasNext()) {
-         Map.Entry mentry = (Map.Entry)iterator.next();
-         System.out.print("key: "+ mentry.getKey() + " & Value: ");
-         System.out.println(mentry.getValue());
-      }
+		System.out.println("Deserialized HashMap");
+		// Display content using Iterator
+		Set set = hm.entrySet();
+		Iterator iterator = set.iterator();
+		while (iterator.hasNext()) {
+			Map.Entry mentry = (Map.Entry) iterator.next();
+			System.out.print("key: " + mentry.getKey() + " & Value: ");
+			System.out.println(mentry.getValue());
+		}
 	}
-	
+
 	// implement: other save operations
 	public boolean saveNewMember(LibraryMember member) {
 		HashMap<String, LibraryMember> mems = readMemberMap();
@@ -64,39 +66,62 @@ public class DataAccessFacade implements DataAccess {
 		saveToStorage(StorageType.MEMBERS, mems);
 	}
 
-	
+	// START BOOK
+
+	public boolean initBooks() {
+		try {
+			HashMap<String, Book> books = new HashMap();
+			Address a = new Address("test", "test", "test", "test");
+			Author author = new Author("test", "test", "test", a, "test");
+			author.setCredentials("test");
+			author.setId("test");
+
+			List<Author> as = new ArrayList<>();
+			Book b = new Book("test", "test", 10, as);
+
+			books.put(b.getId(), b);
+			saveToStorage(StorageType.BOOKS, books);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		;
+		return false;
+
+	}
+
 	public boolean saveNewBook(Book book) {
 		HashMap<String, Book> books = readBooksMap();
 		String isbn = book.getIsbn();
 		if (!books.containsKey(isbn)) {
 			books.put(isbn, book);
 			saveToStorage(StorageType.BOOKS, books);
-			
+
 			return true;
 		}
 		return false;
 	}
-	
+
 	public void deleteBook(String isbn) {
 		HashMap<String, Book> books = readBooksMap();
 		books.remove(isbn);
 		saveToStorage(StorageType.BOOKS, books);
 	}
-	
+
 	public void updateBook(Book book) {
 		HashMap<String, Book> books = readBooksMap();
 		books.put(book.getIsbn(), book);
 		saveToStorage(StorageType.BOOKS, books);
 	}
-	
+
+	// END BOOK
 
 	@SuppressWarnings("unchecked")
-	public  HashMap<String,Author> readAuthorsMap() {
-		//Returns a Map with name/value pairs being
-		//   isbn -> Book
-		return (HashMap<String,Author>) readFromStorage(StorageType.AUTHORS);
+	public HashMap<String, Author> readAuthorsMap() {
+		// Returns a Map with name/value pairs being
+		// isbn -> Book
+		return (HashMap<String, Author>) readFromStorage(StorageType.AUTHORS);
 	}
-	
 
 	@SuppressWarnings("unchecked")
 	public HashMap<String, Book> readBooksMap() {
@@ -223,13 +248,13 @@ public class DataAccessFacade implements DataAccess {
 			author.setCredentials("test");
 			author.setId("test");
 			authors.put("test", author);
-//			saveToStorage(StorageType.AUTHORS, authors);
-			return true;}
-			catch(Exception e) {
-				e.printStackTrace();
-			};
-			return false;
-		
+			saveToStorage(StorageType.AUTHORS, authors);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		;
+		return false;
 	}
 
 	public boolean saveNewAuthor(Author author) {
@@ -247,12 +272,12 @@ public class DataAccessFacade implements DataAccess {
 	public void deleteAuthor(String id) {
 		System.out.print("her3");
 		try {
-		HashMap<String, Author> authors = readAuthorMap();
-		System.out.print("here");
-		printHashMap(authors);
-		authors.remove(id);
-		saveToStorage(StorageType.AUTHORS,authors);
-		}catch(Exception e) {
+			HashMap<String, Author> authors = readAuthorMap();
+			System.out.print("here");
+			printHashMap(authors);
+			authors.remove(id);
+			saveToStorage(StorageType.AUTHORS, authors);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -267,61 +292,62 @@ public class DataAccessFacade implements DataAccess {
 		return (HashMap<String, Author>) readFromStorage(StorageType.AUTHORS);
 	}
 	// AUTHOR END
-	
+
 	// BOOKCOPY START
-		public boolean initBookCopies() {
-			
-			try {
-				HashMap<String, BookCopy> bookCopies = new HashMap();
-				Address a = new Address("test", "test", "test", "test");
-				Author author = new Author("test", "test", "test", a, "test");
-				List<Author> authors = new ArrayList<Author>();
-				authors.add(author);
-				Book book = new Book("text", "text" , 1 , authors);
-				BookCopy bookCopy = new BookCopy(book, 10);
-				
-				bookCopies.put("test", bookCopy);
-				printHashMap(bookCopies);
-				saveToStorage(StorageType.BOOKCOPIES, bookCopies);
-				return true;}
-				catch(Exception e) {
-					e.printStackTrace();
-				};
-				return false;
-			
+	public boolean initBookCopies() {
+
+		try {
+			HashMap<String, BookCopy> bookCopies = new HashMap();
+			Address a = new Address("test", "test", "test", "test");
+			Author author = new Author("test", "test", "test", a, "test");
+			List<Author> authors = new ArrayList<Author>();
+			authors.add(author);
+			Book book = new Book("text", "text", 1, authors);
+			BookCopy bookCopy = new BookCopy(book, 10);
+
+			bookCopies.put("test", bookCopy);
+			printHashMap(bookCopies);
+			saveToStorage(StorageType.BOOKCOPIES, bookCopies);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		;
+		return false;
 
-		public boolean saveNewBookCopy(BookCopy bookCopy) {
-			HashMap<String, BookCopy> bookCopies = readBookCopiesMap();
-			String id = bookCopy.getId();
-			if (!bookCopies.containsKey(id)) {
-				bookCopies.put(id, bookCopy);
-				saveToStorage(StorageType.BOOKCOPIES, bookCopies);
+	}
 
-				return true;
-			}
-			return false;
+	public boolean saveNewBookCopy(BookCopy bookCopy) {
+		HashMap<String, BookCopy> bookCopies = readBookCopiesMap();
+		String id = bookCopy.getId();
+		if (!bookCopies.containsKey(id)) {
+			bookCopies.put(id, bookCopy);
+			saveToStorage(StorageType.BOOKCOPIES, bookCopies);
+
+			return true;
 		}
+		return false;
+	}
 
-		public void deleteBookCopy(String id) {
-			try {
+	public void deleteBookCopy(String id) {
+		try {
 			HashMap<String, BookCopy> bookCopies = readBookCopiesMap();
 			bookCopies.remove(id);
 			saveToStorage(StorageType.BOOKCOPIES, bookCopies);
-			}catch(Exception e) {
-				e.printStackTrace();
-			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+	}
 
-		public void updateBookCopy(BookCopy bookCopy) {
-			HashMap<String, BookCopy> bookCopies = readBookCopiesMap();
-			bookCopies.put(bookCopy.getId(), bookCopy);
-			saveToStorage(StorageType.BOOKCOPIES, bookCopies);
-		}
+	public void updateBookCopy(BookCopy bookCopy) {
+		HashMap<String, BookCopy> bookCopies = readBookCopiesMap();
+		bookCopies.put(bookCopy.getId(), bookCopy);
+		saveToStorage(StorageType.BOOKCOPIES, bookCopies);
+	}
 
-		public HashMap<String, BookCopy> readBookCopiesMap() {
-			return (HashMap<String, BookCopy>) readFromStorage(StorageType.BOOKCOPIES);
-		}
-		// BOOKCOPY END
+	public HashMap<String, BookCopy> readBookCopiesMap() {
+		return (HashMap<String, BookCopy>) readFromStorage(StorageType.BOOKCOPIES);
+	}
+	// BOOKCOPY END
 
 }
