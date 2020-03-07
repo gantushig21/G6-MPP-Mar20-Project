@@ -7,6 +7,9 @@ import java.io.Serializable;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.util.*;
+import dataaccess.DataAccessFacade.StorageType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,10 +23,13 @@ import business.Book;
 import business.BookCopy;
 import business.LibraryMember;
 
+
+import business.*;
+
 public class DataAccessFacade implements DataAccess {
 
 	enum StorageType {
-		BOOKS, MEMBERS, USERS, AUTHORS, BOOKCOPIES;
+		BOOKS, MEMBERS, USERS, AUTHORS, BOOKCOPIES, CHECKOUTS;
 	}
 
 	public static final String OUTPUT_DIR = System.getProperty("user.dir") + "/src/dataaccess/storage";
@@ -255,7 +261,6 @@ public class DataAccessFacade implements DataAccess {
 		}
 		;
 		return false;
-
 	}
 
 	public boolean saveNewAuthor(Author author) {
@@ -350,5 +355,74 @@ public class DataAccessFacade implements DataAccess {
 		return (HashMap<String, BookCopy>) readFromStorage(StorageType.BOOKCOPIES);
 	}
 	// BOOKCOPY END
+	
+		
+		// CHECKOUT START
+		public boolean initCheckouts() {
+			
+			try {
+				HashMap<String, Checkout> Checkouts = new HashMap();
+				Address a = new Address("test", "test", "test", "test");
+				Author author = new Author("test", "test", "test", a, "test");
+				List<Author> authors = new ArrayList<Author>();
+				authors.add(author);
+				Book book = new Book("text2", "text2" , 12 , authors);
+				
+				Address address = new Address("N 4th st", "Fairfiled", "IOW", "52557");
+				LibraryMember member = new LibraryMember("0", "fnameTest", "lnameTest", "510-123-1234", address);
+				
+//				CheckoutEntry entry = new CheckoutEntry(book, LocalDate.now(), LocalDate.now());
+				
+				Checkout checkout = new Checkout(member);
+//				checkout.addEntry(entry);
+				
+				Checkouts.put("test", checkout);
+				printHashMap(Checkouts);
+				saveToStorage(StorageType.CHECKOUTS, Checkouts);
+				return true;}
+				catch(Exception e) {
+					e.printStackTrace();
+				};
+				return false;
+			
+		}
+
+		public boolean saveNewCheckout(Checkout checkout) {
+			HashMap<String, Checkout> Checkouts = readCheckoutsMap();
+			String id = checkout.getId();
+			if (!Checkouts.containsValue(checkout)) {
+				Checkouts.put(id, checkout);
+				saveToStorage(StorageType.CHECKOUTS, Checkouts);
+
+				return true;
+			}
+			return false;
+		}
+
+		public void deleteCheckout(String id) {
+			try {
+			HashMap<String, Checkout> Checkouts = readCheckoutsMap();
+			Checkouts.remove(id);
+			saveToStorage(StorageType.CHECKOUTS, Checkouts);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		public void updateCheckout(Checkout checkout) {
+			HashMap<String, Checkout> Checkouts = readCheckoutsMap();
+			Checkouts.put(checkout.getId(), checkout);
+			saveToStorage(StorageType.CHECKOUTS, Checkouts);
+		}
+
+		@Override
+		public HashMap<String, Checkout> readCheckoutsMap() {
+			// TODO Auto-generated method stub
+			return (HashMap<String, Checkout>) readFromStorage(StorageType.CHECKOUTS);
+		}
+		// CHECKOUT END
+
+
+
 
 }

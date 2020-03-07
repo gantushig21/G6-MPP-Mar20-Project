@@ -277,7 +277,7 @@ public class MemberInfoWindow extends Stage implements LibWindow {
         	}
         });
         Scene scene = new Scene(vbox, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
-        scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
+        // scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
         setScene(scene);
         
     }
