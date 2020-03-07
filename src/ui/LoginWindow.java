@@ -26,6 +26,9 @@ public class LoginWindow extends Stage implements LibWindow {
 	
 	private boolean isInitialized = false;
 	
+	private TextField userTextField;
+	private PasswordField pwBox;
+	
 	public boolean isInitialized() {
 		return isInitialized;
 	}
@@ -39,6 +42,19 @@ public class LoginWindow extends Stage implements LibWindow {
 	
 	/* This class is a singleton */
     private LoginWindow () {}
+    
+    private void login() {
+    	try {
+			ControllerInterface c = new SystemController();
+			c.login(userTextField.getText().trim(), pwBox.getText().trim());
+			messageBar.setFill(Start.Colors.green);
+     	    messageBar.setText("Login successful");
+     	    Start.homeWindow();
+		} catch(LoginException ex) {
+			messageBar.setFill(Start.Colors.red);
+			messageBar.setText("Error! " + ex.getMessage());
+		}
+    }
     
     public void init() { 
         GridPane grid = new GridPane();
@@ -55,7 +71,7 @@ public class LoginWindow extends Stage implements LibWindow {
         Label userName = new Label("User Name:");
         grid.add(userName, 0, 1);
 
-        TextField userTextField = new TextField();
+        userTextField = new TextField();
         //userTextField.setPrefColumnCount(10);
         //userTextField.setPrefWidth(30);
         grid.add(userTextField, 1, 1);
@@ -64,8 +80,14 @@ public class LoginWindow extends Stage implements LibWindow {
         grid.add(pw, 0, 2);
         grid.setGridLinesVisible(false) ;
 
-        PasswordField pwBox = new PasswordField();
+        pwBox = new PasswordField();
         grid.add(pwBox, 1, 2);
+        pwBox.setOnAction(new EventHandler<ActionEvent>() {
+        	@Override
+        	public void handle(ActionEvent e) {
+        		login();
+        	}
+		});
 
         G6Button loginBtn = new G6Button("Log in");
         HBox hbBtn = new HBox(10);
@@ -81,17 +103,7 @@ public class LoginWindow extends Stage implements LibWindow {
         loginBtn.setOnAction(new EventHandler<ActionEvent>() {
         	@Override
         	public void handle(ActionEvent e) {
-        		try {
-        			ControllerInterface c = new SystemController();
-        			c.login(userTextField.getText().trim(), pwBox.getText().trim());
-        			messageBar.setFill(Start.Colors.green);
-             	    messageBar.setText("Login successful");
-             	    Start.homeWindow();
-        		} catch(LoginException ex) {
-        			messageBar.setFill(Start.Colors.red);
-        			messageBar.setText("Error! " + ex.getMessage());
-        		}
-        	   
+        		login();
         	}
         });
 
