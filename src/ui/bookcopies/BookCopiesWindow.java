@@ -25,6 +25,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -93,56 +94,60 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 		backBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				Start.homeWindow();
-				;
-			}
-		});
-
-		G6Button addBtn = new G6Button("Add a new bookCopy");
-
-		addBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				Start.hideAllWindows();
-				if (!BookCopyInfoWindow.INSTANCE.isInitialized()) {
-					BookCopyInfoWindow.INSTANCE.init();
-				}
-				BookCopyInfoWindow.INSTANCE.clear();
-				BookCopyInfoWindow.INSTANCE.setBook(book);
-				BookCopyInfoWindow.INSTANCE.show();
+				Start.showBooks();
 			}
 		});
 
 		G6VBox vTopButtons = new G6VBox(10);
 		vTopButtons.setAlignment(Pos.BOTTOM_LEFT);
-		vTopButtons.getChildren().addAll(backBtn, addBtn);
-		topPane.setLeft(vTopButtons);
+		topPane.setLeft(backBtn);
 		mainPane.setTop(topPane);
 
-		G6GridPane grid = new G6GridPane();
-		grid.setAlignment(Pos.CENTER);
-		grid.setHgap(10);
-		grid.setVgap(5);
-		grid.setPadding(new Insets(25, 25, 25, 25));
+		G6GridPane bookInfoGrid = new G6GridPane();
+		bookInfoGrid.setAlignment(Pos.CENTER);
+		bookInfoGrid.setHgap(10);
+		bookInfoGrid.setVgap(5);
+		bookInfoGrid.setPadding(new Insets(25, 25, 25, 25));
 
 		G6Label titleLbl = new G6Label("Title: ");
-		grid.add(titleLbl, 0, 2);
-		G6Label titleTxt = new G6Label(book.getTitle());
-		grid.add(titleTxt, 1, 2);
+		bookInfoGrid.add(titleLbl, 0, 2);
+		G6Text titleTxt = new G6Text(book.getTitle());
+		bookInfoGrid.add(titleTxt, 1, 2);
 
 		G6Label isbnLbl = new G6Label("ISBN: ");
-		grid.add(isbnLbl, 0, 3);
-		G6Label isbnTxt = new G6Label(book.getIsbn());
-		grid.add(isbnTxt, 1, 3);
+		bookInfoGrid.add(isbnLbl, 0, 3);
+		G6Text isbnTxt = new G6Text(book.getIsbn());
+		bookInfoGrid.add(isbnTxt, 1, 3);
 
 		G6Label authorsLbl = new G6Label("Authors: ");
-		grid.add(authorsLbl, 0, 4);
-		System.out.print(book.getAuthors().size());
-		G6Label authorsTxt = new G6Label(book.getAuthors().stream().map(a -> (a.getFirstName() + a.getLastName()))
-				.collect(Collectors.toList()).toString());
-		grid.add(authorsTxt, 1, 4);
+		bookInfoGrid.add(authorsLbl, 0, 4);
+		List<String> authorsFullnames = book.getAuthors().stream().map(a -> (a.getFirstName() + a.getLastName()))
+				.collect(Collectors.toList());
+		G6Text authorsTxt = new G6Text(String.join(", ", authorsFullnames));
+		bookInfoGrid.add(authorsTxt, 1, 4);
+		bookInfoGrid.setMaxWidth(Double.MAX_VALUE);
 
-		mainPane.setCenter(grid);
+		G6Button addBtn = new G6Button("Add a new book copy");
+
+		addBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				Start.hideAllWindows();
+				BookCopyInfoWindow.INSTANCE.setBook(book);
+				if (!BookCopyInfoWindow.INSTANCE.isInitialized()) {
+					BookCopyInfoWindow.INSTANCE.init();
+				}
+				BookCopyInfoWindow.INSTANCE.clear();
+				BookCopyInfoWindow.INSTANCE.show();
+			}
+		});
+
+		G6HBox centerHBox = new G6HBox(2);
+		centerHBox.setAlignment(Pos.BOTTOM_RIGHT);
+
+		G6HBox.setHgrow(bookInfoGrid, Priority.ALWAYS);
+		centerHBox.getChildren().addAll(bookInfoGrid, addBtn);
+		mainPane.setCenter(centerHBox);
 
 		// Rendering center
 		tableView = new TableView<>();
@@ -182,13 +187,13 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 								BookCopy bookCopy = getTableView().getItems().get(getIndex());
 
 								Start.hideAllWindows();
+								BookCopyInfoWindow.INSTANCE.setBook(book);
 								if (!BookCopyInfoWindow.INSTANCE.isInitialized()) {
 									BookCopyInfoWindow.INSTANCE.init();
 								}
 								BookCopyInfoWindow.INSTANCE.clear();
 								BookCopyInfoWindow.INSTANCE.show();
-
-								BookCopyInfoWindow.INSTANCE.setBook(book);
+								
 								BookCopyInfoWindow.INSTANCE.updateBookCopy(bookCopy);
 
 								System.out.println("update");

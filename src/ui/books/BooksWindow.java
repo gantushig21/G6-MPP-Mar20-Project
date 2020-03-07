@@ -39,6 +39,7 @@ import ui.components.G6Alert;
 import ui.components.G6BorderPane;
 import ui.components.G6Button;
 import ui.components.G6HBox;
+import ui.components.G6Label;
 import ui.components.G6TableView;
 import ui.components.G6Text;
 import ui.components.G6TextField;
@@ -93,7 +94,7 @@ public class BooksWindow extends Stage implements LibWindow {
 			@Override
 			public void handle(ActionEvent e) {
 				Start.homeWindow();
-				;
+				
 			}
 		});
 
@@ -114,7 +115,6 @@ public class BooksWindow extends Stage implements LibWindow {
 				// BooksInfoWindow.INSTANCE.clear();
 				ControllerInterface ci = new SystemController();
 				List<Author> authors = ci.allAuthors();
-				// BooksInfoWindow.INSTANCE.setData(authors);
 				BooksInfoWindow.INSTANCE.show();
 				// BooksInfoWindow.INSTANCE.updateMember(member);
 			}
@@ -124,7 +124,23 @@ public class BooksWindow extends Stage implements LibWindow {
 		 * hBox.setPrefWidth(200); hBox.getChildren().addAll(new SearchBox(), btnAdd);
 		 */
 		G6BorderPane nextPane = new G6BorderPane();
-		nextPane.setLeft(new SearchBox());
+	
+		
+		G6TextField searchInput = new G6TextField(Constants.TEXT_FIELD_WIDTH_MEDUIM);
+        searchInput.setPromptText("Search");
+        
+        searchInput.setOnAction(new EventHandler<ActionEvent>() {
+        	@Override
+        	public void handle(ActionEvent e) {
+        		Start.searchBooks(searchInput.getText().trim().toLowerCase());
+        	}
+		});
+        
+        G6Label searchLbl = new G6Label("Search books by ISBN (input keyword then press Enter): ");
+        VBox vboxTop = new VBox();
+        vboxTop.getChildren().addAll(searchLbl, searchInput);
+    	nextPane.setLeft(vboxTop);
+	        
 		nextPane.setPadding(new Insets(0, 10, 10, 0));
 		nextPane.setRight(btnAdd);
 		nextPane.setTop(topPane);
@@ -255,38 +271,38 @@ public class BooksWindow extends Stage implements LibWindow {
 		 */
 	}
 
-	private static class SearchBox extends Region {
-
-		private G6TextField textBox;
-		private G6Button clearButton;
-
-		public SearchBox() {
-			setId("SearchBox");
-			// getStyleClass().add("search-box");
-			setMinHeight(24);
-			// setPrefSize(200, 24);
-			// setMaxSize(Control.USE_PREF_SIZE, Control.USE_PREF_SIZE);
-			textBox = new G6TextField();
-			textBox.setPromptText("Search");
-			clearButton = new G6Button("");
-			clearButton.setVisible(false);
-			getChildren().addAll(textBox, clearButton);
-			clearButton.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent actionEvent) {
-					textBox.setText("");
-					textBox.requestFocus();
-				}
-			});
-			textBox.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-					clearButton.setVisible(textBox.getText().length() != 0);
-				}
-			});
-		}
-
-	}
+//	private static class SearchBox extends Region {
+//
+//		private G6TextField textBox;
+//		private G6Button clearButton;
+//
+//		public SearchBox() {
+//			setId("SearchBox");
+//			// getStyleClass().add("search-box");
+//			setMinHeight(24);
+//			// setPrefSize(200, 24);
+//			// setMaxSize(Control.USE_PREF_SIZE, Control.USE_PREF_SIZE);
+//			textBox = new G6TextField();
+//			textBox.setPromptText("Search");
+//			clearButton = new G6Button("");
+//			clearButton.setVisible(false);
+//			getChildren().addAll(textBox, clearButton);
+//			clearButton.setOnAction(new EventHandler<ActionEvent>() {
+//				@Override
+//				public void handle(ActionEvent actionEvent) {
+//					textBox.setText("");
+//					textBox.requestFocus();
+//				}
+//			});
+//			textBox.textProperty().addListener(new ChangeListener<String>() {
+//				@Override
+//				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+//					clearButton.setVisible(textBox.getText().length() != 0);
+//				}
+//			});
+//		}
+//
+//	}
 
 	/*
 	 * @Override public void start(Stage stage) throws Exception { // TODO

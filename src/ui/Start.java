@@ -3,6 +3,7 @@ package ui;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import business.Author;
 import business.Book;
@@ -124,10 +125,10 @@ public class Start extends Application {
 		if (!AuthorsWindow.INSTANCE.isInitialized()) {
 			AuthorsWindow.INSTANCE.init();
 		}
-		
+
 //		if (refresh) {
-			ControllerInterface ci = new SystemController();
-			List<Author> authors = ci.allAuthors();
+		ControllerInterface ci = new SystemController();
+		List<Author> authors = ci.allAuthors();
 //			Collections.sort(authors);
 //		}
 		AuthorsWindow.INSTANCE.setData(authors);
@@ -146,7 +147,7 @@ public class Start extends Application {
 		for (BookCopy bc : bookCopies) {
 			System.out.println(bc.getIsAvailable());
 		}
-	
+
 		BookCopiesWindow.INSTANCE.clear();
 		BookCopiesWindow.INSTANCE.show();
 	}
@@ -172,11 +173,23 @@ public class Start extends Application {
 			BooksWindow.INSTANCE.init();
 		}
 		ControllerInterface ci = new SystemController();
-		List<Book> authors = ci.allBooks();
-//		Collections.sort(authors);
+		List<Book> books = ci.allBooks();
 
-		BooksWindow.INSTANCE.setData(authors);
+		BooksWindow.INSTANCE.setData(books);
+		BooksWindow.INSTANCE.show();
+	}
 
+	public static void searchBooks(String isbn) {
+		hideAllWindows();
+		if (!BooksWindow.INSTANCE.isInitialized()) {
+			BooksWindow.INSTANCE.init();
+		}
+		ControllerInterface ci = new SystemController();
+		List<Book> books = ci.allBooks().stream().filter(b -> b.getIsbn().toLowerCase().indexOf(isbn) > -1)
+				.collect(Collectors.toList());
+		
+
+		BooksWindow.INSTANCE.setData(books);
 		BooksWindow.INSTANCE.show();
 	}
 
@@ -193,6 +206,7 @@ public class Start extends Application {
 		MemberInfoWindow.INSTANCE.show();
 		MemberInfoWindow.INSTANCE.addMember();
 	}
+
 	public static void addAuthor() {
 		hideAllWindows();
 		if (!AuthorInfoWindow.INSTANCE.isInitialized()) {
@@ -202,17 +216,17 @@ public class Start extends Application {
 		AuthorInfoWindow.INSTANCE.show();
 		AuthorInfoWindow.INSTANCE.addAuthor();
 	}
-	
+
 	public static void addCheckout() {
-    	hideAllWindows();
-		if(!CheckoutInfoWindow.INSTANCE.isInitialized()) {
+		hideAllWindows();
+		if (!CheckoutInfoWindow.INSTANCE.isInitialized()) {
 			CheckoutInfoWindow.INSTANCE.init();
 		}
 		CheckoutInfoWindow.INSTANCE.clear();
 		CheckoutInfoWindow.INSTANCE.show();
 //		CheckoutInfoWindow.INSTANCE.();
 	}
-	
+
 	@Override
 	public void start(Stage primaryStage) {
 
@@ -221,7 +235,7 @@ public class Start extends Application {
 		(new DataAccessFacade()).initAuthors();
 		(new DataAccessFacade()).initBookCopies();
 		(new DataAccessFacade()).initCheckouts();
-		
+
 		primStage = primaryStage;
 		primaryStage.setTitle("Main Page");
 
