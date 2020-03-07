@@ -288,7 +288,7 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 						if (result.get() == ButtonType.OK) {
 							ControllerInterface c = new SystemController();
 							Book book = new Book(isbn, title, maxLength, authors);
-
+							System.out.println(book);
 							c.addBook(book);
 
 							result = new G6Alert(AlertType.NONE, "Success", "The book is added successful",

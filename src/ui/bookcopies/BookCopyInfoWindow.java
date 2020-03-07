@@ -38,6 +38,7 @@ import rulesets.RuleSet;
 import rulesets.RuleSetFactory;
 import ui.LibWindow;
 import ui.Start;
+import ui.books.BooksInfoWindow;
 import ui.components.G6Alert;
 import ui.components.G6BorderPane;
 import ui.components.G6Button;
@@ -181,28 +182,20 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 					Optional<ButtonType> result;
 
 					if (actionBtn.getText().equals("Add")) {
-						System.out.println(copyNumStr + " " + isAvailable);
 
 						result = new G6Alert(AlertType.CONFIRMATION, "Confirmation",
 								"Are you sure to create a new bookCopy?").showAndWait();
 
 						if (result.get() == ButtonType.OK) {
 							ControllerInterface c = new SystemController();
-							// TODO get book
-							Address a = new Address("test", "test", "test", "test");
-							Author author = new Author("test", "test", "test", a, "test");
-							List<Author> authors = new ArrayList<Author>();
-							authors.add(author);
-							Book book = new Book("text", "text", 1, authors);
-
-							BookCopy bookCopy = new BookCopy(book, 10);
-
-							c.addBookCopy(bookCopy);
-
+							BookCopy bookCopy = new BookCopy(book, 10, isAvailable);
+							book.addCopy(bookCopy);
+							c.updateBook(book);
 							result = new G6Alert(AlertType.NONE, "Success", "The bookCopy is added successful",
 									ButtonType.OK).showAndWait();
 							if (result.get() == ButtonType.OK) {
 								clearFields();
+								Start.showBookCopies(book);
 							}
 						} else {
 							System.out.println("Canceled");
@@ -218,16 +211,24 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 						if (result.get() == ButtonType.OK) {
 							ControllerInterface c = new SystemController();
 							c.updateBookCopy(currentBookCopy);
-
-							Start.showBookCopies(currentBookCopy.getBook());
+							BookCopy[] copies =  book.getCopies();
+							int index = 0;
+							for(int i = 0; i < copies.length; i++) {
+								if(copies[i].getId() == currentBookCopy.getId()) {
+									index = i; break;
+								}
+							}
+							copies[index] = currentBookCopy;
+							book.setCopies(copies);
+							c.updateBook(book);
+							Start.showBookCopies(book);
+//							Start.showBookCopies(currentBookCopy.getBook());
 						}
 
 					}
 				} catch (RuleException ex) {
 					showErrorDialog("Error", ex.getMessage());
-				} catch (AlreadyExistException ex) {
-					showErrorDialog("Error", ex.getMessage());
-				}
+				} 
 
 			}
 		});
@@ -235,13 +236,7 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 		backBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				Start.hideAllWindows();
-				if (actionBtn.getText().equals("Add")) {
-					Start.primStage().show();
-				} else if (actionBtn.getText().equals("Update")) {
-					BookCopiesWindow.INSTANCE.clear();
-					BookCopiesWindow.INSTANCE.show();
-				}
+				Start.showBookCopies(book);
 			}
 		});
 		Scene scene = new Scene(vbox, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);

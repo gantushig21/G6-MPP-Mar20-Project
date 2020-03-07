@@ -76,16 +76,27 @@ public class DataAccessFacade implements DataAccess {
 
 	public boolean initBooks() {
 		try {
-			HashMap<String, Book> books = new HashMap();
+			
 			Address a = new Address("test", "test", "test", "test");
-			Author author = new Author("test", "test", "test", a, "test");
-			author.setCredentials("test");
-			author.setId("test");
+			Author a1 = new Author("Andrew", "Liam", "04-531-531", a, "A very talent programmer and writer");
+			a1.setCredentials("test");
+			
+			Author a2 = new Author("Andrew", "Liam", "48-136-585", a, "A very talent programmer and writer");
+			a1.setCredentials("test");
 
 			List<Author> as = new ArrayList<>();
-			Book b = new Book("test", "test", 10, as);
-
-			books.put(b.getId(), b);
+			as.add(a1);
+			as.add(a2);
+			Book b1 = new Book("FE-M34K", "Effective Java", 10, as);
+			Book b2 = new Book("MT-M15K", "Learn Github", 5, as);
+			Book b3 = new Book("LX-M34K", "Explore Sea", 20, as);
+			Book b4 = new Book("PO-M34K", "Improve Self", 15, as);
+			
+			HashMap<String, Book> books = new HashMap<String, Book>();
+			books.put(b1.getId(), b1);
+			books.put(b2.getId(), b2);
+			books.put(b3.getId(), b3);
+			books.put(b4.getId(), b4);
 			saveToStorage(StorageType.BOOKS, books);
 			return true;
 		} catch (Exception e) {
@@ -280,7 +291,7 @@ public class DataAccessFacade implements DataAccess {
 		try {
 			HashMap<String, Author> authors = readAuthorMap();
 			System.out.print("here");
-			printHashMap(authors);
+//			printHashMap(authors);
 			authors.remove(id);
 			saveToStorage(StorageType.AUTHORS, authors);
 		} catch (Exception e) {
@@ -309,10 +320,10 @@ public class DataAccessFacade implements DataAccess {
 			List<Author> authors = new ArrayList<Author>();
 			authors.add(author);
 			Book book = new Book("text", "text", 1, authors);
-			BookCopy bookCopy = new BookCopy(book, 10);
+			BookCopy bookCopy = new BookCopy(book, 10, true);
 
 			bookCopies.put("test", bookCopy);
-			printHashMap(bookCopies);
+//			printHashMap(bookCopies);
 			saveToStorage(StorageType.BOOKCOPIES, bookCopies);
 			return true;
 		} catch (Exception e) {
@@ -377,7 +388,7 @@ public class DataAccessFacade implements DataAccess {
 //				checkout.addEntry(entry);
 				
 				Checkouts.put("test", checkout);
-				printHashMap(Checkouts);
+//				printHashMap(Checkouts);
 				saveToStorage(StorageType.CHECKOUTS, Checkouts);
 				return true;}
 				catch(Exception e) {

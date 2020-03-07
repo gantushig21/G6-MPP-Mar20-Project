@@ -3,6 +3,7 @@ package ui.bookcopies;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import business.Address;
 import business.Author;
@@ -65,9 +66,8 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 
 	private TableView<BookCopy> tableView;
 
-	public void setData(Book book, List<BookCopy> data) {
+	public void setData(Book book) {
 		this.book = book;
-		tableView.setItems(FXCollections.observableList(data));
 	}
 
 	/* This class is a singleton */
@@ -93,7 +93,8 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 		backBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				Start.homeWindow();;
+				Start.homeWindow();
+				;
 			}
 		});
 
@@ -107,13 +108,6 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 					BookCopyInfoWindow.INSTANCE.init();
 				}
 				BookCopyInfoWindow.INSTANCE.clear();
-				//TODO:[Dat]
-//				Address a = new Address("test", "test", "test", "test");
-//				Author author = new Author("test", "test", "test", a, "test");
-//				List<Author> authors = new ArrayList<Author>();
-//				authors.add(author);
-//				Book book = new Book("text", "text" , 1 , authors);
-				
 				BookCopyInfoWindow.INSTANCE.setBook(book);
 				BookCopyInfoWindow.INSTANCE.show();
 			}
@@ -124,35 +118,45 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 		vTopButtons.getChildren().addAll(backBtn, addBtn);
 		topPane.setLeft(vTopButtons);
 		mainPane.setTop(topPane);
-		
+
 		G6GridPane grid = new G6GridPane();
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(10);
 		grid.setVgap(5);
 		grid.setPadding(new Insets(25, 25, 25, 25));
-		
-		
+
 		G6Label titleLbl = new G6Label("Title: ");
 		grid.add(titleLbl, 0, 2);
-		
+		G6Label titleTxt = new G6Label(book.getTitle());
+		grid.add(titleTxt, 1, 2);
+
 		G6Label isbnLbl = new G6Label("ISBN: ");
 		grid.add(isbnLbl, 0, 3);
+		G6Label isbnTxt = new G6Label(book.getIsbn());
+		grid.add(isbnTxt, 1, 3);
 
-		
+		G6Label authorsLbl = new G6Label("Authors: ");
+		grid.add(authorsLbl, 0, 4);
+		System.out.print(book.getAuthors().size());
+		G6Label authorsTxt = new G6Label(book.getAuthors().stream().map(a -> (a.getFirstName() + a.getLastName()))
+				.collect(Collectors.toList()).toString());
+		grid.add(authorsTxt, 1, 4);
+
 		mainPane.setCenter(grid);
 
 		// Rendering center
 		tableView = new TableView<>();
+		tableView.setItems(FXCollections.observableArrayList(book.getCopies()));
 
 		TableColumn<BookCopy, String> column0 = new TableColumn<>("ID");
 		column0.setCellValueFactory(new PropertyValueFactory<>("id"));
 
 		TableColumn<BookCopy, String> column1 = new TableColumn<>("Copy Number");
 		column1.setCellValueFactory(new PropertyValueFactory<>("copyNum"));
-		
+
 		TableColumn<BookCopy, Boolean> column2 = new TableColumn<>("Available");
 		column2.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
-		
+
 		TableColumn<BookCopy, String> actionColumn = new TableColumn<>("Action");
 
 		Callback<TableColumn<BookCopy, String>, TableCell<BookCopy, String>> cellFactory = new Callback<TableColumn<BookCopy, String>, TableCell<BookCopy, String>>() {
@@ -183,18 +187,10 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 								}
 								BookCopyInfoWindow.INSTANCE.clear();
 								BookCopyInfoWindow.INSTANCE.show();
-								//TODO:[Dat]
-								Address a = new Address("test", "test", "test", "test");
-								Author author = new Author("test", "test", "test", a, "test");
-								List<Author> authors = new ArrayList<Author>();
-								authors.add(author);
-								Book book = new Book("text", "text" , 1 , authors);
-								
+
 								BookCopyInfoWindow.INSTANCE.setBook(book);
 								BookCopyInfoWindow.INSTANCE.updateBookCopy(bookCopy);
 
-//		                                System.out.println(bookCopy.getFirstName()
-//		                                        + "   " + bookCopy.getLastName());
 								System.out.println("update");
 							});
 
