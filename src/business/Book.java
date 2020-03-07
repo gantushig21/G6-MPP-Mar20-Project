@@ -3,10 +3,8 @@ package business;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  *
@@ -22,12 +20,12 @@ final public class Book implements Serializable {
 	private int maxCheckoutLength;
 
 	public Book(String isbn, String title, int maxCheckoutLength, List<Author> authors) {
-		this.id = UUID.randomUUID().toString();
+		this.id = "Book_" + (System.currentTimeMillis() / 1000);
 		this.isbn = isbn;
 		this.title = title;
 		this.maxCheckoutLength = maxCheckoutLength;
-		this.authors = Collections.unmodifiableList(authors);
-		copies = new BookCopy[] { new BookCopy(this, 1, true) };
+		this.authors = authors;
+		// copies = new BookCopy[] { new BookCopy(this, 1, true) };
 	}
 
 	public void updateCopies(BookCopy copy) {
