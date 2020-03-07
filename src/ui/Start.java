@@ -74,7 +74,6 @@ public class Start extends Application {
 		}
 
 		if (refresh) {
-			System.out.println("Show members called");
 			ControllerInterface ci = new SystemController();
 			List<LibraryMember> members = ci.allMembers();
 			Collections.sort(members);
@@ -118,16 +117,19 @@ public class Start extends Application {
 		HomeWindow.INSTANCE.show();
 	}
 
-	public static void showAuthors() {
+	public static void showAuthors(boolean refresh) {
 		hideAllWindows();
 		if (!AuthorsWindow.INSTANCE.isInitialized()) {
 			AuthorsWindow.INSTANCE.init();
 		}
-		ControllerInterface ci = new SystemController();
-		List<Author> authors = ci.allAuthors();
-//		Collections.sort(authors);
+		
+		if (refresh) {
+			ControllerInterface ci = new SystemController();
+			List<Author> authors = ci.allAuthors();
+//			Collections.sort(authors);
 
-		AuthorsWindow.INSTANCE.setData(authors);
+			AuthorsWindow.INSTANCE.setData(authors);
+		}
 
 		AuthorsWindow.INSTANCE.clear();
 		AuthorsWindow.INSTANCE.show();
@@ -180,7 +182,16 @@ public class Start extends Application {
 		MemberInfoWindow.INSTANCE.show();
 		MemberInfoWindow.INSTANCE.addMember();
 	}
-
+	public static void addAuthor() {
+		hideAllWindows();
+		if (!AuthorInfoWindow.INSTANCE.isInitialized()) {
+			AuthorInfoWindow.INSTANCE.init();
+		}
+		AuthorInfoWindow.INSTANCE.clear();
+		AuthorInfoWindow.INSTANCE.show();
+		AuthorInfoWindow.INSTANCE.addAuthor();
+	}
+	
 	@Override
 	public void start(Stage primaryStage) {
 

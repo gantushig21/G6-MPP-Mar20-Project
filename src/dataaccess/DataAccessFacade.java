@@ -255,7 +255,6 @@ public class DataAccessFacade implements DataAccess {
 		}
 		;
 		return false;
-
 	}
 
 	public boolean saveNewAuthor(Author author) {

@@ -76,7 +76,7 @@ public class HomeWindow extends Stage implements LibWindow {
 		authorsBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				Start.showAuthors();
+				Start.showAuthors(true);
 			}
 		});
 

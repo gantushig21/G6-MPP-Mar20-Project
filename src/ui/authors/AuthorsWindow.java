@@ -36,6 +36,7 @@ import ui.components.G6Button;
 import ui.components.G6HBox;
 import ui.components.G6TableView;
 import ui.components.G6Text;
+import ui.components.G6TextField;
 import ui.components.G6VBox;
 
 public class AuthorsWindow extends Stage implements LibWindow {
@@ -68,19 +69,21 @@ public class AuthorsWindow extends Stage implements LibWindow {
 	}
 
 	public void init() {
+		isInitialized(true);
+		
 		G6BorderPane mainPane = new G6BorderPane();
 		mainPane.setPadding(new Insets(25));
 		mainPane.setId("top-container");
 
 		// Rendering top
+		G6VBox topPane = new G6VBox(15);
+		topPane.setPadding(new Insets(15, 0, 15, 0));
+		
+		G6BorderPane top1 = new G6BorderPane();
 		Text scenetitle = new Text("Manage authors");
-		StackPane sceneTitlePane = G6Text.withPaddings(scenetitle, new Insets(0));
-
+		
 		scenetitle.setFont(Font.font("Harlow Solid Italic", FontWeight.NORMAL, Constants.PANE_TITLE_FONT_SIZE));
-		G6BorderPane topPane = new G6BorderPane();
-		topPane.setCenter(sceneTitlePane);
-		topPane.setPadding(new Insets(0, 10, 20, 0));
-
+		
 		G6Button backBtn = new G6Button("Back");
 
 		backBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -90,24 +93,34 @@ public class AuthorsWindow extends Stage implements LibWindow {
 			}
 		});
 
+		top1.setLeft(backBtn);
+		top1.setCenter(scenetitle);
+		
+		G6BorderPane top2 = new G6BorderPane();
+        G6TextField searchInput = new G6TextField(Constants.TEXT_FIELD_WIDTH_MEDUIM);
+        searchInput.setPromptText("Search");
+        
+        searchInput.setOnAction(new EventHandler<ActionEvent>() {
+        	@Override
+        	public void handle(ActionEvent e) {
+//        		Start.searchAuthors(searchInput.getText().trim().toLowerCase());
+        	}
+		});
+
+		
 		G6Button addBtn = new G6Button("Add a new author");
 
 		addBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				Start.hideAllWindows();
-				if (!AuthorInfoWindow.INSTANCE.isInitialized()) {
-					AuthorInfoWindow.INSTANCE.init();
-				}
-				AuthorInfoWindow.INSTANCE.clear();
-				AuthorInfoWindow.INSTANCE.show();
+				Start.addAuthor();
 			}
 		});
+		
+		top2.setLeft(searchInput);
+		top2.setRight(addBtn);
 
-		G6VBox vTopButtons = new G6VBox(10);
-		vTopButtons.setAlignment(Pos.BOTTOM_LEFT);
-		vTopButtons.getChildren().addAll(backBtn, addBtn);
-		topPane.setLeft(vTopButtons);
+		topPane.getChildren().addAll(top1, top2);
 
 		mainPane.setTop(topPane);
 

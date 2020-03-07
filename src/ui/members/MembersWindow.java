@@ -1,6 +1,9 @@
 package ui.members;
 
+
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
 
 import business.Address;
@@ -8,7 +11,10 @@ import business.ControllerInterface;
 import business.LibraryMember;
 import business.SystemController;
 import config.Constants;
+import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -34,7 +40,9 @@ import ui.Start;
 import ui.components.G6Alert;
 import ui.components.G6BorderPane;
 import ui.components.G6Button;
+import ui.components.G6FlowPane;
 import ui.components.G6HBox;
+import ui.components.G6Label;
 import ui.components.G6TableView;
 import ui.components.G6Text;
 import ui.components.G6TextField;
@@ -58,9 +66,64 @@ public class MembersWindow extends Stage implements LibWindow {
 	}
 	
 	private TableView<LibraryMember> tableView;
+	private int page = 1, pages = 1;
+	private G6Button btnPrev;
+	private G6Label pageLbl;
+	private G6Button btnNext;
+	private List<LibraryMember> list;
 	
 	public void setData(List<LibraryMember> data) {
-		tableView.setItems(FXCollections.observableList(data));
+		list = data;
+		
+		page = 1;
+		pages = list.size() / Constants.PAGE_LIMIT;
+		if (list.size() % Constants.PAGE_LIMIT != 0)
+			pages++;
+		
+		controlPageButtonDisable();
+		setPage(page);
+//		tableView.setItems(FXCollections.observableList(data));
+	}
+	
+	private void prevPage() {
+		if (page > 1) {
+			page--;
+			controlPageButtonDisable();
+			setPage(page);
+		}
+	}
+	
+	private void setPage(int page) {
+		tableView.getItems().clear();
+		
+		pageLbl.setText(page + "/" + pages);
+		int start = (page - 1) * Constants.PAGE_LIMIT;
+		int end = page * Constants.PAGE_LIMIT >= list.size() ? list.size() : page * Constants.PAGE_LIMIT;
+		for (int i = start; i < end; i++) {
+			tableView.getItems().add(list.get(i));
+		}
+	}
+	
+	private void controlPageButtonDisable() {
+		if (page < pages) {
+			btnNext.setDisable(false);
+		} else {
+			btnNext.setDisable(true);
+		}
+		
+		if (page > 1) {
+			btnPrev.setDisable(false);
+		} else {
+			btnPrev.setDisable(true);
+		}
+	}
+	
+	private void nextPage() {
+		if (page < pages) {
+			page++;
+			controlPageButtonDisable();
+			setPage(page);
+		}
 	}
 
 	
@@ -190,7 +253,8 @@ public class MembersWindow extends Stage implements LibWindow {
 			                                ControllerInterface c = new SystemController();
 			                                c.deleteMember(member.getMemberId());
 			                                
-			                                tableView.getItems().remove(getIndex());
+			                                Start.showMembers(true);
+//			                                tableView.getItems().remove(getIndex());
 		                                }
 		                                
 		                                System.out.println("delete" + getIndex());
@@ -224,6 +288,31 @@ public class MembersWindow extends Stage implements LibWindow {
         VBox vbox = new VBox(tableView);
         vbox.setPadding(new Insets(0));
         mainPane.setCenter(vbox);
+        
+        G6FlowPane bottomPane = new G6FlowPane(10, 10);
+        bottomPane.setPadding(new Insets(10));
+        bottomPane.setAlignment(Pos.CENTER);
+        btnPrev = new G6Button("Prev");
+        
+        btnPrev.setOnAction(new EventHandler<ActionEvent>() {
+        	@Override
+        	public void handle(ActionEvent e) {
+        		prevPage();
+        	}
+        });
+        pageLbl = new G6Label("1/1");
+        
+        btnNext = new G6Button("Next");
+        btnNext.setOnAction(new EventHandler<ActionEvent>() {
+        	@Override
+        	public void handle(ActionEvent e) {
+        		nextPage();
+        	}
+        });
+        
+        bottomPane.getChildren().addAll(btnPrev, pageLbl, btnNext);
+        
+        mainPane.setBottom(bottomPane);
     	
         Scene scene = new Scene(mainPane, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
         scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
