@@ -1,9 +1,16 @@
 package business;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Checkout {
+public class Checkout  implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4846947610921351467L;
+	
+	private String id;
 	private LibraryMember member;
 	private List<CheckoutEntry> entries;
 	
@@ -22,5 +29,9 @@ public class Checkout {
 	
 	public LibraryMember getMember() {
 		return member;
+	}
+	
+	public String getId() {
+		return id;
 	}
 }

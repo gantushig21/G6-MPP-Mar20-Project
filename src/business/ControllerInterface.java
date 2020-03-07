@@ -15,7 +15,6 @@ public interface ControllerInterface {
 	public List<LibraryMember> allMembers();
 	public List<Book> allBooks();
 
-
 	
 	public List<String> allMemberIds();
 	public void addMember(LibraryMember member)  throws AlreadyExistException;
@@ -39,4 +38,8 @@ public interface ControllerInterface {
 	public void updateBookCopy(BookCopy bookCopy);
 	public List<BookCopy> allBookCopies();
 
+	public List<Checkout> allCheckouts();
+	public void addCheckout(Checkout checkou)  throws AlreadyExistException;
+	public void updateCheckout(Checkout checkout);
+	public void deleteCheckout(String id);
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import business.Address;
 import business.Author;
 import business.BookCopy;
+import business.Checkout;
 import business.ControllerInterface;
 import business.LibraryMember;
 import business.SystemController;
@@ -43,6 +44,8 @@ import ui.bookcopies.BookCopiesWindow;
 import ui.bookcopies.BookCopyInfoWindow;
 import ui.members.MemberInfoWindow;
 import ui.members.MembersWindow;
+
+import ui.checkouts.*;
 
 public class Start extends Application {
 	public static void main(String[] args) {
@@ -170,6 +173,17 @@ public class Start extends Application {
 	
 	public static void showCheckouts() {
 		// implement this for checkouts like authors
+		hideAllWindows();
+		if (!CheckoutsWindow.INSTANCE.isInitialized()) {
+			CheckoutsWindow.INSTANCE.init();
+		}
+		ControllerInterface ci = new SystemController();
+		List<Checkout> checkouts = ci.allCheckouts();
+
+		CheckoutsWindow.INSTANCE.setData(checkouts);
+
+		CheckoutsWindow.INSTANCE.clear();
+		CheckoutsWindow.INSTANCE.show();
 	}
 	
 	public static void showBooks() {
@@ -190,11 +204,22 @@ public class Start extends Application {
 		MemberInfoWindow.INSTANCE.addMember();
 	}
 	
+	public static void addCheckout() {
+    	hideAllWindows();
+		if(!CheckoutInfoWindow.INSTANCE.isInitialized()) {
+			CheckoutInfoWindow.INSTANCE.init();
+		}
+		CheckoutInfoWindow.INSTANCE.clear();
+		CheckoutInfoWindow.INSTANCE.show();
+//		CheckoutInfoWindow.INSTANCE.();
+	}
+	
 	@Override
 	public void start(Stage primaryStage) {
 		//TODO: remove these later
 		(new DataAccessFacade()).initAuthors();
 		(new DataAccessFacade()).initBookCopies();
+		(new DataAccessFacade()).initCheckouts();
 		
 		primStage = primaryStage;
 		primaryStage.setTitle("Main Page");
