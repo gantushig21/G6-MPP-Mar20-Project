@@ -7,6 +7,7 @@ import java.util.List;
 import business.Author;
 import business.Book;
 import business.BookCopy;
+import business.Checkout;
 import business.ControllerInterface;
 import business.LibraryMember;
 import business.SystemController;
@@ -18,8 +19,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Menu;
-import javafx.scene.image.ImageView;
+
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -37,6 +37,8 @@ import ui.components.G6Label;
 import ui.components.G6VBox;
 import ui.members.MemberInfoWindow;
 import ui.members.MembersWindow;
+
+import ui.checkouts.*;
 
 public class Start extends Application {
 	public static void main(String[] args) {
@@ -74,7 +76,6 @@ public class Start extends Application {
 		}
 
 		if (refresh) {
-			System.out.println("Show members called");
 			ControllerInterface ci = new SystemController();
 			List<LibraryMember> members = ci.allMembers();
 			Collections.sort(members);
@@ -118,15 +119,17 @@ public class Start extends Application {
 		HomeWindow.INSTANCE.show();
 	}
 
-	public static void showAuthors() {
+	public static void showAuthors(boolean refresh) {
 		hideAllWindows();
 		if (!AuthorsWindow.INSTANCE.isInitialized()) {
 			AuthorsWindow.INSTANCE.init();
 		}
-		ControllerInterface ci = new SystemController();
-		List<Author> authors = ci.allAuthors();
-//		Collections.sort(authors);
-
+		
+//		if (refresh) {
+			ControllerInterface ci = new SystemController();
+			List<Author> authors = ci.allAuthors();
+//			Collections.sort(authors);
+//		}
 		AuthorsWindow.INSTANCE.setData(authors);
 		AuthorsWindow.INSTANCE.clear();
 		AuthorsWindow.INSTANCE.show();
@@ -149,6 +152,17 @@ public class Start extends Application {
 
 	public static void showCheckouts() {
 		// implement this for checkouts like authors
+		hideAllWindows();
+		if (!CheckoutsWindow.INSTANCE.isInitialized()) {
+			CheckoutsWindow.INSTANCE.init();
+		}
+		ControllerInterface ci = new SystemController();
+		List<Checkout> checkouts = ci.allCheckouts();
+
+		CheckoutsWindow.INSTANCE.setData(checkouts);
+
+		CheckoutsWindow.INSTANCE.clear();
+		CheckoutsWindow.INSTANCE.show();
 	}
 
 	public static void showBooks() {
@@ -178,7 +192,26 @@ public class Start extends Application {
 		MemberInfoWindow.INSTANCE.show();
 		MemberInfoWindow.INSTANCE.addMember();
 	}
-
+	public static void addAuthor() {
+		hideAllWindows();
+		if (!AuthorInfoWindow.INSTANCE.isInitialized()) {
+			AuthorInfoWindow.INSTANCE.init();
+		}
+		AuthorInfoWindow.INSTANCE.clear();
+		AuthorInfoWindow.INSTANCE.show();
+		AuthorInfoWindow.INSTANCE.addAuthor();
+	}
+	
+	public static void addCheckout() {
+    	hideAllWindows();
+		if(!CheckoutInfoWindow.INSTANCE.isInitialized()) {
+			CheckoutInfoWindow.INSTANCE.init();
+		}
+		CheckoutInfoWindow.INSTANCE.clear();
+		CheckoutInfoWindow.INSTANCE.show();
+//		CheckoutInfoWindow.INSTANCE.();
+	}
+	
 	@Override
 	public void start(Stage primaryStage) {
 
@@ -186,7 +219,8 @@ public class Start extends Application {
 		(new DataAccessFacade()).initBooks();
 		(new DataAccessFacade()).initAuthors();
 		(new DataAccessFacade()).initBookCopies();
-
+		(new DataAccessFacade()).initCheckouts();
+		
 		primStage = primaryStage;
 		primaryStage.setTitle("Main Page");
 
@@ -314,7 +348,7 @@ public class Start extends Application {
 //		optionsMenu.getItems().addAll(login, exit);
 
 		// simply displays in ImageView the image as is
-		ImageView iv = new ImageView();
+//		ImageView iv = new ImageView();
 //		iv.setImage(image);
 //		imageHolder.getChildren().add(iv);
 //		imageHolder.setAlignment(Pos.CENTER);
@@ -328,7 +362,7 @@ public class Start extends Application {
 //		topContainer.getChildren().add(splashBox);
 //		topContainer.getChildren().add(imageHolder);
 
-		Menu optionsMenu = new Menu("Options");
+//		Menu optionsMenu = new Menu("Options");
 //		MenuItem login = new MenuItem("Login");
 //
 //		login.setOnAction(new EventHandler<ActionEvent>() {
@@ -437,7 +471,7 @@ public class Start extends Application {
 //		mainMenu.getMenus().addAll(optionsMenu);
 		Scene scene = new Scene(topContainer, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
 		primaryStage.setScene(scene);
-		scene.getStylesheets().add(getClass().getResource("library.css").toExternalForm());
+//		scene.getStylesheets().add(getClass().getResource("library.css").toExternalForm());
 		primaryStage.show();
 	}
 

@@ -4,8 +4,8 @@ public final class Constants {
 	public final static int PAGE_LIMIT = 5;
 	
 	// Window
-	public final static int WINDOW_WIDTH = 900;
-	public final static int WINDOW_HEIGHT = 560;
+	public final static int WINDOW_WIDTH = 1000;
+	public final static int WINDOW_HEIGHT = 600;
 	
 	// Pane
 	public final static int PANE_TITLE_FONT_SIZE = 25;

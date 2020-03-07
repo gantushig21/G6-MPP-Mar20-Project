@@ -36,9 +36,12 @@ import ui.Start;
 import ui.components.G6Alert;
 import ui.components.G6BorderPane;
 import ui.components.G6Button;
+import ui.components.G6GridPane;
 import ui.components.G6HBox;
+import ui.components.G6Label;
 import ui.components.G6TableView;
 import ui.components.G6Text;
+import ui.components.G6TextField;
 import ui.components.G6VBox;
 
 public class BookCopiesWindow extends Stage implements LibWindow {
@@ -105,11 +108,11 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 				}
 				BookCopyInfoWindow.INSTANCE.clear();
 				//TODO:[Dat]
-				Address a = new Address("test", "test", "test", "test");
-				Author author = new Author("test", "test", "test", a, "test");
-				List<Author> authors = new ArrayList<Author>();
-				authors.add(author);
-				Book book = new Book("text", "text" , 1 , authors);
+//				Address a = new Address("test", "test", "test", "test");
+//				Author author = new Author("test", "test", "test", a, "test");
+//				List<Author> authors = new ArrayList<Author>();
+//				authors.add(author);
+//				Book book = new Book("text", "text" , 1 , authors);
 				
 				BookCopyInfoWindow.INSTANCE.setBook(book);
 				BookCopyInfoWindow.INSTANCE.show();
@@ -120,8 +123,23 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 		vTopButtons.setAlignment(Pos.BOTTOM_LEFT);
 		vTopButtons.getChildren().addAll(backBtn, addBtn);
 		topPane.setLeft(vTopButtons);
-
 		mainPane.setTop(topPane);
+		
+		G6GridPane grid = new G6GridPane();
+		grid.setAlignment(Pos.CENTER);
+		grid.setHgap(10);
+		grid.setVgap(5);
+		grid.setPadding(new Insets(25, 25, 25, 25));
+		
+		
+		G6Label titleLbl = new G6Label("Title: ");
+		grid.add(titleLbl, 0, 2);
+		
+		G6Label isbnLbl = new G6Label("ISBN: ");
+		grid.add(isbnLbl, 0, 3);
+
+		
+		mainPane.setCenter(grid);
 
 		// Rendering center
 		tableView = new TableView<>();
@@ -221,10 +239,10 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 
 		VBox vbox = new VBox(tableView);
 		vbox.setPadding(new Insets(0));
-		mainPane.setCenter(vbox);
+		mainPane.setBottom(vbox);
 
 		Scene scene = new Scene(mainPane, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
-		scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
+		// scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
 		setScene(scene);
 
 	}

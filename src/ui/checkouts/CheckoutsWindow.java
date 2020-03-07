@@ -1,20 +1,15 @@
-package ui.members;
+package ui.checkouts;
 
-
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Optional;
 
 import business.Address;
 import business.ControllerInterface;
-import business.LibraryMember;
+import business.CheckoutEntry;
+import business.Checkout;
 import business.SystemController;
 import config.Constants;
-import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -27,7 +22,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -40,16 +34,14 @@ import ui.Start;
 import ui.components.G6Alert;
 import ui.components.G6BorderPane;
 import ui.components.G6Button;
-import ui.components.G6FlowPane;
 import ui.components.G6HBox;
-import ui.components.G6Label;
 import ui.components.G6TableView;
 import ui.components.G6Text;
 import ui.components.G6TextField;
 import ui.components.G6VBox;
 
-public class MembersWindow extends Stage implements LibWindow {
-	public static final MembersWindow INSTANCE = new MembersWindow();
+public class CheckoutsWindow extends Stage implements LibWindow {
+	public static final CheckoutsWindow INSTANCE = new CheckoutsWindow();
 	
 	private boolean isInitialized = false;
 	
@@ -65,74 +57,17 @@ public class MembersWindow extends Stage implements LibWindow {
 		messageBar.setText("");
 	}
 	
-	private TableView<LibraryMember> tableView;
-	private int page = 1, pages = 1;
-	private G6Button btnPrev;
-	private G6Label pageLbl;
-	private G6Button btnNext;
-	private List<LibraryMember> list;
+	private TableView<Checkout> tableView;
 	
-	public void setData(List<LibraryMember> data) {
-		list = data;
-		
-		page = 1;
-		pages = list.size() / Constants.PAGE_LIMIT;
-		if (list.size() % Constants.PAGE_LIMIT != 0)
-			pages++;
-		
-		controlPageButtonDisable();
-		setPage(page);
-//		tableView.setItems(FXCollections.observableList(data));
-	}
-	
-	private void prevPage() {
-		if (page > 1) {
-			page--;
-			controlPageButtonDisable();
-			setPage(page);
-		}
-	}
-	
-	private void setPage(int page) {
-		tableView.getItems().clear();
-		
-		pageLbl.setText(page + "/" + pages);
-		int start = (page - 1) * Constants.PAGE_LIMIT;
-		int end = page * Constants.PAGE_LIMIT >= list.size() ? list.size() : page * Constants.PAGE_LIMIT;
-		for (int i = start; i < end; i++) {
-			tableView.getItems().add(list.get(i));
-		}
-	}
-	
-	private void controlPageButtonDisable() {
-		if (page < pages) {
-			btnNext.setDisable(false);
-		} else {
-			btnNext.setDisable(true);
-		}
-		
-		if (page > 1) {
-			btnPrev.setDisable(false);
-		} else {
-			btnPrev.setDisable(true);
-		}
-	}
-	
-	private void nextPage() {
-		if (page < pages) {
-			page++;
-			controlPageButtonDisable();
-			setPage(page);
-		}
+	public void setData( List<Checkout> data ) {
+		tableView.setItems(FXCollections.observableList(data));
 	}
 
 	
 	/* This class is a singleton */
-    private MembersWindow () {}
+    private CheckoutsWindow () {}
     
     public void init() {
-    	isInitialized(true);
-    	
     	G6BorderPane mainPane = new G6BorderPane();
     	mainPane.setPadding(new Insets(25));
     	mainPane.setId("top-container");
@@ -165,21 +100,21 @@ public class MembersWindow extends Stage implements LibWindow {
         searchInput.setOnAction(new EventHandler<ActionEvent>() {
         	@Override
         	public void handle(ActionEvent e) {
-        		Start.searchMembers(searchInput.getText().trim().toLowerCase());
+//        		Start.searchMembers(searchInput.getText().trim().toLowerCase());
         	}
 		});
         
-        G6Button addMemberBtn = new G6Button("Add member");
+        G6Button addCheckout = new G6Button("Add checkout");
         
-        addMemberBtn.setOnAction(new EventHandler<ActionEvent>() {
+        addCheckout.setOnAction(new EventHandler<ActionEvent>() {
         	@Override
         	public void handle(ActionEvent e) {
-        		Start.addMember();
+        		Start.addCheckout();
         	}
         });
         
     	top2.setLeft(searchInput);
-    	top2.setRight(addMemberBtn);
+    	top2.setRight(addCheckout);
 
         
         topPane.getChildren().addAll(top1, top2);
@@ -189,31 +124,40 @@ public class MembersWindow extends Stage implements LibWindow {
     	// Rendering center
     	tableView = new TableView<>();
 
-        TableColumn<LibraryMember, String> column0 = new TableColumn<>("ID");
-        column0.setCellValueFactory(new PropertyValueFactory<>("memberId"));
+        TableColumn<Checkout, String> column0 = new TableColumn<>("ID");
+        column0.setCellValueFactory(new PropertyValueFactory<>("id"));
         
-        TableColumn<LibraryMember, String> column1 = new TableColumn<>("First Name");
-        column1.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        TableColumn<Checkout, String> column1 = new TableColumn<>("Title");
+        column1.setCellValueFactory(new PropertyValueFactory<>("title"));
 
 
-        TableColumn<LibraryMember, String> column2 = new TableColumn<>("Last Name");
-        column2.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        TableColumn<Checkout, String> column2 = new TableColumn<>("ISBN");
+        column2.setCellValueFactory(new PropertyValueFactory<>("isbn"));
 
-        TableColumn<LibraryMember, String> column3 = new TableColumn<>("Address");
-        column3.setCellValueFactory(new PropertyValueFactory<>("address"));
+        TableColumn<Checkout, String> column3 = new TableColumn<>("Authors");
+        column3.setCellValueFactory(new PropertyValueFactory<>("authors"));
 
-        TableColumn<LibraryMember, String> column4 = new TableColumn<>("Phone Number");
-        column4.setCellValueFactory(new PropertyValueFactory<>("telephone"));
+        TableColumn<Checkout, String> column4 = new TableColumn<>("Copy ID");
+        column4.setCellValueFactory(new PropertyValueFactory<>("copyID"));
+
+        TableColumn<Checkout, String> column5 = new TableColumn<>("Checkout date");
+        column5.setCellValueFactory(new PropertyValueFactory<>("checkoutDate"));
+
+        TableColumn<Checkout, String> column6 = new TableColumn<>("Due date");
+        column6.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
+
+        TableColumn<Checkout, String> column7 = new TableColumn<>("Return date");
+        column7.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
         
 
-        TableColumn<LibraryMember, String> actionColumn = new TableColumn<>("Action");
+        TableColumn<Checkout, String> actionColumn = new TableColumn<>("Action");
 
-        Callback<TableColumn<LibraryMember, String>, TableCell<LibraryMember, String>> cellFactory =
-        		new Callback<TableColumn<LibraryMember,String>, TableCell<LibraryMember,String>>() {
+        Callback<TableColumn<Checkout, String>, TableCell<Checkout, String>> cellFactory =
+        		new Callback<TableColumn<Checkout,String>, TableCell<Checkout,String>>() {
 
 					@Override
-					public TableCell<LibraryMember, String> call(TableColumn<LibraryMember, String> arg0) {
-						final TableCell<LibraryMember, String> cell = new TableCell<LibraryMember, String>() {
+					public TableCell<Checkout, String> call(TableColumn<Checkout, String> arg0) {
+						final TableCell<Checkout, String> cell = new TableCell<Checkout, String>() {
 
 							final G6Button btnUpdate = new G6Button("Update");
 							final G6Button btnDelete = new G6Button("Delete");
@@ -229,39 +173,38 @@ public class MembersWindow extends Stage implements LibWindow {
 		                        	G6HBox hbox = new G6HBox(5);
 		                        	
 		                        	btnUpdate.setOnAction(event -> {
-		                                LibraryMember member = getTableView().getItems().get(getIndex());
+		                                Checkout checkout = getTableView().getItems().get(getIndex());
 		                                
 		                                Start.hideAllWindows();
-		                    			if(!MemberInfoWindow.INSTANCE.isInitialized()) {
-		                    				MemberInfoWindow.INSTANCE.init();
+		                    			if(!CheckoutInfoWindow.INSTANCE.isInitialized()) {
+		                    				CheckoutInfoWindow.INSTANCE.init();
 		                    			}
-		                    			MemberInfoWindow.INSTANCE.clear();
-		                    			MemberInfoWindow.INSTANCE.show();
-		                    			MemberInfoWindow.INSTANCE.updateMember(member);
+		                    			CheckoutInfoWindow.INSTANCE.clear();
+		                    			CheckoutInfoWindow.INSTANCE.show();
+		                    			CheckoutInfoWindow.INSTANCE.updateCheckout(checkout);
 
-//		                                System.out.println(member.getFirstName()
-//		                                        + "   " + member.getLastName());
+//		                                System.out.println(checkout.getFirstName()
+//		                                        + "   " + checkout.getLastName());
 		                                System.out.println("update");
 		                            });
 		                            
 		                            btnDelete.setOnAction(event -> {
-		                                LibraryMember member = getTableView().getItems().get(getIndex());
+		                                Checkout checkout = getTableView().getItems().get(getIndex());
 		                                
 		                                Optional<ButtonType> result = new G6Alert(AlertType.CONFIRMATION, "Confirmation", "Are you sure to delete this record").showAndWait();
 		                                
 		                                if (result.get() == ButtonType.OK) {
-			                                ControllerInterface c = new SystemController();
-			                                c.deleteMember(member.getMemberId());
+//			                                ControllerInterface c = new SystemController();
+//			                                c.deleteCheckout(checkout.getCheckoutId());
 			                                
-			                                Start.showMembers(true);
-//			                                tableView.getItems().remove(getIndex());
+			                                tableView.getItems().remove(getIndex());
 		                                }
 		                                
 		                                System.out.println("delete" + getIndex());
 		                            });
 		                            
 		                            btnCheckout.setOnAction(event -> {
-		                                LibraryMember member = getTableView().getItems().get(getIndex());
+		                                Checkout checkout = getTableView().getItems().get(getIndex());
 		                                System.out.println("checkout");
 		                            });
 		                            
@@ -283,36 +226,14 @@ public class MembersWindow extends Stage implements LibWindow {
         tableView.getColumns().add(column2);
         tableView.getColumns().add(column3);
         tableView.getColumns().add(column4);
+        tableView.getColumns().add(column5);
+        tableView.getColumns().add(column6);
+        tableView.getColumns().add(column7);
         tableView.getColumns().add(actionColumn);
 
         VBox vbox = new VBox(tableView);
         vbox.setPadding(new Insets(0));
         mainPane.setCenter(vbox);
-        
-        G6FlowPane bottomPane = new G6FlowPane(10, 10);
-        bottomPane.setPadding(new Insets(10));
-        bottomPane.setAlignment(Pos.CENTER);
-        btnPrev = new G6Button("Prev");
-        
-        btnPrev.setOnAction(new EventHandler<ActionEvent>() {
-        	@Override
-        	public void handle(ActionEvent e) {
-        		prevPage();
-        	}
-        });
-        pageLbl = new G6Label("1/1");
-        
-        btnNext = new G6Button("Next");
-        btnNext.setOnAction(new EventHandler<ActionEvent>() {
-        	@Override
-        	public void handle(ActionEvent e) {
-        		nextPage();
-        	}
-        });
-        
-        bottomPane.getChildren().addAll(btnPrev, pageLbl, btnNext);
-        
-        mainPane.setBottom(bottomPane);
     	
         Scene scene = new Scene(mainPane, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
         // scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
@@ -320,4 +241,3 @@ public class MembersWindow extends Stage implements LibWindow {
         
     }	    
 }
-

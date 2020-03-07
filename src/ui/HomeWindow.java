@@ -56,7 +56,7 @@ public class HomeWindow extends Stage implements LibWindow {
 		G6Button authorsBtn = G6Button.createButtonWithLength("Authors management", Constants.BUTTON_LONG_LENGTH);
 		G6Button overdueBookReportBtn = G6Button.createButtonWithLength("Overdue book report", Constants.BUTTON_LONG_LENGTH);
 		
-		G6Button bookCopiesBtn = G6Button.createButtonWithLength("BookCopies management", Constants.BUTTON_LONG_LENGTH);
+//		G6Button bookCopiesBtn = G6Button.createButtonWithLength("BookCopies management", Constants.BUTTON_LONG_LENGTH);
 
 		checkoutBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -82,7 +82,7 @@ public class HomeWindow extends Stage implements LibWindow {
 		authorsBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				Start.showAuthors();
+				Start.showAuthors(true);
 			}
 		});
 
@@ -93,21 +93,21 @@ public class HomeWindow extends Stage implements LibWindow {
 			}
 		});
 		
-		bookCopiesBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				Address a = new Address("test", "test", "test", "test");
-				Author author = new Author("test", "test", "test", a, "test");
-				List<Author> authors = new ArrayList<Author>();
-				authors.add(author);
-				Book book = new Book("text", "text" , 1 , authors);
-				Start.showBookCopies(book);
-			}
-			
-		});
+//		bookCopiesBtn.setOnAction(new EventHandler<ActionEvent>() {
+//			@Override
+//			public void handle(ActionEvent arg0) {
+//				Address a = new Address("test", "test", "test", "test");
+//				Author author = new Author("test", "test", "test", a, "test");
+//				List<Author> authors = new ArrayList<Author>();
+//				authors.add(author);
+//				Book book = new Book("text", "text" , 1 , authors);
+//				Start.showBookCopies(book);
+//			}
+//			
+//		});
 
 		
-		centerPane.getChildren().addAll(checkoutBtn, membersBtn, booksBtn, authorsBtn, overdueBookReportBtn, bookCopiesBtn);
+		centerPane.getChildren().addAll(checkoutBtn, membersBtn, booksBtn, authorsBtn, overdueBookReportBtn);
 				
 		G6Button logoutBtn = new G6Button("Logout");
 		logoutBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -126,7 +126,7 @@ public class HomeWindow extends Stage implements LibWindow {
         mainPane.setBottom(hBottom);
                 
 		Scene scene = new Scene(mainPane, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
-		scene.getStylesheets().add(getClass().getResource("library.css").toExternalForm());
+//		scene.getStylesheets().add(getClass().getResource("library.css").toExternalForm());
         setScene(scene);
 	}
 }

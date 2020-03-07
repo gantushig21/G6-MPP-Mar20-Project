@@ -108,6 +108,11 @@ public class AuthorInfoWindow extends Stage implements LibWindow {
 		credentialsTxtf.setText("");
 		currentAuthor = author;
 	}
+	
+	public void addAuthor() {
+		actionBtn.setText("Add");
+	}
+
     
     public void init() {
     	G6VBox vbox = new G6VBox(5);
@@ -146,12 +151,12 @@ public class AuthorInfoWindow extends Stage implements LibWindow {
         
         G6Label firstNameLbl = new G6Label("First Name: ");         
         grid.add(firstNameLbl, 0, 3);
-        firstNameTxtf = new G6TextField();
+        firstNameTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
         grid.add(firstNameTxtf, 1, 3);
 
         G6Label lastNameLbl = new G6Label("Last Name: ");         
         grid.add(lastNameLbl, 0, 4);
-        lastNameTxtf = new G6TextField();
+        lastNameTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
         grid.add(lastNameTxtf, 1, 4);
         
         // Information section
@@ -160,12 +165,12 @@ public class AuthorInfoWindow extends Stage implements LibWindow {
         
         G6Label credentialsLbl = new G6Label("Credentials: ");         
         grid.add(credentialsLbl, 0, 6);
-        credentialsTxtf = new G6TextField();
+        credentialsTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
         grid.add(credentialsTxtf, 1, 6);
 
         G6Label bioLbl = new G6Label("Short bio: ");         
         grid.add(bioLbl, 0, 7);
-        bioTxtf = new G6TextField();
+        bioTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
         grid.add(bioTxtf, 1, 7);
         
         // Address Section
@@ -174,22 +179,22 @@ public class AuthorInfoWindow extends Stage implements LibWindow {
         
         G6Label StreetLbl = new G6Label("Street: ");         
         grid.add(StreetLbl, 0, 9);
-        streetTxtf = new G6TextField();
+        streetTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
         grid.add(streetTxtf, 1, 9);
 
         G6Label CityLbl = new G6Label("City: ");         
         grid.add(CityLbl, 0, 10);
-        cityTxtf = new G6TextField();
+        cityTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
         grid.add(cityTxtf, 1, 10);
 
         G6Label StateLbl = new G6Label("State: ");         
         grid.add(StateLbl, 0, 11);
-        stateTxtf = new G6TextField();
+        stateTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
         grid.add(stateTxtf, 1, 11);
 
         G6Label ZipLbl = new G6Label("Zip: ");         
         grid.add(ZipLbl, 0, 12);
-        zipTxtf = new G6TextField();
+        zipTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
         grid.add(zipTxtf, 1, 12);
         
         // Contact Section
@@ -198,7 +203,7 @@ public class AuthorInfoWindow extends Stage implements LibWindow {
         
         G6Label PhoneNumberLbl = new G6Label("Phone Number: ");         
         grid.add(PhoneNumberLbl, 0, 14);
-        phoneNumberTxtf = new G6TextField();
+        phoneNumberTxtf = new G6TextField(Constants.TEXT_FIELD_WIDTH_LONG);
         grid.add(phoneNumberTxtf, 1, 14);
 
         actionBtn = new G6Button("Add");
@@ -260,6 +265,7 @@ public class AuthorInfoWindow extends Stage implements LibWindow {
        	            	   result = new G6Alert(AlertType.NONE, "Success", "The author is added successful", ButtonType.OK).showAndWait();	       					
        	            	   if (result.get() == ButtonType.OK) {
 	           					clearFields();
+	           					Start.showAuthors(true);
        	            	   }       	            	   
        					} else {
        						System.out.println("Canceled");
@@ -283,7 +289,7 @@ public class AuthorInfoWindow extends Stage implements LibWindow {
 	        				ControllerInterface c = new SystemController();
 	        				c.updateAuthor(currentAuthor);
 	        				
-	        				Start.showAuthors();
+	        				Start.showAuthors(true);
 	        			}
 	        			
 	        		}
@@ -299,17 +305,11 @@ public class AuthorInfoWindow extends Stage implements LibWindow {
         backBtn.setOnAction(new EventHandler<ActionEvent>() {
         	@Override
         	public void handle(ActionEvent e) {
-        		Start.hideAllWindows();
-        		if (actionBtn.getText().equals("Add")) {
-            		Start.primStage().show();        			
-        		} else if (actionBtn.getText().equals("Update")) {
-        			AuthorsWindow.INSTANCE.clear();
-        			AuthorsWindow.INSTANCE.show();
-        		}
+        		Start.showAuthors(false);
         	}
         });
         Scene scene = new Scene(vbox, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
-        scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
+        // scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
         setScene(scene);
         
     }

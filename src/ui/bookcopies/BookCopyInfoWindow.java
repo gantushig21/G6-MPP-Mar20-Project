@@ -166,7 +166,6 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 		HBox messageBox = new HBox(10);
 		messageBox.setAlignment(Pos.BOTTOM_RIGHT);
 		messageBox.getChildren().add(messageBar);
-		;
 		grid.add(messageBox, 1, 16);
 
 		actionBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -246,7 +245,7 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 			}
 		});
 		Scene scene = new Scene(vbox, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
-		scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
+		// scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
 		setScene(scene);
 
 	}
