@@ -92,14 +92,7 @@ public class BooksWindow extends Stage implements LibWindow {
 		backBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-<<<<<<< HEAD
-//				Start.hideAllWindows();
-//				Start.primStage().show();
 				Start.homeWindow();
-=======
-				Start.homeWindow();
-				;
->>>>>>> master
 			}
 		});
 
