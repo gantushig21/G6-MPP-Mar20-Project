@@ -1,9 +1,12 @@
 package ui.bookcopies;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import business.Address;
+import business.Author;
+import business.Book;
 import business.ControllerInterface;
 import business.BookCopy;
 import business.SystemController;
@@ -40,7 +43,7 @@ import ui.components.G6VBox;
 
 public class BookCopiesWindow extends Stage implements LibWindow {
 	public static final BookCopiesWindow INSTANCE = new BookCopiesWindow();
-
+	private Book book;
 	private boolean isInitialized = false;
 
 	public boolean isInitialized() {
@@ -59,7 +62,8 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 
 	private TableView<BookCopy> tableView;
 
-	public void setData(List<BookCopy> data) {
+	public void setData(Book book, List<BookCopy> data) {
+		this.book = book;
 		tableView.setItems(FXCollections.observableList(data));
 	}
 
@@ -100,6 +104,14 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 					BookCopyInfoWindow.INSTANCE.init();
 				}
 				BookCopyInfoWindow.INSTANCE.clear();
+				//TODO:[Dat]
+				Address a = new Address("test", "test", "test", "test");
+				Author author = new Author("test", "test", "test", a, "test");
+				List<Author> authors = new ArrayList<Author>();
+				authors.add(author);
+				Book book = new Book("text", "text" , 1 , authors);
+				
+				BookCopyInfoWindow.INSTANCE.setBook(book);
 				BookCopyInfoWindow.INSTANCE.show();
 			}
 		});
@@ -153,6 +165,14 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 								}
 								BookCopyInfoWindow.INSTANCE.clear();
 								BookCopyInfoWindow.INSTANCE.show();
+								//TODO:[Dat]
+								Address a = new Address("test", "test", "test", "test");
+								Author author = new Author("test", "test", "test", a, "test");
+								List<Author> authors = new ArrayList<Author>();
+								authors.add(author);
+								Book book = new Book("text", "text" , 1 , authors);
+								
+								BookCopyInfoWindow.INSTANCE.setBook(book);
 								BookCopyInfoWindow.INSTANCE.updateBookCopy(bookCopy);
 
 //		                                System.out.println(bookCopy.getFirstName()

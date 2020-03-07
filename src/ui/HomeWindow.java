@@ -1,5 +1,11 @@
 package ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import business.Address;
+import business.Author;
+import business.Book;
 import business.SystemController;
 import config.Constants;
 import dataaccess.Auth;
@@ -90,7 +96,12 @@ public class HomeWindow extends Stage implements LibWindow {
 		bookCopiesBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				Start.showBookCopies();
+				Address a = new Address("test", "test", "test", "test");
+				Author author = new Author("test", "test", "test", a, "test");
+				List<Author> authors = new ArrayList<Author>();
+				authors.add(author);
+				Book book = new Book("text", "text" , 1 , authors);
+				Start.showBookCopies(book);
 			}
 			
 		});

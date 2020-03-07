@@ -18,6 +18,7 @@ import business.SystemController;
 import config.Constants;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -59,8 +60,11 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 
 	private G6TextField copyNumTxtf;
 	private G6CheckBox isAvailableCb;
+	private Book book;
 
-
+	public void setBook(Book book) {
+		this.book = book;
+	}
 	public boolean isInitialized() {
 		return isInitialized;
 	}
@@ -216,7 +220,7 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 							ControllerInterface c = new SystemController();
 							c.updateBookCopy(currentBookCopy);
 
-							Start.showBookCopies();
+							Start.showBookCopies(currentBookCopy.getBook());
 						}
 
 					}

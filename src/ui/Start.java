@@ -7,6 +7,7 @@ import java.util.List;
 
 import business.Address;
 import business.Author;
+import business.Book;
 import business.BookCopy;
 import business.ControllerInterface;
 import business.LibraryMember;
@@ -145,12 +146,11 @@ public class Start extends Application {
 //		Collections.sort(authors);
 
 		AuthorsWindow.INSTANCE.setData(authors);
-
 		AuthorsWindow.INSTANCE.clear();
 		AuthorsWindow.INSTANCE.show();
 	}
 	
-	public static void showBookCopies() {
+	public static void showBookCopies(Book book) {
 		hideAllWindows();
 		if (!BookCopiesWindow.INSTANCE.isInitialized()) {
 			BookCopiesWindow.INSTANCE.init();
@@ -160,8 +160,7 @@ public class Start extends Application {
 		for(BookCopy bc: bookCopies) {
 			System.out.println(bc.getIsAvailable());
 		}
-		BookCopiesWindow.INSTANCE.setData(bookCopies);
-
+		BookCopiesWindow.INSTANCE.setData(book, bookCopies);
 		BookCopiesWindow.INSTANCE.clear();
 		BookCopiesWindow.INSTANCE.show();
 	}
