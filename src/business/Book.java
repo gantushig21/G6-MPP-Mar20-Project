@@ -13,7 +13,7 @@ import java.util.UUID;
  */
 final public class Book implements Serializable {
 
-	private static final long serialVersionUID = 6110690276685962829L;
+	private static final long serialVersionUID = 6110690276665962829L;
 	private String id;
 	private BookCopy[] copies;
 	private List<Author> authors;
@@ -27,7 +27,7 @@ final public class Book implements Serializable {
 		this.title = title;
 		this.maxCheckoutLength = maxCheckoutLength;
 		this.authors = Collections.unmodifiableList(authors);
-		copies = new BookCopy[] { new BookCopy(this, 1, true) };
+		copies = new BookCopy[] {};
 	}
 
 	public void updateCopies(BookCopy copy) {
@@ -48,6 +48,13 @@ final public class Book implements Serializable {
 
 	}
 
+	public void addCopy(BookCopy bc) {
+		BookCopy[] newArr = new BookCopy[copies.length + 1];
+		System.arraycopy(copies, 0, newArr, 0, copies.length);
+		newArr[copies.length] = bc;
+		copies = newArr;
+	}
+	
 	public void addCopy() {
 		BookCopy[] newArr = new BookCopy[copies.length + 1];
 		System.arraycopy(copies, 0, newArr, 0, copies.length);
@@ -119,6 +126,30 @@ final public class Book implements Serializable {
 
 	public int getMaxCheckoutLength() {
 		return maxCheckoutLength;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setCopies(BookCopy[] copies) {
+		this.copies = copies;
+	}
+
+	public void setAuthors(List<Author> authors) {
+		this.authors = authors;
+	}
+
+	public void setIsbn(String isbn) {
+		this.isbn = isbn;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setMaxCheckoutLength(int maxCheckoutLength) {
+		this.maxCheckoutLength = maxCheckoutLength;
 	}
 
 }

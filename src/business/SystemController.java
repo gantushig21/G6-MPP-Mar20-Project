@@ -85,7 +85,7 @@ public class SystemController implements ControllerInterface {
 	@Override
 	public void addBook(Book book) throws AlreadyExistException {
 		DataAccess da = new DataAccessFacade();
-		
+
 		boolean result = da.saveNewBook(book);
 		
 		if (!result)
@@ -182,5 +182,30 @@ public class SystemController implements ControllerInterface {
 	}	
 	// BOOKCOPY END
 	
+	// CHECKOUT START
+	@Override
+	public List<Checkout> allCheckouts() {
+		DataAccess da = new DataAccessFacade();
+		Collection<Checkout> checkouts = da.readCheckoutsMap().values();
+		return new ArrayList<Checkout>(checkouts);
+	}
 	
+	@Override
+	public void addCheckout(Checkout checkout)  throws AlreadyExistException {
+		DataAccess da = new DataAccessFacade();
+		boolean result = da.saveNewCheckout(checkout);		
+		if (!result)
+			throw new AlreadyExistException("The checkout with this ID is already exists!");
+	}
+	@Override
+	public void updateCheckout(Checkout checkout) {
+		DataAccess da = new DataAccessFacade();
+		da.updateCheckout(checkout);		
+	}
+	@Override
+	public void deleteCheckout(String id) {
+		DataAccess da = new DataAccessFacade();
+		da.deleteCheckout(id);						
+	}	
+	// CHECKOUT END
 }

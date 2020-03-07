@@ -1,11 +1,9 @@
 package dataaccess;
 
 import java.util.HashMap;
+import java.util.List;
 
-import business.Author;
-import business.Book;
-import business.BookCopy;
-import business.LibraryMember;
+import business.*;
 
 public interface DataAccess { 
 	public HashMap<String,Book> readBooksMap();
@@ -13,7 +11,6 @@ public interface DataAccess {
 	public HashMap<String,User> readUserMap();
 	
 	public HashMap<String, LibraryMember> readMemberMap();
-
 	
 	public boolean saveNewMember(LibraryMember member); 
 	public void deleteMember(String memberId);
@@ -35,4 +32,8 @@ public interface DataAccess {
 	public void updateBookCopy(BookCopy bookCopy);
 	public HashMap<String, BookCopy> readBookCopiesMap();
 	
+	public boolean saveNewCheckout(Checkout checkout);
+	public void deleteCheckout(String id);
+	public void updateCheckout(Checkout checkout);
+	public HashMap<String, Checkout> readCheckoutsMap();
 }

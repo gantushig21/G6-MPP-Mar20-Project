@@ -1,9 +1,13 @@
 package ui.bookcopies;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import business.Address;
+import business.Author;
+import business.Book;
 import business.ControllerInterface;
 import business.BookCopy;
 import business.SystemController;
@@ -33,14 +37,17 @@ import ui.Start;
 import ui.components.G6Alert;
 import ui.components.G6BorderPane;
 import ui.components.G6Button;
+import ui.components.G6GridPane;
 import ui.components.G6HBox;
+import ui.components.G6Label;
 import ui.components.G6TableView;
 import ui.components.G6Text;
+import ui.components.G6TextField;
 import ui.components.G6VBox;
 
 public class BookCopiesWindow extends Stage implements LibWindow {
 	public static final BookCopiesWindow INSTANCE = new BookCopiesWindow();
-
+	private Book book;
 	private boolean isInitialized = false;
 
 	public boolean isInitialized() {
@@ -59,8 +66,8 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 
 	private TableView<BookCopy> tableView;
 
-	public void setData(List<BookCopy> data) {
-		tableView.setItems(FXCollections.observableList(data));
+	public void setData(Book book) {
+		this.book = book;
 	}
 
 	/* This class is a singleton */
@@ -86,7 +93,8 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 		backBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				Start.homeWindow();;
+				Start.homeWindow();
+				;
 			}
 		});
 
@@ -100,6 +108,7 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 					BookCopyInfoWindow.INSTANCE.init();
 				}
 				BookCopyInfoWindow.INSTANCE.clear();
+				BookCopyInfoWindow.INSTANCE.setBook(book);
 				BookCopyInfoWindow.INSTANCE.show();
 			}
 		});
@@ -108,21 +117,46 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 		vTopButtons.setAlignment(Pos.BOTTOM_LEFT);
 		vTopButtons.getChildren().addAll(backBtn, addBtn);
 		topPane.setLeft(vTopButtons);
-
 		mainPane.setTop(topPane);
+
+		G6GridPane grid = new G6GridPane();
+		grid.setAlignment(Pos.CENTER);
+		grid.setHgap(10);
+		grid.setVgap(5);
+		grid.setPadding(new Insets(25, 25, 25, 25));
+
+		G6Label titleLbl = new G6Label("Title: ");
+		grid.add(titleLbl, 0, 2);
+		G6Label titleTxt = new G6Label(book.getTitle());
+		grid.add(titleTxt, 1, 2);
+
+		G6Label isbnLbl = new G6Label("ISBN: ");
+		grid.add(isbnLbl, 0, 3);
+		G6Label isbnTxt = new G6Label(book.getIsbn());
+		grid.add(isbnTxt, 1, 3);
+
+		G6Label authorsLbl = new G6Label("Authors: ");
+		grid.add(authorsLbl, 0, 4);
+		System.out.print(book.getAuthors().size());
+		G6Label authorsTxt = new G6Label(book.getAuthors().stream().map(a -> (a.getFirstName() + a.getLastName()))
+				.collect(Collectors.toList()).toString());
+		grid.add(authorsTxt, 1, 4);
+
+		mainPane.setCenter(grid);
 
 		// Rendering center
 		tableView = new TableView<>();
+		tableView.setItems(FXCollections.observableArrayList(book.getCopies()));
 
 		TableColumn<BookCopy, String> column0 = new TableColumn<>("ID");
 		column0.setCellValueFactory(new PropertyValueFactory<>("id"));
 
 		TableColumn<BookCopy, String> column1 = new TableColumn<>("Copy Number");
 		column1.setCellValueFactory(new PropertyValueFactory<>("copyNum"));
-		
+
 		TableColumn<BookCopy, Boolean> column2 = new TableColumn<>("Available");
 		column2.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
-		
+
 		TableColumn<BookCopy, String> actionColumn = new TableColumn<>("Action");
 
 		Callback<TableColumn<BookCopy, String>, TableCell<BookCopy, String>> cellFactory = new Callback<TableColumn<BookCopy, String>, TableCell<BookCopy, String>>() {
@@ -153,10 +187,10 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 								}
 								BookCopyInfoWindow.INSTANCE.clear();
 								BookCopyInfoWindow.INSTANCE.show();
+
+								BookCopyInfoWindow.INSTANCE.setBook(book);
 								BookCopyInfoWindow.INSTANCE.updateBookCopy(bookCopy);
 
-//		                                System.out.println(bookCopy.getFirstName()
-//		                                        + "   " + bookCopy.getLastName());
 								System.out.println("update");
 							});
 
@@ -201,10 +235,10 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 
 		VBox vbox = new VBox(tableView);
 		vbox.setPadding(new Insets(0));
-		mainPane.setCenter(vbox);
+		mainPane.setBottom(vbox);
 
 		Scene scene = new Scene(mainPane, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
-		scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
+		// scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
 		setScene(scene);
 
 	}

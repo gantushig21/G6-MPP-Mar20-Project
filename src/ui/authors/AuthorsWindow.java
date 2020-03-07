@@ -232,7 +232,7 @@ public class AuthorsWindow extends Stage implements LibWindow {
 		mainPane.setCenter(vbox);
 
 		Scene scene = new Scene(mainPane, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
-		scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
+		// scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
 		setScene(scene);
 
 	}

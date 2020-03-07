@@ -7,6 +7,9 @@ import java.io.Serializable;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.util.*;
+import dataaccess.DataAccessFacade.StorageType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,10 +23,13 @@ import business.Book;
 import business.BookCopy;
 import business.LibraryMember;
 
+
+import business.*;
+
 public class DataAccessFacade implements DataAccess {
 
 	enum StorageType {
-		BOOKS, MEMBERS, USERS, AUTHORS, BOOKCOPIES;
+		BOOKS, MEMBERS, USERS, AUTHORS, BOOKCOPIES, CHECKOUTS;
 	}
 
 	public static final String OUTPUT_DIR = System.getProperty("user.dir") + "/src/dataaccess/storage";
@@ -70,16 +76,27 @@ public class DataAccessFacade implements DataAccess {
 
 	public boolean initBooks() {
 		try {
-			HashMap<String, Book> books = new HashMap();
+			
 			Address a = new Address("test", "test", "test", "test");
-			Author author = new Author("test", "test", "test", a, "test");
-			author.setCredentials("test");
-			author.setId("test");
+			Author a1 = new Author("Andrew", "Liam", "04-531-531", a, "A very talent programmer and writer");
+			a1.setCredentials("test");
+			
+			Author a2 = new Author("Andrew", "Liam", "48-136-585", a, "A very talent programmer and writer");
+			a1.setCredentials("test");
 
 			List<Author> as = new ArrayList<>();
-			Book b = new Book("test", "test", 10, as);
-
-			books.put(b.getId(), b);
+			as.add(a1);
+			as.add(a2);
+			Book b1 = new Book("FE-M34K", "Effective Java", 10, as);
+			Book b2 = new Book("MT-M15K", "Learn Github", 5, as);
+			Book b3 = new Book("LX-M34K", "Explore Sea", 20, as);
+			Book b4 = new Book("PO-M34K", "Improve Self", 15, as);
+			
+			HashMap<String, Book> books = new HashMap<String, Book>();
+			books.put(b1.getId(), b1);
+			books.put(b2.getId(), b2);
+			books.put(b3.getId(), b3);
+			books.put(b4.getId(), b4);
 			saveToStorage(StorageType.BOOKS, books);
 			return true;
 		} catch (Exception e) {
@@ -274,7 +291,7 @@ public class DataAccessFacade implements DataAccess {
 		try {
 			HashMap<String, Author> authors = readAuthorMap();
 			System.out.print("here");
-			printHashMap(authors);
+//			printHashMap(authors);
 			authors.remove(id);
 			saveToStorage(StorageType.AUTHORS, authors);
 		} catch (Exception e) {
@@ -303,10 +320,10 @@ public class DataAccessFacade implements DataAccess {
 			List<Author> authors = new ArrayList<Author>();
 			authors.add(author);
 			Book book = new Book("text", "text", 1, authors);
-			BookCopy bookCopy = new BookCopy(book, 10);
+			BookCopy bookCopy = new BookCopy(book, 10, true);
 
 			bookCopies.put("test", bookCopy);
-			printHashMap(bookCopies);
+//			printHashMap(bookCopies);
 			saveToStorage(StorageType.BOOKCOPIES, bookCopies);
 			return true;
 		} catch (Exception e) {
@@ -349,5 +366,74 @@ public class DataAccessFacade implements DataAccess {
 		return (HashMap<String, BookCopy>) readFromStorage(StorageType.BOOKCOPIES);
 	}
 	// BOOKCOPY END
+	
+		
+		// CHECKOUT START
+		public boolean initCheckouts() {
+			
+			try {
+				HashMap<String, Checkout> Checkouts = new HashMap();
+				Address a = new Address("test", "test", "test", "test");
+				Author author = new Author("test", "test", "test", a, "test");
+				List<Author> authors = new ArrayList<Author>();
+				authors.add(author);
+				Book book = new Book("text2", "text2" , 12 , authors);
+				
+				Address address = new Address("N 4th st", "Fairfiled", "IOW", "52557");
+				LibraryMember member = new LibraryMember("0", "fnameTest", "lnameTest", "510-123-1234", address);
+				
+//				CheckoutEntry entry = new CheckoutEntry(book, LocalDate.now(), LocalDate.now());
+				
+				Checkout checkout = new Checkout(member);
+//				checkout.addEntry(entry);
+				
+				Checkouts.put("test", checkout);
+//				printHashMap(Checkouts);
+				saveToStorage(StorageType.CHECKOUTS, Checkouts);
+				return true;}
+				catch(Exception e) {
+					e.printStackTrace();
+				};
+				return false;
+			
+		}
+
+		public boolean saveNewCheckout(Checkout checkout) {
+			HashMap<String, Checkout> Checkouts = readCheckoutsMap();
+			String id = checkout.getId();
+			if (!Checkouts.containsValue(checkout)) {
+				Checkouts.put(id, checkout);
+				saveToStorage(StorageType.CHECKOUTS, Checkouts);
+
+				return true;
+			}
+			return false;
+		}
+
+		public void deleteCheckout(String id) {
+			try {
+			HashMap<String, Checkout> Checkouts = readCheckoutsMap();
+			Checkouts.remove(id);
+			saveToStorage(StorageType.CHECKOUTS, Checkouts);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		public void updateCheckout(Checkout checkout) {
+			HashMap<String, Checkout> Checkouts = readCheckoutsMap();
+			Checkouts.put(checkout.getId(), checkout);
+			saveToStorage(StorageType.CHECKOUTS, Checkouts);
+		}
+
+		@Override
+		public HashMap<String, Checkout> readCheckoutsMap() {
+			// TODO Auto-generated method stub
+			return (HashMap<String, Checkout>) readFromStorage(StorageType.CHECKOUTS);
+		}
+		// CHECKOUT END
+
+
+
 
 }
