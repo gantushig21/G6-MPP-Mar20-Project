@@ -134,8 +134,10 @@ public class BooksWindow extends Stage implements LibWindow {
 		tblBooks = new G6TableView<>();
 		TableColumn<Book, String> colId = new TableColumn<>("ID");
 		colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+		
 		TableColumn<Book, String> colTitle = new TableColumn<>("Title");
 		colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+		colTitle.prefWidthProperty().bind(tblBooks.widthProperty().multiply(0.3));
 		TableColumn<Book, String> colISBN = new TableColumn<>("ISBN");
 		colISBN.setCellValueFactory(new PropertyValueFactory<>("isbn"));
 		TableColumn<Book, List<Author>> colAuthor = new TableColumn<>("Author");
@@ -215,7 +217,6 @@ public class BooksWindow extends Stage implements LibWindow {
 
 							btnManageCopies.setOnAction(event -> {
 								Book book =  getTableView().getItems().get(getIndex());
-								System.out.println(book.getIsbn());
 								Start.showBookCopies(book);
 							});
 							hbox.getChildren().addAll(btnUpdate, btnDelete, btnManageCopies);
@@ -235,6 +236,7 @@ public class BooksWindow extends Stage implements LibWindow {
 		tblBooks.getColumns().add(colTitle);
 		tblBooks.getColumns().add(colAuthor);
 		tblBooks.getColumns().add(actionColumn);
+		
 
 		VBox vbox = new VBox(tblBooks);
 		vbox.setPadding(new Insets(0));

@@ -10,7 +10,6 @@ import business.Book;
 import business.ControllerInterface;
 import business.SystemController;
 import config.Constants;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -71,7 +70,7 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 	private Book currentBook;
 
 	public void setData(List<Author> data) {
-		tblAuthors.setItems(FXCollections.observableList(data));
+		// tblAuthors.setItems(FXCollections.observableList(data));
 	}
 
 	private void clearFields() {
@@ -297,7 +296,7 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 							// + authors.get(0).getFirstName());
 							ControllerInterface c = new SystemController();
 							Book book = new Book(isbn, title, maxLength, authors);
-
+							System.out.println(book);
 							c.addBook(book);
 
 							result = new G6Alert(AlertType.NONE, "Success", "The book is added successful",
@@ -338,9 +337,9 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 			public void handle(ActionEvent e) {
 				Start.hideAllWindows();
 				if (actionBtn.getText().equals("Add")) {
-					BooksWindow.INSTANCE.show();
+					Start.showBooks();
 				} else if (actionBtn.getText().equals("Update")) {
-					BooksWindow.INSTANCE.show();
+					Start.showBooks();
 				}
 			}
 		});

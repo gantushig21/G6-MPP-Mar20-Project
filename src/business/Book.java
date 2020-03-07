@@ -3,6 +3,7 @@ package business;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +12,7 @@ import java.util.Optional;
  */
 final public class Book implements Serializable {
 
-	private static final long serialVersionUID = 6110690276685962829L;
+	private static final long serialVersionUID = 6110690276665962829L;
 	private String id;
 	private BookCopy[] copies;
 	private List<Author> authors;
@@ -24,8 +25,10 @@ final public class Book implements Serializable {
 		this.isbn = isbn;
 		this.title = title;
 		this.maxCheckoutLength = maxCheckoutLength;
-		this.authors = authors;
-		// copies = new BookCopy[] { new BookCopy(this, 1, true) };
+
+//		this.authors = authors;
+		this.authors = Collections.unmodifiableList(authors);
+		copies = new BookCopy[] {};
 	}
 
 	public void updateCopies(BookCopy copy) {
@@ -44,6 +47,13 @@ final public class Book implements Serializable {
 		}
 		return retVal;
 
+	}
+
+	public void addCopy(BookCopy bc) {
+		BookCopy[] newArr = new BookCopy[copies.length + 1];
+		System.arraycopy(copies, 0, newArr, 0, copies.length);
+		newArr[copies.length] = bc;
+		copies = newArr;
 	}
 
 	public void addCopy() {
