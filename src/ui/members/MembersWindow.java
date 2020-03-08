@@ -35,6 +35,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import jfxtras.styles.jmetro.JMetro;
 import ui.LibWindow;
 import ui.Start;
 import ui.components.G6Alert;
@@ -315,6 +316,8 @@ public class MembersWindow extends Stage implements LibWindow {
         mainPane.setBottom(bottomPane);
     	
         Scene scene = new Scene(mainPane, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+        JMetro jMetro = new JMetro();
+		jMetro.setScene(scene);
         // scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
         setScene(scene);
         

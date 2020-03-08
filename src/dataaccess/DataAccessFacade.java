@@ -115,15 +115,15 @@ public class DataAccessFacade implements DataAccess {
 		return false;
 	}
 
-	public void deleteBook(String isbn) {
+	public void deleteBook(String id) {
 		HashMap<String, Book> books = readBooksMap();
-		books.remove(isbn);
+		books.remove(id);
 		saveToStorage(StorageType.BOOKS, books);
 	}
 
 	public void updateBook(Book book) {
 		HashMap<String, Book> books = readBooksMap();
-		books.put(book.getIsbn(), book);
+		books.put(book.getId(), book);
 		saveToStorage(StorageType.BOOKS, books);
 	}
 

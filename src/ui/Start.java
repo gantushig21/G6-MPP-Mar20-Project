@@ -3,6 +3,7 @@ package ui;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import business.Author;
 import business.Book;
@@ -26,6 +27,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.JMetro;
 import ui.authors.AuthorInfoWindow;
 import ui.authors.AuthorsWindow;
 import ui.bookcopies.BookCopiesWindow;
@@ -124,10 +126,10 @@ public class Start extends Application {
 		if (!AuthorsWindow.INSTANCE.isInitialized()) {
 			AuthorsWindow.INSTANCE.init();
 		}
-		
+
 //		if (refresh) {
-			ControllerInterface ci = new SystemController();
-			List<Author> authors = ci.allAuthors();
+		ControllerInterface ci = new SystemController();
+		List<Author> authors = ci.allAuthors();
 //			Collections.sort(authors);
 //		}
 		AuthorsWindow.INSTANCE.setData(authors);
@@ -146,7 +148,7 @@ public class Start extends Application {
 		for (BookCopy bc : bookCopies) {
 			System.out.println(bc.getIsAvailable());
 		}
-	
+
 		BookCopiesWindow.INSTANCE.clear();
 		BookCopiesWindow.INSTANCE.show();
 	}
@@ -172,11 +174,23 @@ public class Start extends Application {
 			BooksWindow.INSTANCE.init();
 		}
 		ControllerInterface ci = new SystemController();
-		List<Book> authors = ci.allBooks();
-//		Collections.sort(authors);
+		List<Book> books = ci.allBooks();
 
-		BooksWindow.INSTANCE.setData(authors);
+		BooksWindow.INSTANCE.setData(books);
+		BooksWindow.INSTANCE.show();
+	}
 
+	public static void searchBooks(String isbn) {
+		hideAllWindows();
+		if (!BooksWindow.INSTANCE.isInitialized()) {
+			BooksWindow.INSTANCE.init();
+		}
+		ControllerInterface ci = new SystemController();
+		List<Book> books = ci.allBooks().stream().filter(b -> b.getIsbn().toLowerCase().indexOf(isbn) > -1)
+				.collect(Collectors.toList());
+		
+
+		BooksWindow.INSTANCE.setData(books);
 		BooksWindow.INSTANCE.show();
 	}
 
@@ -193,6 +207,7 @@ public class Start extends Application {
 		MemberInfoWindow.INSTANCE.show();
 		MemberInfoWindow.INSTANCE.addMember();
 	}
+
 	public static void addAuthor() {
 		hideAllWindows();
 		if (!AuthorInfoWindow.INSTANCE.isInitialized()) {
@@ -202,26 +217,26 @@ public class Start extends Application {
 		AuthorInfoWindow.INSTANCE.show();
 		AuthorInfoWindow.INSTANCE.addAuthor();
 	}
-	
+
 	public static void addCheckout() {
-    	hideAllWindows();
-		if(!CheckoutInfoWindow.INSTANCE.isInitialized()) {
+		hideAllWindows();
+		if (!CheckoutInfoWindow.INSTANCE.isInitialized()) {
 			CheckoutInfoWindow.INSTANCE.init();
 		}
 		CheckoutInfoWindow.INSTANCE.clear();
 		CheckoutInfoWindow.INSTANCE.show();
 //		CheckoutInfoWindow.INSTANCE.();
 	}
-	
+
 	@Override
 	public void start(Stage primaryStage) {
-
+		
 		// TODO: remove these later
 		(new DataAccessFacade()).initBooks();
 		(new DataAccessFacade()).initAuthors();
 		(new DataAccessFacade()).initBookCopies();
 		(new DataAccessFacade()).initCheckouts();
-		
+
 		primStage = primaryStage;
 		primaryStage.setTitle("Main Page");
 
@@ -471,6 +486,9 @@ public class Start extends Application {
 
 //		mainMenu.getMenus().addAll(optionsMenu);
 		Scene scene = new Scene(topContainer, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+		System.out.print(System.getProperty("javafx.runtime.version"));
+		JMetro jMetro = new JMetro();
+		jMetro.setScene(scene);
 		primaryStage.setScene(scene);
 //		scene.getStylesheets().add(getClass().getResource("library.css").toExternalForm());
 		primaryStage.show();
