@@ -27,6 +27,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.JMetro;
 import ui.authors.AuthorInfoWindow;
 import ui.authors.AuthorsWindow;
 import ui.bookcopies.BookCopiesWindow;
@@ -229,7 +230,7 @@ public class Start extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-
+		
 		// TODO: remove these later
 		(new DataAccessFacade()).initBooks();
 		(new DataAccessFacade()).initAuthors();
@@ -485,6 +486,9 @@ public class Start extends Application {
 
 //		mainMenu.getMenus().addAll(optionsMenu);
 		Scene scene = new Scene(topContainer, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+		System.out.print(System.getProperty("javafx.runtime.version"));
+		JMetro jMetro = new JMetro();
+		jMetro.setScene(scene);
 		primaryStage.setScene(scene);
 //		scene.getStylesheets().add(getClass().getResource("library.css").toExternalForm());
 		primaryStage.show();

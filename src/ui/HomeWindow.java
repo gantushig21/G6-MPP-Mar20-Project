@@ -17,6 +17,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.JMetro;
 import ui.components.G6Button;
 import ui.components.G6Text;
 import ui.components.G6VBox;
@@ -126,6 +127,8 @@ public class HomeWindow extends Stage implements LibWindow {
         mainPane.setBottom(hBottom);
                 
 		Scene scene = new Scene(mainPane, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+		JMetro jMetro = new JMetro();
+		jMetro.setScene(scene);
 //		scene.getStylesheets().add(getClass().getResource("library.css").toExternalForm());
         setScene(scene);
 	}

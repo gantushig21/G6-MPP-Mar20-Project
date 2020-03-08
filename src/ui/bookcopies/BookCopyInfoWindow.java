@@ -204,7 +204,7 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 		actionBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				int copyNumStr = Integer.parseInt(copyNumTxtf.getText().trim()) ;
+				int copyNumInt = Integer.parseInt(copyNumTxtf.getText().trim()) ;
 				boolean isAvailable = isAvailableCb.isSelected();
 
 				try {
@@ -220,7 +220,7 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 
 						if (result.get() == ButtonType.OK) {
 							ControllerInterface c = new SystemController();
-							BookCopy bookCopy = new BookCopy(book, 10, isAvailable);
+							BookCopy bookCopy = new BookCopy(book, copyNumInt, isAvailable);
 							book.addCopy(bookCopy);
 							c.updateBook(book);
 							result = new G6Alert(AlertType.NONE, "Success", "The bookCopy is added successful",
@@ -235,7 +235,7 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 
 					} else if (actionBtn.getText().equals("Update")) {
 					
-						currentBookCopy.setCopyNum(copyNumStr);
+						currentBookCopy.setCopyNum(copyNumInt);
 						currentBookCopy.setAvailable(isAvailable);
 
 						result = new G6Alert(AlertType.CONFIRMATION, "Confirmation",
