@@ -8,6 +8,7 @@ import business.Author;
 import business.Book;
 import business.BookCopy;
 import business.Checkout;
+import business.CheckoutEntry;
 import business.ControllerInterface;
 import business.LibraryMember;
 import business.SystemController;
@@ -56,10 +57,22 @@ public class Start extends Application {
 		public static Color red = Color.FIREBRICK;
 	}
 
-	private static Stage[] allWindows = { LoginWindow.INSTANCE, AllMembersWindow.INSTANCE, AllBooksWindow.INSTANCE,
-			MemberInfoWindow.INSTANCE, MembersWindow.INSTANCE, HomeWindow.INSTANCE, AuthorInfoWindow.INSTANCE,
-			AuthorsWindow.INSTANCE, BooksInfoWindow.INSTANCE, BooksWindow.INSTANCE, BookCopyInfoWindow.INSTANCE,
-			BookCopiesWindow.INSTANCE };
+	private static Stage[] allWindows = { 
+			LoginWindow.INSTANCE, 
+			AllMembersWindow.INSTANCE, 
+			AllBooksWindow.INSTANCE,
+			MemberInfoWindow.INSTANCE, 
+			MembersWindow.INSTANCE, 
+			HomeWindow.INSTANCE, 
+			AuthorInfoWindow.INSTANCE,
+			AuthorsWindow.INSTANCE, 
+			BooksInfoWindow.INSTANCE, 
+			BooksWindow.INSTANCE, 
+			BookCopyInfoWindow.INSTANCE,
+			BookCopiesWindow.INSTANCE,
+			CheckoutsWindow.INSTANCE,
+			CheckoutInfoWindow.INSTANCE
+		};
 
 	public static void hideAllWindows() {
 		primStage.hide();
@@ -87,12 +100,6 @@ public class Start extends Application {
 	}
 
 	public static void searchMembers(String key) {
-		hideAllWindows();
-		if (!MembersWindow.INSTANCE.isInitialized()) {
-
-			MembersWindow.INSTANCE.init();
-		}
-
 		ControllerInterface ci = new SystemController();
 		List<LibraryMember> members = ci.allMembers();
 		Collections.sort(members);
@@ -106,9 +113,6 @@ public class Start extends Application {
 			}
 		}
 		MembersWindow.INSTANCE.setData(filteredMembers);
-
-		MembersWindow.INSTANCE.clear();
-		MembersWindow.INSTANCE.show();
 	}
 
 	public static void homeWindow() {
@@ -128,13 +132,33 @@ public class Start extends Application {
 //		if (refresh) {
 			ControllerInterface ci = new SystemController();
 			List<Author> authors = ci.allAuthors();
-//			Collections.sort(authors);
+			Collections.sort(authors);
 //		}
 		AuthorsWindow.INSTANCE.setData(authors);
 		AuthorsWindow.INSTANCE.clear();
 		AuthorsWindow.INSTANCE.show();
 	}
 
+	public static void searchAuthors(String key, String type) {
+		ControllerInterface ci = new SystemController();
+		List<Author> authors = ci.allAuthors();
+		Collections.sort(authors);
+
+		List<Author> filteredAuthors = new ArrayList<Author>();
+		for (Author author: authors) {
+			if (author.getFirstName().toLowerCase().contains(key) ||
+					author.getLastName().toLowerCase().contains(key) 
+				) {
+				filteredAuthors.add(author);
+			}
+		}
+		if (type.equals("addBook")) {
+			BooksInfoWindow.INSTANCE.setData(filteredAuthors);
+		} else {
+			AuthorsWindow.INSTANCE.setData(filteredAuthors);
+		}
+	}
+	
 	public static void showBookCopies(Book book) {
 		hideAllWindows();
 		BookCopiesWindow.INSTANCE.setData(book);
@@ -151,19 +175,29 @@ public class Start extends Application {
 		BookCopiesWindow.INSTANCE.show();
 	}
 
-	public static void showCheckouts() {
+	public static void showCheckouts(boolean refresh) {
 		// implement this for checkouts like authors
 		hideAllWindows();
 		if (!CheckoutsWindow.INSTANCE.isInitialized()) {
 			CheckoutsWindow.INSTANCE.init();
 		}
-		ControllerInterface ci = new SystemController();
-		List<Checkout> checkouts = ci.allCheckouts();
+		if (refresh) {
+			ControllerInterface ci = new SystemController();
+			List<Checkout> checkouts = ci.allCheckouts();
 
-		CheckoutsWindow.INSTANCE.setData(checkouts);
+			List<CheckoutEntry> entries = new ArrayList<CheckoutEntry>();
+			for (Checkout checkout: checkouts) {
+				
+				entries.addAll(checkout.getCheckoutEntries());				
+			}
+			
+			CheckoutsWindow.INSTANCE.setData(entries);
+		}
 
 		CheckoutsWindow.INSTANCE.clear();
 		CheckoutsWindow.INSTANCE.show();
+		
+		System.out.println(refresh);
 	}
 
 	public static void showBooks() {
@@ -210,17 +244,29 @@ public class Start extends Application {
 		}
 		CheckoutInfoWindow.INSTANCE.clear();
 		CheckoutInfoWindow.INSTANCE.show();
-//		CheckoutInfoWindow.INSTANCE.();
+	}
+	
+	public static void addBook() {
+		hideAllWindows();
+		if (!BooksInfoWindow.INSTANCE.isInitialized()) {
+			BooksInfoWindow.INSTANCE.init();
+		}
+		// BooksInfoWindow.INSTANCE.clear();
+		ControllerInterface ci = new SystemController();
+		List<Author> authors = ci.allAuthors();
+		// BooksInfoWindow.INSTANCE.setData(authors);
+		BooksInfoWindow.INSTANCE.show();
+		// BooksInfoWindow.INSTANCE.updateMember(member);
 	}
 	
 	@Override
 	public void start(Stage primaryStage) {
 
 		// TODO: remove these later
-		(new DataAccessFacade()).initBooks();
-		(new DataAccessFacade()).initAuthors();
-		(new DataAccessFacade()).initBookCopies();
-		(new DataAccessFacade()).initCheckouts();
+//		(new DataAccessFacade()).initBooks();
+//		(new DataAccessFacade()).initAuthors();
+//		(new DataAccessFacade()).initBookCopies();
+//		(new DataAccessFacade()).initCheckouts();
 		
 		primStage = primaryStage;
 		primaryStage.setTitle("Main Page");
@@ -242,12 +288,14 @@ public class Start extends Application {
 		login.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				hideAllWindows();
-				if (!LoginWindow.INSTANCE.isInitialized()) {
-					LoginWindow.INSTANCE.init();
-				}
-				LoginWindow.INSTANCE.clear();
-				LoginWindow.INSTANCE.show();
+//				addCheckout();
+				addBook();
+//				hideAllWindows();
+//				if (!LoginWindow.INSTANCE.isInitialized()) {
+//					LoginWindow.INSTANCE.init();
+//				}
+//				LoginWindow.INSTANCE.clear();
+//				LoginWindow.INSTANCE.show();
 			}
 		});
 

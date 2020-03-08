@@ -18,15 +18,18 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
@@ -42,6 +45,7 @@ import ui.components.G6Button;
 import ui.components.G6GridPane;
 import ui.components.G6HBox;
 import ui.components.G6Label;
+import ui.components.G6TableView;
 import ui.components.G6Text;
 import ui.components.G6TextField;
 import ui.components.G6VBox;
@@ -64,6 +68,7 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 	private G6Text scenetitle;
 	private G6Button actionBtn;
 	private TableView<Author> tblAuthors;
+	private G6TableView<Author> table;
 	private G6TextField txtTitle;
 	private G6TextField txtIsbn;
 	private ListView<Author> listView;
@@ -72,7 +77,7 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 	private Book currentBook;
 
 	public void setData(List<Author> data) {
-		tblAuthors.setItems(FXCollections.observableList(data));
+		 table.setItems(FXCollections.observableList(data));
 	}
 
 	private void clearFields() {
@@ -92,49 +97,105 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 		listView.getItems().addAll(book.getAuthors());
 		cmbLength.getSelectionModel().select(book.getMaxCheckoutLength());
 	}
+	
+	private void selectAuthor(Author author) {
+		boolean check = false;
+		List<Author> list = listView.getItems();
+		for (Author a : list) {
+			if (a.equals(author)) {
+				check = true;
+				break;
+			}
+		}
+		if (!check)
+			listView.getItems().add(author);
+		else {
+			Optional<ButtonType> result;
+			result = new G6Alert(AlertType.NONE, "Error", "The author already added", ButtonType.OK)
+					.showAndWait();
+		}
+	}
 
 	@Override
 	public void init() {
-		G6VBox vbox = new G6VBox(5);
-		vbox.setPadding(new Insets(25));
-		vbox.setId("top-container");
-
+		G6BorderPane mainPane = new G6BorderPane();
+		mainPane.setPadding(new Insets(30, 100, 30, 100));
+		mainPane.setId("top-container");
+		
+		G6BorderPane tPane = new G6BorderPane();
 		scenetitle = new G6Text("Add new book");
-		StackPane sceneTitlePane = G6Text.withPaddings(scenetitle, new Insets(0));
-
 		scenetitle.setFont(Font.font("Harlow Solid Bold", FontWeight.NORMAL, Constants.PANE_TITLE_FONT_SIZE));
-		G6BorderPane topPane = new G6BorderPane();
-		topPane.setCenter(sceneTitlePane);
-		topPane.setPadding(new Insets(0, 10, 20, 0));
-
+		tPane.setCenter(scenetitle);
+		tPane.setPadding(new Insets(0, 10, 20, 0));
+		
 		G6Button btnBack = new G6Button("Back");
 
 		G6HBox hBack = new G6HBox(10);
 		hBack.setAlignment(Pos.BOTTOM_LEFT);
 		hBack.getChildren().add(btnBack);
-		topPane.setLeft(hBack);
+		tPane.setLeft(hBack);
+				
+		mainPane.setTop(tPane);
+		G6HBox centerPane = new G6HBox(30);
+		mainPane.setCenter(centerPane);
 
 		G6GridPane grid = new G6GridPane();
+		centerPane.setAlignment(Pos.CENTER);
+		centerPane.getChildren().add(grid);
+		
+		G6VBox searchAuthors = new G6VBox(5);
+		centerPane.getChildren().add(searchAuthors);
+		G6TextField searchTxtf = new G6TextField();
+		searchTxtf.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Start.searchAuthors(searchTxtf.getText().trim().toLowerCase(), "addBook");
+			}
+		});
+		searchAuthors.getChildren().add(searchTxtf);
+		
+		table = new G6TableView<Author>();
+		
+		table.setRowFactory( tv -> {
+			TableRow<Author> row = new TableRow<>();
+		    row.setOnMouseClicked(event -> {
+		        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+		        	System.out.print(row.getIndex());
+		        	Author rowData = row.getItem();
+		            selectAuthor(rowData);
+		        }
+		    });
+		    return row ;
+		});
+		
+		TableColumn<Author, String> firstNameColumn = new TableColumn<>("First Name");
+		firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+
+		TableColumn<Author, String> lastNameColumn = new TableColumn<>("Last Name");
+		lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+		
+		table.getColumns().add(firstNameColumn);
+		table.getColumns().add(lastNameColumn);
+		
+		VBox vbox = new VBox(table);
+		vbox.setPadding(new Insets(0));
+		searchAuthors.getChildren().add(vbox);
+		
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(10);
 		grid.setVgap(5);
-		grid.setPadding(new Insets(25, 25, 25, 25));
-
-		vbox.getChildren().addAll(topPane, grid);
-
-		grid.add(topPane, 0, 0, 2, 1);
-
+		
 		G6Label lblTitle = new G6Label("Title: ");
-		grid.add(lblTitle, 0, 3);
+		grid.add(lblTitle, 0, 0);
 		txtTitle = new G6TextField();
 		txtTitle.setPromptText("Title");
-		grid.add(txtTitle, 1, 3);
+		grid.add(txtTitle, 1, 0);
 
 		G6Label lblIsbn = new G6Label("ISBN: ");
-		grid.add(lblIsbn, 0, 4);
+		grid.add(lblIsbn, 0, 1);
 		txtIsbn = new G6TextField();
 		txtIsbn.setPromptText("ISBN");
-		grid.add(txtIsbn, 1, 4);
+		grid.add(txtIsbn, 1, 1);
 
 		HBox boxAuthor = new HBox(5);
 		boxAuthor.setAlignment(Pos.TOP_LEFT);
@@ -156,110 +217,93 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 				}
 			}
 		});
-		/*
-		 * List<Hyperlink> links = new ArrayList<>(); ControllerInterface ci = new
-		 * SystemController(); List<Author> data = ci.allAuthors(); List<String> names =
-		 * new ArrayList<>();
-		 * 
-		 * for (Author a : data) { names.add(a.getFirstName()); }
-		 */
-		/*
-		 * TableColumn<Author, List<Hyperlink>> col1 = new TableColumn<>("Authors");
-		 * PropertyValueFactory<Author, List<Hyperlink>> thirdColFactory = new
-		 * PropertyValueFactory<>(new Hyperlink("auhtor"));
-		 * col1.setCellValueFactory(thirdColFactory);
-		 */
-		/*
-		 * col1.setCellFactory(col -> new TableCell<Author, List<Author>>() {
-		 * 
-		 * @Override public void updateItem(List<Author> authors, boolean empty) {
-		 * super.updateItem(authors, empty); if (empty) { setText(null); } else {
-		 * setText(authors.stream().map(Author::getFirstName).toString()); } } });
-		 */
-		// tblAuthors.getColumns().addAll(col1);
 
-		// listView.getItems().addAll(links);
 		grid.add(listView, 1, 5);
 
-		ControllerInterface ci = new SystemController();
-		List<Author> data = ci.allAuthors();
-		cmbAuthors = new ComboBox<Author>();
-		cmbAuthors.getItems().addAll(data);
-		cmbAuthors.getSelectionModel().selectFirst();
-		cmbAuthors.setButtonCell(new ListCell<Author>() {
-			@Override
-			protected void updateItem(Author t, boolean bln) {
-				super.updateItem(t, bln);
-				if (t != null) {
-					setText(t.getFirstName());
-				} else {
-					setText(null);
-				}
-			}
-		});
+//		ControllerInterface ci = new SystemController();
+//		List<Author> data = ci.allAuthors();
+//		cmbAuthors = new ComboBox<Author>();
+//		cmbAuthors.getItems().addAll(data);
+//		cmbAuthors.setPrefWidth(130);
+//		cmbAuthors.getSelectionModel().selectFirst();
+//		cmbAuthors.setButtonCell(new ListCell<Author>() {
+//
+//			@Override
+//			protected void updateItem(Author t, boolean bln) {
+//				super.updateItem(t, bln);
+//				if (t != null) {
+//					setText(t.getFirstName());
+//				} else {
+//					setText(null);
+//				}
+//			}
+//		});
+//
+//		cmbAuthors.setCellFactory(new Callback<ListView<Author>, ListCell<Author>>() {
+//
+//			@Override
+//			public ListCell<Author> call(ListView<Author> p) {
+//				return new ListCell<Author>() {
+//
+//					@Override
+//					protected void updateItem(Author t, boolean bln) {
+//						super.updateItem(t, bln);
+//						if (t != null) {
+//							setText(t.getFirstName()); //
+//							// System.out.println("SET PROPERTY " + t.nomeProperty().toString());
+//						} else {
+//							setText(null);
+//						}
+//
+//					}
+//				};
+//			}
+//		});
 
-		cmbAuthors.setCellFactory(new Callback<ListView<Author>, ListCell<Author>>() {
-			@Override
-			public ListCell<Author> call(ListView<Author> p) {
-				return new ListCell<Author>() {
-					@Override
-					protected void updateItem(Author t, boolean bln) {
-						super.updateItem(t, bln);
-						if (t != null) {
-							setText(t.getFirstName());
-							// System.out.println("SET PROPERTY " + t.nomeProperty().toString());
-						} else {
-							setText(null);
-						}
-
-					}
-				};
-			}
-		});
-
-		grid.add(cmbAuthors, 1, 6, 2, 1);
-
-		G6Button btnSelect = new G6Button("Select");
-		btnSelect.setAlignment(Pos.BASELINE_LEFT);
-		btnSelect.setOnAction(new EventHandler<ActionEvent>() {
-
+		G6Button btnDelete = new G6Button("Delete");
+		btnDelete.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				boolean check = false;
-				List<Author> list = listView.getItems();
-				for (Author a : list) {
-					if (a.equals(cmbAuthors.getValue())) {
-						check = true;
-						break;
-					}
+				final int selectedIdx = listView.getSelectionModel().getSelectedIndex();
+				if (selectedIdx != -1) {
+					Author itemToRemove = listView.getSelectionModel().getSelectedItem();
+
+					final int newSelectedIdx = (selectedIdx == listView.getItems().size() - 1) ? selectedIdx - 1
+							: selectedIdx;
+
+					listView.getItems().remove(selectedIdx);
+					listView.getSelectionModel().select(newSelectedIdx);
 				}
-				if (!check)
-					listView.getItems().add(cmbAuthors.getValue());
 			}
 		});
 
-		HBox boxCombo = new HBox();
-		boxCombo.getChildren().addAll(cmbAuthors, btnSelect);
-		// grid.add(cmbAuthors, 1, 6, 2, 1);
-		grid.add(btnSelect, 1, 7, 2, 1);
+		HBox boxCombo = new HBox(5);
+		boxCombo.getChildren().addAll(btnDelete);
+		grid.add(boxCombo, 1, 6);
 
 		G6Label lblLength = new G6Label("Maximum checkout length: ");
-		grid.add(lblLength, 0, 8);
+		lblLength.setPrefWidth(300);
+//		lblLength.setWrapText(true);
+		HBox boxLength = new HBox(5);
+		boxLength.setAlignment(Pos.TOP_LEFT);
+		boxLength.getChildren().add(lblLength);
+		boxLength.setPrefHeight(250);
+		boxLength.setPrefWidth(80);
+		grid.add(boxLength, 0, 8);
 		cmbLength = new ComboBox<Integer>();
 		cmbLength.getItems().addAll(numbers);
+		cmbLength.setPrefWidth(130);
 		cmbLength.getSelectionModel().selectFirst();
-		grid.add(cmbLength, 1, 8);
-
-		G6Label lblAvailable = new G6Label("Available: ");
-		grid.add(lblAvailable, 0, 9);
-		CheckBox chkAvailable = new CheckBox("is available");
-		grid.add(chkAvailable, 1, 9);
+		HBox boxComb = new HBox(5);
+		boxComb.setAlignment(Pos.TOP_LEFT);
+		boxComb.getChildren().add(cmbLength);
+		grid.add(boxComb, 1, 8);
 
 		actionBtn = new G6Button("Add");
 		HBox hbBtn = new HBox(11);
 		hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
 		hbBtn.getChildren().add(actionBtn);
-		grid.add(hbBtn, 1, 15);
+		grid.add(hbBtn, 1, 9);
 
 		HBox messageBox = new HBox(10);
 		messageBox.setAlignment(Pos.BOTTOM_RIGHT);
@@ -286,6 +330,9 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 								"Are you sure to create a new book?").showAndWait();
 
 						if (result.get() == ButtonType.OK) {
+							// System.out.println("add book" + " " + title + " " + isbn + " " + maxLength +
+							// " "
+							// + authors.get(0).getFirstName());
 							ControllerInterface c = new SystemController();
 							Book book = new Book(isbn, title, maxLength, authors);
 							System.out.println(book);
@@ -329,13 +376,13 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 			public void handle(ActionEvent e) {
 				Start.hideAllWindows();
 				if (actionBtn.getText().equals("Add")) {
-					BooksWindow.INSTANCE.show();
+					Start.showBooks();
 				} else if (actionBtn.getText().equals("Update")) {
-					BooksWindow.INSTANCE.show();
+					Start.showBooks();
 				}
 			}
 		});
-		Scene scene = new Scene(vbox, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+		Scene scene = new Scene(mainPane, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
 		// scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
 		setScene(scene);
 

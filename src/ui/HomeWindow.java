@@ -55,13 +55,12 @@ public class HomeWindow extends Stage implements LibWindow {
 		G6Button booksBtn = G6Button.createButtonWithLength("Books management", Constants.BUTTON_LONG_LENGTH);
 		G6Button authorsBtn = G6Button.createButtonWithLength("Authors management", Constants.BUTTON_LONG_LENGTH);
 		G6Button overdueBookReportBtn = G6Button.createButtonWithLength("Overdue book report", Constants.BUTTON_LONG_LENGTH);
-		
-//		G6Button bookCopiesBtn = G6Button.createButtonWithLength("BookCopies management", Constants.BUTTON_LONG_LENGTH);
+		G6Button bookCopiesBtn = G6Button.createButtonWithLength("BookCopies management", Constants.BUTTON_LONG_LENGTH);
 
 		checkoutBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				Start.showCheckouts();
+				Start.showCheckouts(true);
 			}
 		});
 		

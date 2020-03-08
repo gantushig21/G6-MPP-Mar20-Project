@@ -9,6 +9,8 @@ import business.CheckoutEntry;
 import business.Checkout;
 import business.SystemController;
 import config.Constants;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -20,6 +22,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
@@ -57,9 +60,9 @@ public class CheckoutsWindow extends Stage implements LibWindow {
 		messageBar.setText("");
 	}
 	
-	private TableView<Checkout> tableView;
+	private TableView<CheckoutEntry> tableView;
 	
-	public void setData( List<Checkout> data ) {
+	public void setData( List<CheckoutEntry> data ) {
 		tableView.setItems(FXCollections.observableList(data));
 	}
 
@@ -68,6 +71,8 @@ public class CheckoutsWindow extends Stage implements LibWindow {
     private CheckoutsWindow () {}
     
     public void init() {
+    	isInitialized(true);
+    	
     	G6BorderPane mainPane = new G6BorderPane();
     	mainPane.setPadding(new Insets(25));
     	mainPane.setId("top-container");
@@ -77,7 +82,7 @@ public class CheckoutsWindow extends Stage implements LibWindow {
     	topPane.setPadding(new Insets(15, 0, 15, 0));
     	
     	G6BorderPane top1 = new G6BorderPane();
-        Text scenetitle = new Text("Manage members");
+        Text scenetitle = new Text("Manage checkouts");
         
         scenetitle.setFont(Font.font("Harlow Solid Italic", FontWeight.NORMAL, Constants.PANE_TITLE_FONT_SIZE)); 
         
@@ -124,40 +129,63 @@ public class CheckoutsWindow extends Stage implements LibWindow {
     	// Rendering center
     	tableView = new TableView<>();
 
-        TableColumn<Checkout, String> column0 = new TableColumn<>("ID");
-        column0.setCellValueFactory(new PropertyValueFactory<>("id"));
-        
-        TableColumn<Checkout, String> column1 = new TableColumn<>("Title");
-        column1.setCellValueFactory(new PropertyValueFactory<>("title"));
+        TableColumn<CheckoutEntry, String> column1 = new TableColumn<>("Title");
+        column1.setPrefWidth(Constants.TABLE_TITLE_LENGTH);
+        column1.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<CheckoutEntry,String>, ObservableValue<String>>() {
+        	public ObservableValue<String> call(CellDataFeatures<CheckoutEntry, String> p) {
+        		// p.getValue() returns the Person instance for a particular TableView row
+        		return new SimpleStringProperty(p.getValue().getBook().getBook().getTitle());
+            }
+		});
 
 
-        TableColumn<Checkout, String> column2 = new TableColumn<>("ISBN");
-        column2.setCellValueFactory(new PropertyValueFactory<>("isbn"));
+        TableColumn<CheckoutEntry, String> column2 = new TableColumn<>("ISBN");
+        column2.setPrefWidth(Constants.TABLE_BOOK_ISBN_LENGTH);
+        column2.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<CheckoutEntry,String>, ObservableValue<String>>() {
+        	public ObservableValue<String> call(CellDataFeatures<CheckoutEntry, String> p) {
+        		// p.getValue() returns the Person instance for a particular TableView row
+        		return new SimpleStringProperty(p.getValue().getBook().getBook().getIsbn());
+            }
+		});
 
-        TableColumn<Checkout, String> column3 = new TableColumn<>("Authors");
-        column3.setCellValueFactory(new PropertyValueFactory<>("authors"));
+        TableColumn<CheckoutEntry, String> column3 = new TableColumn<>("Authors");
+        column3.setPrefWidth(Constants.TABLE_BOOK_AUTHORS_LENGTH);
+        column3.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<CheckoutEntry,String>, ObservableValue<String>>() {
+        	public ObservableValue<String> call(CellDataFeatures<CheckoutEntry, String> p) {
+        		// p.getValue() returns the Person instance for a particular TableView row
+        		return new SimpleStringProperty(p.getValue().getBook().getBook().getAuthors().toString());
+            }
+		});
 
-        TableColumn<Checkout, String> column4 = new TableColumn<>("Copy ID");
-        column4.setCellValueFactory(new PropertyValueFactory<>("copyID"));
+        TableColumn<CheckoutEntry, String> column4 = new TableColumn<>("Copy ID");
+        column4.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<CheckoutEntry,String>, ObservableValue<String>>() {
+        	public ObservableValue<String> call(CellDataFeatures<CheckoutEntry, String> p) {
+        		// p.getValue() returns the Person instance for a particular TableView row
+        		return new SimpleStringProperty(p.getValue().getBook().getCopyNum() + "");
+            }
+		});
 
-        TableColumn<Checkout, String> column5 = new TableColumn<>("Checkout date");
+        TableColumn<CheckoutEntry, String> column5 = new TableColumn<>("Checkout date");
+        column5.setPrefWidth(Constants.TABLE_DATE_LENGTH);
         column5.setCellValueFactory(new PropertyValueFactory<>("checkoutDate"));
 
-        TableColumn<Checkout, String> column6 = new TableColumn<>("Due date");
+        TableColumn<CheckoutEntry, String> column6 = new TableColumn<>("Due date");
+        column6.setPrefWidth(Constants.TABLE_DATE_LENGTH);
         column6.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
 
-        TableColumn<Checkout, String> column7 = new TableColumn<>("Return date");
+        TableColumn<CheckoutEntry, String> column7 = new TableColumn<>("Return date");
+        column7.setPrefWidth(Constants.TABLE_DATE_LENGTH);
         column7.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
         
 
-        TableColumn<Checkout, String> actionColumn = new TableColumn<>("Action");
+        TableColumn<CheckoutEntry, String> actionColumn = new TableColumn<>("Action");
 
-        Callback<TableColumn<Checkout, String>, TableCell<Checkout, String>> cellFactory =
-        		new Callback<TableColumn<Checkout,String>, TableCell<Checkout,String>>() {
+        Callback<TableColumn<CheckoutEntry, String>, TableCell<CheckoutEntry, String>> cellFactory =
+        		new Callback<TableColumn<CheckoutEntry,String>, TableCell<CheckoutEntry,String>>() {
 
 					@Override
-					public TableCell<Checkout, String> call(TableColumn<Checkout, String> arg0) {
-						final TableCell<Checkout, String> cell = new TableCell<Checkout, String>() {
+					public TableCell<CheckoutEntry, String> call(TableColumn<CheckoutEntry, String> arg0) {
+						final TableCell<CheckoutEntry, String> cell = new TableCell<CheckoutEntry, String>() {
 
 							final G6Button btnUpdate = new G6Button("Update");
 							final G6Button btnDelete = new G6Button("Delete");
@@ -173,42 +201,31 @@ public class CheckoutsWindow extends Stage implements LibWindow {
 		                        	G6HBox hbox = new G6HBox(5);
 		                        	
 		                        	btnUpdate.setOnAction(event -> {
-		                                Checkout checkout = getTableView().getItems().get(getIndex());
-		                                
-		                                Start.hideAllWindows();
-		                    			if(!CheckoutInfoWindow.INSTANCE.isInitialized()) {
-		                    				CheckoutInfoWindow.INSTANCE.init();
-		                    			}
-		                    			CheckoutInfoWindow.INSTANCE.clear();
-		                    			CheckoutInfoWindow.INSTANCE.show();
-		                    			CheckoutInfoWindow.INSTANCE.updateCheckout(checkout);
-
-//		                                System.out.println(checkout.getFirstName()
-//		                                        + "   " + checkout.getLastName());
-		                                System.out.println("update");
+		                                System.out.println("update " + getIndex());
 		                            });
 		                            
-		                            btnDelete.setOnAction(event -> {
-		                                Checkout checkout = getTableView().getItems().get(getIndex());
-		                                
-		                                Optional<ButtonType> result = new G6Alert(AlertType.CONFIRMATION, "Confirmation", "Are you sure to delete this record").showAndWait();
-		                                
-		                                if (result.get() == ButtonType.OK) {
+		                            btnDelete.setOnAction(event -> {		                                
+//		                                Optional<ButtonType> result = new G6Alert(AlertType.CONFIRMATION, "Confirmation", "Are you sure to delete this record").showAndWait();
+//		                                
+//		                                if (result.get() == ButtonType.OK) {
+//			                                CheckoutEntry entry = getTableView().getItems().get(getIndex());
 //			                                ControllerInterface c = new SystemController();
-//			                                c.deleteCheckout(checkout.getCheckoutId());
-			                                
-			                                tableView.getItems().remove(getIndex());
-		                                }
-		                                
-		                                System.out.println("delete" + getIndex());
+//			                                
+//			                                c.deleteCheckoutEntry(entry);
+////			                                c.deleteCheckout(checkout.getCheckoutId());
+//			                                
+//			                                tableView.getItems().remove(getIndex());
+//		                                }
+//		                                
+		                                System.out.println("delete " + getIndex());
 		                            });
 		                            
 		                            btnCheckout.setOnAction(event -> {
-		                                Checkout checkout = getTableView().getItems().get(getIndex());
+//		                                Checkout checkout = getTableView().getItems().get(getIndex());
 		                                System.out.println("checkout");
 		                            });
 		                            
-		                            hbox.getChildren().addAll(btnUpdate, btnDelete, btnCheckout);
+//		                            hbox.getChildren().addAll(btnUpdate, btnDelete, btnCheckout);
 		                            
 		                            setGraphic(hbox);
 		                            setText(null);
@@ -221,7 +238,6 @@ public class CheckoutsWindow extends Stage implements LibWindow {
         
 		actionColumn.setCellFactory(cellFactory);
 
-        tableView.getColumns().add(column0);
         tableView.getColumns().add(column1);
         tableView.getColumns().add(column2);
         tableView.getColumns().add(column3);
@@ -229,7 +245,7 @@ public class CheckoutsWindow extends Stage implements LibWindow {
         tableView.getColumns().add(column5);
         tableView.getColumns().add(column6);
         tableView.getColumns().add(column7);
-        tableView.getColumns().add(actionColumn);
+//        tableView.getColumns().add(actionColumn);
 
         VBox vbox = new VBox(tableView);
         vbox.setPadding(new Insets(0));

@@ -91,7 +91,7 @@ public class AuthorInfoWindow extends Stage implements LibWindow {
 	}
 	
 	public void updateAuthor(Author author) {
-		scenetitle.setText("Update Author ID " + author.getId());
+		scenetitle.setText("" + author.getId());
 		actionBtn.setText("Update");
 		
 		firstNameTxtf.setText(author.getFirstName()); 
@@ -105,7 +105,8 @@ public class AuthorInfoWindow extends Stage implements LibWindow {
 		zipTxtf.setText(address.getZip());
 		phoneNumberTxtf.setText(author.getTelephone());
 		bioTxtf.setText(author.getBio());
-		credentialsTxtf.setText("");
+		credentialsTxtf.setText(author.getCredentials());
+		
 		currentAuthor = author;
 	}
 	

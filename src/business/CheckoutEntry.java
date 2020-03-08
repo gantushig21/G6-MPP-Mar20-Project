@@ -1,21 +1,32 @@
 package business;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class CheckoutEntry {
-	private Book book;
+public class CheckoutEntry implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6725780516540590492L;
+	private BookCopy bookCopy;
+	private LibraryMember member;
 	private LocalDate checkoutDate;
 	private LocalDate dueDate;
 	private LocalDate returnDate;
 	
-	public CheckoutEntry(Book book, LocalDate checkoutData, LocalDate dueDate) {
-		this.book = book;
+	public CheckoutEntry(BookCopy bookCopy, LibraryMember member, LocalDate checkoutData, LocalDate dueDate) {
+		this.bookCopy = bookCopy;
+		this.member = member;
 		this.checkoutDate = checkoutData;
 		this.dueDate = dueDate;
 	}
 
-	public Book getBook() {
-		return book;
+	public BookCopy getBook() {
+		return bookCopy;
+	}
+	
+	public LibraryMember getMember() {
+		return member;
 	}
 
 	public LocalDate getCheckoutDate() {
@@ -28,5 +39,10 @@ public class CheckoutEntry {
 	
 	public LocalDate getReturnDate() {
 		return returnDate;
+	}
+	
+	@Override
+	public String toString() {
+		return bookCopy.getBook().getIsbn() + " " + bookCopy.getCopyNum();
 	}
 }

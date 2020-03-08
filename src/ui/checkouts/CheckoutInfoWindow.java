@@ -1,14 +1,19 @@
 package ui.checkouts;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import javax.swing.JOptionPane;
 
 import business.Address;
 import business.AlreadyExistException;
+import business.Book;
+import business.BookCopy;
 import business.ControllerInterface;
+import business.LibraryMember;
 import business.Checkout;
+import business.CheckoutEntry;
 import business.LoginException;
 import business.SystemController;
 import config.Constants;
@@ -20,6 +25,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DateCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
@@ -61,9 +67,17 @@ public class CheckoutInfoWindow extends Stage implements LibWindow {
 	private G6Label userIDLbl;
 	private G6Label usernameLbl;
 	
-	private G6ComboBox bookCopyIDCombo;
-	private G6DatePicker ceckoutDateDTDtpckr;
+	private G6Label bookCopyLbl;
+	private G6Label checkoutDateLbl;
 	private G6DatePicker dueDateDTDtpckr;
+	
+	private Optional<ButtonType> result;
+	
+	private Book selectedBook;
+	private Checkout checkout;
+	private LocalDate checkoutDate;
+	private LocalDate dueDate;
+	private LocalDate limitDate;
 	
 	public boolean isInitialized() {
 		return isInitialized;
@@ -74,6 +88,14 @@ public class CheckoutInfoWindow extends Stage implements LibWindow {
 	private Text messageBar = new Text();
 	public void clear() {
 		messageBar.setText("");
+		checkoutDate = LocalDate.now();
+		dueDate = checkoutDate.plusDays(Constants.CHECKOUT_DAY_LIMIT);
+		String formattedDate = checkoutDate.format(DateTimeFormatter.ofPattern("M/d/YYYY"));
+		checkoutDateLbl.setText(formattedDate);
+		
+		limitDate = checkoutDate.plusDays(Constants.CHECKOUT_DAY_LIMIT);
+		
+		dueDateDTDtpckr.setValue(dueDate);
 	}
 	
 	/* This class is a singleton */
@@ -91,6 +113,26 @@ public class CheckoutInfoWindow extends Stage implements LibWindow {
 		actionBtn.setText("Update");		
 		
 		currentCheckout = checkout;
+	}
+	
+	public void clearBookTextFields() {
+		selectedBook = null;
+		
+		titleLbl.setText("");
+		isbnLbl.setText("");
+		authorsLbl.setText("");
+		bookCopyLbl.setText("");
+	}
+	
+	public void clearUserTextFields() {
+		checkout = null;
+		
+		userIDLbl.setText("");
+		usernameLbl.setText("");
+	}
+	
+	public void handleAddButtonDisabled() {
+		actionBtn.setDisable(selectedBook == null || checkout == null);
 	}
     
     public void init() {
@@ -126,68 +168,177 @@ public class CheckoutInfoWindow extends Stage implements LibWindow {
         grid.add(topPane, 0, 0, 2, 1);
 
         // Name section
-        G6Label bookIDLbl = new G6Label("Find Book");
+        G6Label bookIDLbl = new G6Label("Find:");
         bookIDTxtf = new G6TextField();
+        bookIDTxtf.setPromptText("ISBN");
         G6Button searchBtn = new G6Button("Search");
         grid.add(bookIDLbl, 0, 2);
         grid.add(bookIDTxtf, 1, 2);
         grid.add(searchBtn, 2, 2);
+        
+        searchBtn.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent arg0) {
+				clearBookTextFields();
+				
+				ControllerInterface c = new SystemController();
+				Book book = c.getBookByISBN(bookIDTxtf.getText().trim());
+				
+				if (book == null) {
+					result = new G6Alert(AlertType.WARNING, "Sorry", "Book with this ISBN is not found!").showAndWait();
+				} else if (!book.isAvailable()) {
+					result = new G6Alert(AlertType.WARNING, "Sorry", "There is not available copy!").showAndWait();
+				} else {
+					selectedBook = book;
+					titleLbl.setText(book.getTitle());
+					isbnLbl.setText(book.getIsbn());
+					authorsLbl.setText(book.getAuthors().toString());
+					BookCopy bookCopy = book.getNextAvailableCopy();
+					bookCopyLbl.setText(bookCopy.getCopyNum() + "");
+					
+				}
+				handleAddButtonDisabled();
+			}
+		});
         
         G6Label titleLbl0 = new G6Label("Title: ");         
         grid.add(titleLbl0, 0, 3);        
         titleLbl = new G6Label("");         
         grid.add(titleLbl, 1, 3);
         
-        G6Label isbnLbl0 = new G6Label("ISBN");
+        G6Label isbnLbl0 = new G6Label("ISBN:");
         grid.add(isbnLbl0, 0, 4);
         isbnLbl = new G6Label("");
         grid.add(isbnLbl, 1, 4);
         
-        G6Label authorsLbl0 = new G6Label("ISBN");
+        G6Label authorsLbl0 = new G6Label("Authors");
         grid.add(authorsLbl0, 0, 5);
         authorsLbl = new G6Label("");
         grid.add(authorsLbl, 1, 5);
         
         
-        G6Label usernameLbl0 = new G6Label("Find username");
+        G6Label usernameLbl0 = new G6Label("Find:");
         usernameTxtf = new G6TextField();
+        usernameTxtf.setPromptText("Member ID");
         G6Button searchUserBtn = new G6Button("Search");
         grid.add(usernameLbl0, 3, 2);
         grid.add(usernameTxtf, 4, 2);
         grid.add(searchUserBtn, 5, 2);
         
-        G6Label userIDLbl0 = new G6Label("ID: ");         
+        searchUserBtn.setOnAction(new EventHandler<ActionEvent>() {
+        	@Override
+			public void handle(ActionEvent arg0) {
+        		clearUserTextFields();
+        		
+				ControllerInterface c = new SystemController();
+				LibraryMember member = c.getMemberById(usernameTxtf.getText().trim());
+				if (member == null) {
+					result = new G6Alert(AlertType.WARNING, "Sorry", "Member with this ID is not found!").showAndWait();
+					userIDLbl.setText("");
+					usernameLbl.setText("");
+				} else {
+					checkout = c.getMemberCheckout(member);
+					userIDLbl.setText(member.getFirstName());
+					usernameLbl.setText(member.getLastName());
+				}
+				handleAddButtonDisabled();
+			}
+		});
+        
+        G6Label userIDLbl0 = new G6Label("First Name: ");         
         grid.add(userIDLbl0, 3, 3);        
         userIDLbl = new G6Label("");         
         grid.add(userIDLbl, 4, 3);
         
-        G6Label usernameLbl1 = new G6Label("Username: ");
+        G6Label usernameLbl1 = new G6Label("User Name: ");
         grid.add(usernameLbl1, 3, 4);
         usernameLbl = new G6Label("");
         grid.add(usernameLbl, 4, 4);
         
 
-        G6Label bookCopyLbl0 = new G6Label("Book Copy ID");
+        G6Label bookCopyLbl0 = new G6Label("Book Copy ID: ");
         grid.add(bookCopyLbl0, 0, 6);
-        bookCopyIDCombo = new G6ComboBox();
-        grid.add(bookCopyIDCombo, 1, 6);
+        bookCopyLbl = new G6Label("");
+        grid.add(bookCopyLbl, 1, 6);
 
-        G6Label checkoutLbl0 = new G6Label("Checkout Date");
-        grid.add(checkoutLbl0, 0, 7);
-        ceckoutDateDTDtpckr = new G6DatePicker();
-        grid.add(ceckoutDateDTDtpckr, 1, 7);
         
-        G6Label dueDateLbl0 = new G6Label("Due Date");
+        G6Label checkoutLbl0 = new G6Label("Checkout Date: ");
+        grid.add(checkoutLbl0, 0, 7);
+        checkoutDateLbl = new G6Label(LocalDate.now().toString());
+        grid.add(checkoutDateLbl, 1, 7);
+        
+        G6Label dueDateLbl0 = new G6Label("Due Date: ");
         grid.add(dueDateLbl0, 0, 8);
         dueDateDTDtpckr = new G6DatePicker();
         grid.add(dueDateDTDtpckr, 1, 8);
+        dueDateDTDtpckr.getEditor().setDisable(true);
+        dueDateDTDtpckr.setDayCellFactory(picker -> new DateCell() {
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                LocalDate today = LocalDate.now();
+
+                if (date.compareTo(today) < 0) {
+                	setDisable(true);
+                }
+                if (date.compareTo(limitDate) > 0) {
+                	setDisable(true);                	
+                }
+            }
+        });
+        dueDateDTDtpckr.setOnAction(new EventHandler<ActionEvent>() {
+        	@Override
+			public void handle(ActionEvent arg0) {
+				if (dueDateDTDtpckr.getValue().compareTo(limitDate) > 0) {
+					result = new G6Alert(AlertType.WARNING, "Sorry", "You can't take the book for more than " + Constants.CHECKOUT_DAY_LIMIT + " days").showAndWait();
+					dueDateDTDtpckr.setValue(limitDate);
+				} else if (dueDateDTDtpckr.getValue().compareTo(checkoutDate) < 0) {
+					dueDateDTDtpckr.setValue(LocalDate.now().plusDays(1));
+				}
+			}
+		});
 
         actionBtn = new G6Button("Add");
+        actionBtn.setDisable(true);
         HBox hbBtn = new HBox(11);
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
         hbBtn.getChildren().add(actionBtn);
         grid.add(hbBtn, 1, 15);
-
+        
+        actionBtn.setOnAction(new EventHandler<ActionEvent>() {
+        	@Override
+			public void handle(ActionEvent arg0) {
+        		result = new G6Alert(AlertType.CONFIRMATION, "Confirmation", "Are you sure to checkout this book?").showAndWait();
+				if (result.get() == ButtonType.OK) {
+					ControllerInterface c = new SystemController();
+					
+					BookCopy copy = selectedBook.getAvailableBookCopy();
+					System.out.println(copy);
+					copy.changeAvailability();
+					System.out.println();
+					System.out.println(selectedBook);
+					
+					c.updateBook(selectedBook);
+					
+					CheckoutEntry checkoutEntry = new CheckoutEntry(
+						copy, 
+						checkout.getMember(),
+						checkoutDate, 
+						dueDate
+					);
+									
+					checkout.getCheckoutEntries().add(checkoutEntry);
+					
+					c.saveCheckout(checkout);
+					
+					result = new G6Alert(AlertType.NONE, "Success", "The checkout is added successful", ButtonType.OK).showAndWait();	       					
+	            	   if (result.get() == ButtonType.OK) {
+        					clearFields();
+        					Start.showCheckouts(true);
+	            	   } 
+				}
+			}
+		});
 
         HBox messageBox = new HBox(10);
         messageBox.setAlignment(Pos.BOTTOM_RIGHT);
@@ -198,13 +349,7 @@ public class CheckoutInfoWindow extends Stage implements LibWindow {
         backBtn.setOnAction(new EventHandler<ActionEvent>() {
         	@Override
         	public void handle(ActionEvent e) {
-        		Start.hideAllWindows();
-        		if (actionBtn.getText().equals("Add")) {
-            		Start.primStage().show();        			
-        		} else if (actionBtn.getText().equals("Update")) {
-        			CheckoutsWindow.INSTANCE.clear();
-        			CheckoutsWindow.INSTANCE.show();
-        		}
+        		Start.showCheckouts(false);
         	}
         });
         Scene scene = new Scene(vbox, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);

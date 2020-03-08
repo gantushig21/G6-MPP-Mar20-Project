@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  *
@@ -22,10 +21,12 @@ final public class Book implements Serializable {
 	private int maxCheckoutLength;
 
 	public Book(String isbn, String title, int maxCheckoutLength, List<Author> authors) {
-		this.id = UUID.randomUUID().toString();
+		this.id = "Book_" + RandomIdGenerator.GetBase62(8);
 		this.isbn = isbn;
 		this.title = title;
 		this.maxCheckoutLength = maxCheckoutLength;
+
+//		this.authors = authors;
 		this.authors = Collections.unmodifiableList(authors);
 		copies = new BookCopy[] {};
 	}
@@ -54,7 +55,7 @@ final public class Book implements Serializable {
 		newArr[copies.length] = bc;
 		copies = newArr;
 	}
-	
+
 	public void addCopy() {
 		BookCopy[] newArr = new BookCopy[copies.length + 1];
 		System.arraycopy(copies, 0, newArr, 0, copies.length);
@@ -78,9 +79,17 @@ final public class Book implements Serializable {
 		}
 
 		return Arrays.stream(copies).map(l -> l.getIsAvailable()).reduce(false, (x, y) -> x || y);
-
 	}
 
+	public BookCopy getAvailableBookCopy() {
+		for (BookCopy copy: copies) {
+			if (copy.getIsAvailable())
+				return copy;
+		}
+		
+		return null;
+	}
+	
 	@Override
 	public String toString() {
 		return "isbn: " + isbn + ", maxLength: " + maxCheckoutLength + ", available: " + isAvailable();
