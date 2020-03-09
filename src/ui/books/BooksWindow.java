@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import business.Address;
 import business.Author;
 import business.Book;
+import business.BookCopy;
 import business.ControllerInterface;
 import business.SystemController;
 import config.Constants;
@@ -155,11 +156,35 @@ public class BooksWindow extends Stage implements LibWindow {
 		TableColumn<Book, String> colTitle = new TableColumn<>("Title");
 		colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
 		colTitle.prefWidthProperty().bind(tblBooks.widthProperty().multiply(0.3));
+		
 		TableColumn<Book, String> colISBN = new TableColumn<>("ISBN");
 		colISBN.setCellValueFactory(new PropertyValueFactory<>("isbn"));
+		
 		TableColumn<Book, List<Author>> colAuthor = new TableColumn<>("Author");
 		PropertyValueFactory<Book, List<Author>> thirdColFactory = new PropertyValueFactory<>("authors");
 		colAuthor.setCellValueFactory(thirdColFactory);
+
+		TableColumn<Book, BookCopy[]> colNumberOfCopies = new TableColumn<>("Number of Copies");
+		PropertyValueFactory<Book, BookCopy[ ]> copiesColFactory = new PropertyValueFactory<>("copies");
+		colNumberOfCopies.setCellValueFactory(copiesColFactory);
+		colNumberOfCopies.setCellFactory(col -> new TableCell<Book, BookCopy[]>() {
+			@Override
+			public void updateItem(BookCopy[] copies, boolean empty) {
+				super.updateItem(copies, empty);
+				if (empty) {
+					setText(null);
+				} else {
+					setText(copies.length + "");
+				}
+			}
+		});
+//		colNumberOfCopies.setCellValueFactory(new PropertyValueFactory<>("maxCheckoutLength"));
+		
+		TableColumn<Book, String> colCheckedOut = new TableColumn<>("Checked Out");
+		colCheckedOut.setCellValueFactory(new PropertyValueFactory<>("checkedOut"));
+
+		TableColumn<Book, String> colCheckoutLimit = new TableColumn<>("Checkout Limit");
+		colCheckoutLimit.setCellValueFactory(new PropertyValueFactory<>("maxCheckoutLength"));
 
 		colAuthor.setCellFactory(col -> new TableCell<Book, List<Author>>() {
 			@Override
@@ -249,6 +274,9 @@ public class BooksWindow extends Stage implements LibWindow {
 		tblBooks.getColumns().add(colISBN);
 		tblBooks.getColumns().add(colTitle);
 		tblBooks.getColumns().add(colAuthor);
+		tblBooks.getColumns().add(colNumberOfCopies);
+		tblBooks.getColumns().add(colCheckoutLimit);
+		tblBooks.getColumns().add(colCheckedOut);
 		tblBooks.getColumns().add(actionColumn);
 		
 

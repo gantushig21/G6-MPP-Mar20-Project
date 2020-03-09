@@ -32,6 +32,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.JMetro;
 import rulesets.RuleException;
 import rulesets.RuleSet;
 import rulesets.RuleSetFactory;
@@ -159,13 +160,13 @@ public class CheckoutInfoWindow extends Stage implements LibWindow {
     	G6GridPane grid = new G6GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
-        grid.setVgap(5);
+        grid.setVgap(15);
         grid.setPadding(new Insets(25, 25, 25, 25));
         
         vbox.getChildren().addAll(topPane, grid);
 
 
-        grid.add(topPane, 0, 0, 2, 1);
+        grid.add(topPane, 0, 0, 6, 1);
 
         // Name section
         G6Label bookIDLbl = new G6Label("Find:");
@@ -313,10 +314,8 @@ public class CheckoutInfoWindow extends Stage implements LibWindow {
 					ControllerInterface c = new SystemController();
 					
 					BookCopy copy = selectedBook.getAvailableBookCopy();
-					System.out.println(copy);
 					copy.changeAvailability();
-					System.out.println();
-					System.out.println(selectedBook);
+					selectedBook.setCheckedOut(selectedBook.getCheckedOut() + 1);
 					
 					c.updateBook(selectedBook);
 					
@@ -353,6 +352,8 @@ public class CheckoutInfoWindow extends Stage implements LibWindow {
         	}
         });
         Scene scene = new Scene(vbox, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+        JMetro jMetro = new JMetro();
+		jMetro.setScene(scene);
         // scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
         setScene(scene);
         

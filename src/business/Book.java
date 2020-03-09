@@ -19,8 +19,10 @@ final public class Book implements Serializable {
 	private String isbn;
 	private String title;
 	private int maxCheckoutLength;
+	private int checkedOut = 0;
 
 	public Book(String isbn, String title, int maxCheckoutLength, List<Author> authors) {
+		this.checkedOut = 0;
 		this.total = 0;
 		this.isbn = isbn;
 		this.title = title;
@@ -54,6 +56,7 @@ final public class Book implements Serializable {
 
 	public void addCopy(BookCopy bc) {
 		total++;
+		bc.setCopyNum(total);
 		BookCopy[] newArr = new BookCopy[copies.length + 1];
 		System.arraycopy(copies, 0, newArr, 0, copies.length);
 		newArr[copies.length] = bc;
@@ -66,10 +69,11 @@ final public class Book implements Serializable {
 		BookCopy[] newArr = new BookCopy[copies.length + size];
 		System.arraycopy(copies, 0, newArr, 0, copies.length);
 		for (int i = 0; i < size; i++) {
-			cps.get(i).setCopyNum(copies.length + i + 1);
+			cps.get(i).setCopyNum(total + i + 1);
 			newArr[copies.length + i] = cps.get(i); 
 		}
 		copies = newArr;
+		total += size;
 	}
 
 	public void addCopy() {
@@ -115,12 +119,12 @@ final public class Book implements Serializable {
 				authors.toString();
 	}
 
-	public String getId() {
-		return id;
-	}
-
 	public int getNumCopies() {
 		return copies.length;
+	}
+	
+	public int getCheckedOut() {
+		return checkedOut;
 	}
 
 	public String getTitle() {
@@ -157,10 +161,10 @@ final public class Book implements Serializable {
 		return maxCheckoutLength;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setCheckedOut(int checkedOut) {
+		this.checkedOut = checkedOut;
 	}
-
+	
 	public void setCopies(BookCopy[] copies) {
 		this.copies = copies;
 	}

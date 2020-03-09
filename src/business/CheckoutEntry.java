@@ -3,7 +3,7 @@ package business;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class CheckoutEntry implements Serializable {
+public class CheckoutEntry implements Serializable, Comparable<CheckoutEntry> {
 	/**
 	 * 
 	 */
@@ -44,5 +44,10 @@ public class CheckoutEntry implements Serializable {
 	@Override
 	public String toString() {
 		return bookCopy.getBook().getIsbn() + " " + bookCopy.getCopyNum();
+	}
+	
+	@Override
+	public int compareTo(CheckoutEntry entry) {
+		return checkoutDate.compareTo(entry.getCheckoutDate());
 	}
 }

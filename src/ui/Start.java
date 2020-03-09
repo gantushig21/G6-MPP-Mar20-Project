@@ -73,7 +73,8 @@ public class Start extends Application {
 			BookCopyInfoWindow.INSTANCE,
 			BookCopiesWindow.INSTANCE,
 			CheckoutsWindow.INSTANCE,
-			CheckoutInfoWindow.INSTANCE
+			CheckoutInfoWindow.INSTANCE,
+			MemberCheckoutsWindow.INSTANCE
 		};
 
 	public static void hideAllWindows() {
@@ -117,6 +118,18 @@ public class Start extends Application {
 		MembersWindow.INSTANCE.setData(filteredMembers);
 	}
 
+	public static void showMemberCheckouts(LibraryMember member) {
+		hideAllWindows();
+		if (!MemberCheckoutsWindow.INSTANCE.isInitialized()) {
+			MemberCheckoutsWindow.INSTANCE.init();
+		}
+		
+		ControllerInterface ci = new SystemController();
+		
+		MemberCheckoutsWindow.INSTANCE.startMemberCheckout(ci.getMemberCheckout(member));
+		MemberCheckoutsWindow.INSTANCE.show();
+	}
+	
 	public static void homeWindow() {
 		hideAllWindows();
 		if (!HomeWindow.INSTANCE.isInitialized()) {
