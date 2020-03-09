@@ -34,6 +34,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.JMetro;
 import rulesets.RuleException;
 import rulesets.RuleSet;
 import rulesets.RuleSetFactory;
@@ -185,10 +186,10 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 		});
 		
 		G6Label isAvailableLbl = new G6Label("Is Available: ");
-		grid.add(isAvailableLbl, 0, 7);
+//		grid.add(isAvailableLbl, 0, 7);
 		isAvailableCb = new G6CheckBox();
-		grid.add(isAvailableCb, 1, 7);
-		
+//		grid.add(isAvailableCb, 1, 7);
+//		
 
 		
 		actionBtn = new G6Button("Add");
@@ -206,7 +207,7 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 			@Override
 			public void handle(ActionEvent e) {
 				int copyNumInt = Integer.parseInt(copyNumTxtf.getText().trim()) ;
-				boolean isAvailable = isAvailableCb.isSelected();
+				boolean isAvailable = true;
 
 				try {
 					RuleSet ruleSet = RuleSetFactory.getRuleSet(BookCopyInfoWindow.this);
@@ -217,7 +218,7 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 					if (actionBtn.getText().equals("Add")) {
 
 						result = new G6Alert(AlertType.CONFIRMATION, "Confirmation",
-								"Are you sure to create a new bookCopy?").showAndWait();
+								"Are you sure to add new copies?").showAndWait();
 
 						if (result.get() == ButtonType.OK) {
 							ControllerInterface c = new SystemController();
@@ -276,6 +277,8 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 			}
 		});
 		Scene scene = new Scene(mainPane, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+		JMetro jMetro = new JMetro();
+		jMetro.setScene(scene);
 		// scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
 		setScene(scene);
 

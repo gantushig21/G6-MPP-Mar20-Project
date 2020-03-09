@@ -295,6 +295,8 @@ public class CheckoutInfoWindow extends Stage implements LibWindow {
 					dueDateDTDtpckr.setValue(limitDate);
 				} else if (dueDateDTDtpckr.getValue().compareTo(checkoutDate) < 0) {
 					dueDateDTDtpckr.setValue(LocalDate.now().plusDays(1));
+				} else {
+					dueDate = dueDateDTDtpckr.getValue();
 				}
 			}
 		});

@@ -35,7 +35,11 @@ public class Checkout implements Serializable{
 		return id;
 	}
 	
+	public void setEntries(List<CheckoutEntry> entries) {
+		this.entries = entries;
+	}
+	
 	public String toString() {
-		return member.getFirstName() + " => " + entries.toString();
+		return member.getFirstName() + " " + member.getLastName() + " => " + entries.toString();
 	}
 }
