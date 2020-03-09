@@ -16,6 +16,7 @@ public final class Constants {
 	// Window
 	public final static int WINDOW_WIDTH = 1200;
 	public final static int WINDOW_HEIGHT = 760;
+	public final static int WINDOW_DEFAULT_PADDING = 35;
 	
 	// Pane
 	public final static int PANE_TITLE_FONT_SIZE = 25;

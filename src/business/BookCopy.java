@@ -14,6 +14,7 @@ final public class BookCopy implements Serializable {
 	private int copyNum;
 	private boolean isAvailable;
 	public BookCopy(Book book, int copyNum, boolean isAvailable) {
+
 		this.id =	"BookCopies_" + RandomIdGenerator.GetBase62(8); 
 		this.book = book;
 		this.copyNum = copyNum;

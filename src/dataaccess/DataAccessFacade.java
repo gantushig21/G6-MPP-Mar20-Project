@@ -114,7 +114,6 @@ public class DataAccessFacade implements DataAccess {
 		HashMap<String, Book> books = readBooksMap();
 		String isbn = book.getIsbn();
 		if (!books.containsKey(isbn)) {
-			// book.setAuthors(new ArrayList<Author>());
 			books.put(isbn, book);
 			saveToStorage(StorageType.BOOKS, books);
 
@@ -154,7 +153,9 @@ public class DataAccessFacade implements DataAccess {
 	public HashMap<String, Book> readBooksMap() {
 		// Returns a Map with name/value pairs being
 		// isbn -> Book
-		return (HashMap<String, Book>) readFromStorage(StorageType.BOOKS);
+		Object object = readFromStorage(StorageType.BOOKS);
+		
+		return object == null ? new HashMap<String, Book>() : (HashMap<String, Book>) object;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -218,7 +219,6 @@ public class DataAccessFacade implements DataAccess {
 			in = new ObjectInputStream(Files.newInputStream(path));
 			retVal = in.readObject();
 		} catch (Exception e) {
-			System.out.println("HERE");
 //			e.printStackTrace();
 		} finally {
 			if (in != null) {
@@ -318,7 +318,8 @@ public class DataAccessFacade implements DataAccess {
 	}
 
 	public HashMap<String, Author> readAuthorMap() {
-		return (HashMap<String, Author>) readFromStorage(StorageType.AUTHORS);
+		Object object = readFromStorage(StorageType.AUTHORS);
+		return object == null ? new HashMap<String, Author>() : (HashMap<String, Author>) object;
 	}
 	// AUTHOR END
 
@@ -375,7 +376,8 @@ public class DataAccessFacade implements DataAccess {
 	}
 
 	public HashMap<String, BookCopy> readBookCopiesMap() {
-		return (HashMap<String, BookCopy>) readFromStorage(StorageType.BOOKCOPIES);
+		Object object = readFromStorage(StorageType.BOOKCOPIES);;
+		return object == null ? new HashMap<String, BookCopy>() : (HashMap<String, BookCopy>) object;
 	}
 	// BOOKCOPY END
 

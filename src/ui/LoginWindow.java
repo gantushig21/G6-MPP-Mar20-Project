@@ -19,6 +19,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.JMetro;
 import ui.components.G6Button;
 
 public class LoginWindow extends Stage implements LibWindow {
@@ -57,6 +58,7 @@ public class LoginWindow extends Stage implements LibWindow {
     }
     
     public void init() { 
+    	
         GridPane grid = new GridPane();
         grid.setId("top-container");
         grid.setAlignment(Pos.CENTER);
@@ -122,6 +124,8 @@ public class LoginWindow extends Stage implements LibWindow {
         Scene scene = new Scene(grid, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
 //        scene.getStylesheets().add(getClass().getResource("library.css").toExternalForm());
         setScene(scene);
+        JMetro jMetro = new JMetro();
+		jMetro.setScene(scene);
         
     }
 	
