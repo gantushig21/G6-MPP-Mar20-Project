@@ -182,9 +182,6 @@ public class Start extends Application {
 		}
 		ControllerInterface ci = new SystemController();
 		List<BookCopy> bookCopies = ci.allBookCopies();
-		for (BookCopy bc : bookCopies) {
-			System.out.println(bc.getIsAvailable());
-		}
 
 		BookCopiesWindow.INSTANCE.clear();
 		BookCopiesWindow.INSTANCE.show();
@@ -205,14 +202,12 @@ public class Start extends Application {
 				
 				entries.addAll(checkout.getCheckoutEntries());				
 			}
-			
+			Collections.sort(entries);
 			CheckoutsWindow.INSTANCE.setData(entries);
 		}
 
 		CheckoutsWindow.INSTANCE.clear();
 		CheckoutsWindow.INSTANCE.show();
-		
-		System.out.println(refresh);
 	}
 
 	public static void showBooks() {
@@ -270,7 +265,7 @@ public class Start extends Application {
 		if (!CheckoutInfoWindow.INSTANCE.isInitialized()) {
 			CheckoutInfoWindow.INSTANCE.init();
 		}
-		CheckoutInfoWindow.INSTANCE.clear();
+		CheckoutInfoWindow.INSTANCE.start();
 		CheckoutInfoWindow.INSTANCE.show();
 	}
 	
@@ -279,12 +274,11 @@ public class Start extends Application {
 		if (!BooksInfoWindow.INSTANCE.isInitialized()) {
 			BooksInfoWindow.INSTANCE.init();
 		}
-		// BooksInfoWindow.INSTANCE.clear();
 		ControllerInterface ci = new SystemController();
 		List<Author> authors = ci.allAuthors();
-		// BooksInfoWindow.INSTANCE.setData(authors);
+		BooksInfoWindow.INSTANCE.setData(authors);
+		BooksInfoWindow.INSTANCE.startBook();
 		BooksInfoWindow.INSTANCE.show();
-		// BooksInfoWindow.INSTANCE.updateMember(member);
 	}
 
 	@Override

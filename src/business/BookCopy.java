@@ -28,7 +28,6 @@ final public class BookCopy implements Serializable {
 //		this.isAvailable = false;
 //	}
 	
-	
 	public void changeAvailability() {
 		isAvailable = !isAvailable;
 	}
@@ -67,7 +66,7 @@ final public class BookCopy implements Serializable {
 	
 	@Override
 	public String toString() {
-		return book.getIsbn() + " " + id;
+		return "ISBN: " + book.getIsbn() + ", Copy Number: " + copyNum + ", Is Available: " + isAvailable;
 	}
 
 	@Override
