@@ -1,0 +1,11 @@
+PLEASE USE JAVA 8 for run it.
+
+0. Access to system
+librarian  - 	username: librarian
+		password: 101
+
+admin - username: admin
+	password: 102
+
+both  - username: both
+	password: 103
