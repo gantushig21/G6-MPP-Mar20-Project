@@ -353,7 +353,6 @@ public class Start extends Application {
 //				ControllerInterface ci = new SystemController();
 //				List<String> ids = ci.allMemberIds();
 //				Collections.sort(ids);
-//				System.out.println(ids);
 //				StringBuilder sb = new StringBuilder();
 //				for(String s: ids) {
 //					sb.append(s + "\n");

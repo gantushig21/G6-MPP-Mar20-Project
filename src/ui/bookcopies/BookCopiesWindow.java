@@ -202,7 +202,6 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 //								
 //								BookCopyInfoWindow.INSTANCE.updateBookCopy(bookCopy);
 //
-//								System.out.println("update");
 //							});
 
 //							btnDelete.setOnAction(event -> {
@@ -220,12 +219,10 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 //									tableView.getItems().remove(getIndex());
 //								}
 //
-//								System.out.println("delete" + getIndex());
 //							});
 
 //							btnCheckout.setOnAction(event -> {
 //								BookCopy bookCopy = getTableView().getItems().get(getIndex());
-//								System.out.println("checkout");
 //							});
 
 //							hbox.getChildren().addAll(btnUpdate, btnDelete, btnCheckout);

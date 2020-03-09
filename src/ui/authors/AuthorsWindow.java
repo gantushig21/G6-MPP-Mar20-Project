@@ -62,7 +62,6 @@ public class AuthorsWindow extends Stage implements LibWindow {
 	private TableView<Author> tableView;
 
 	public void setData(List<Author> data) {
-		System.out.println("Printed");
 		tableView.setItems(FXCollections.observableList(data));
 	}
 
@@ -181,9 +180,6 @@ public class AuthorsWindow extends Stage implements LibWindow {
 								AuthorInfoWindow.INSTANCE.show();
 								AuthorInfoWindow.INSTANCE.updateAuthor(author);
 
-//		                                System.out.println(author.getFirstName()
-//		                                        + "   " + author.getLastName());
-								System.out.println("update");
 							});
 
 							btnDelete.setOnAction(event -> {
@@ -198,7 +194,6 @@ public class AuthorsWindow extends Stage implements LibWindow {
 									tableView.getItems().remove(getIndex());
 								}
 
-								System.out.println("delete" + getIndex());
 							});
 
 							hbox.getChildren().addAll(btnUpdate, btnDelete);

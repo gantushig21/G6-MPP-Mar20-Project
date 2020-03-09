@@ -338,10 +338,8 @@ public class CheckoutInfoWindow extends Stage implements LibWindow {
 					
 					BookCopy copy = selectedBook.getAvailableBookCopy();
 					copy.changeAvailability();
-					System.out.println(selectedBook.getCheckedOut());
 					selectedBook.setCheckedOut(selectedBook.getCheckedOut() + 1);
 					c.updateBook(selectedBook);
-					System.out.println(selectedBook.getCheckedOut());
 					
 					CheckoutEntry checkoutEntry = new CheckoutEntry(
 						copy, 

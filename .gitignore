@@ -1,15 +1,2 @@
 bin/
 .DS_Store
-<<<<<<< HEAD
-
-=======
-/bin
-DS_Store
-<<<<<<< HEAD
-/src/dataaccess/storage
-=======
->>>>>>> 7c61488c7c1ae3f0500bb752f1047115ebe6ec4c
->>>>>>> master
-=======
-target/
->>>>>>> master

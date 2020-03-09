@@ -207,7 +207,6 @@ public class MemberCheckoutsWindow extends Stage implements LibWindow {
 		                        	G6HBox hbox = new G6HBox(5);
 	                                CheckoutEntry entry = getTableView().getItems().get(getIndex());
 		                        	
-		                            System.out.println("Hello");
 		                            btnReturn.setOnAction(event -> {
 		                            	Optional<ButtonType> result = new G6Alert(AlertType.CONFIRMATION, "Confirmation", "Are you sure to return this book?").showAndWait();
 		                            	if (result.get() == ButtonType.OK) {
@@ -219,21 +218,21 @@ public class MemberCheckoutsWindow extends Stage implements LibWindow {
 			                                c.saveCheckout(checkout);
 			                                startMemberCheckout(checkout);
 			                                
-			                                Book bk = entry.getBook().getBook();
-			                                BookCopy[] copies = bk.getCopies();
-			                                System.out.println(Arrays.toString(copies));
-			                                System.out.println("Entry copy: " + entry.getBook());
-			                                for (BookCopy copy: copies) {
-			                                	if (copy.equals(entry.getBook())) {
-			                                		copy.changeAvailability();
-					                                System.out.println("Found copy: " + entry.getBook());
-					                                System.out.println("First: " + bk.getCheckedOut());
-		                                			bk.setCheckedOut(bk.getCheckedOut() - 1);
-					                                System.out.println("Second: " + bk.getCheckedOut());
-			                                		break;
-			                                	}
-			                                }
-			                                c.updateBook(bk);
+//			                                Book bk = entry.getBook().getBook();
+//			                                BookCopy[] copies = bk.getCopies();
+//			                                System.out.println(Arrays.toString(copies));
+//			                                System.out.println("Entry copy: " + entry.getBook());
+//			                                for (BookCopy copy: copies) {
+//			                                	if (copy.equals(entry.getBook())) {
+//			                                		copy.changeAvailability();
+//					                                System.out.println("Found copy: " + entry.getBook());
+//					                                System.out.println("First: " + bk.getCheckedOut());
+//		                                			bk.setCheckedOut(bk.getCheckedOut() - 1);
+//					                                System.out.println("Second: " + bk.getCheckedOut());
+//			                                		break;
+//			                                	}
+//			                                }
+//			                                c.updateBook(bk);
 			                                
 //			                                table.setItems(FXCollections.observableList(entries));
 			                                Start.showMemberCheckouts(checkout.getMember());
@@ -246,10 +245,9 @@ public class MemberCheckoutsWindow extends Stage implements LibWindow {
 //		                                tableView.getItems().remove(getIndex());
 		                            });
 		                            
-		                            System.out.println("Return date: " + entry.getReturnDate());
-	                            	if (entry.getReturnDate() == null) {
-			                             hbox.getChildren().addAll(btnReturn);
-	                            	}
+//	                            	if (entry.getReturnDate() == null) {
+//			                             hbox.getChildren().addAll(btnReturn);
+//	                            	}
 		                            
 		                            setGraphic(hbox);
 		                            setText(null);
@@ -283,7 +281,7 @@ public class MemberCheckoutsWindow extends Stage implements LibWindow {
         printBtn.setOnAction(new EventHandler<ActionEvent>() {
         	@Override
         	public void handle(ActionEvent e) {
-        		System.out.print(checkout);
+        		System.out.println(checkout);
         	}
 		});
         

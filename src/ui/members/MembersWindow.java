@@ -246,9 +246,6 @@ public class MembersWindow extends Stage implements LibWindow {
 		                    			MemberInfoWindow.INSTANCE.show();
 		                    			MemberInfoWindow.INSTANCE.updateMember(member);
 
-//		                                System.out.println(member.getFirstName()
-//		                                        + "   " + member.getLastName());
-		                                System.out.println("update");
 		                            });
 		                            
 		                            btnDelete.setOnAction(event -> {
@@ -264,7 +261,6 @@ public class MembersWindow extends Stage implements LibWindow {
 //			                                tableView.getItems().remove(getIndex());
 		                                }
 		                                
-		                                System.out.println("delete" + getIndex());
 		                            });
 		                            
 		                            btnCheckout.setOnAction(event -> {
