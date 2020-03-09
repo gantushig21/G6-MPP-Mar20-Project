@@ -83,6 +83,12 @@ public class SystemController implements ControllerInterface {
 		da.updateMember(member);				
 	}
 	@Override
+	public LibraryMember getMemberById(String memberId) {
+		DataAccess da = new DataAccessFacade();
+		
+		return da.getMemberById(memberId);
+	}
+	@Override
 	public void addBook(Book book) throws AlreadyExistException {
 		DataAccess da = new DataAccessFacade();
 
@@ -104,6 +110,13 @@ public class SystemController implements ControllerInterface {
 		
 		da.updateBook(book);
 	}
+	@Override
+	public Book getBookByISBN(String isbn) {
+		DataAccess da = new DataAccessFacade();
+		
+		return da.getBookByISBN(isbn);
+	}
+	
 //	@Override
 //	public void addAuthor(Author author) throws AlreadyExistException {
 //		DataAccess da = new DataAccessFacade();
@@ -187,15 +200,14 @@ public class SystemController implements ControllerInterface {
 	public List<Checkout> allCheckouts() {
 		DataAccess da = new DataAccessFacade();
 		Collection<Checkout> checkouts = da.readCheckoutsMap().values();
+		System.out.println(checkouts);
 		return new ArrayList<Checkout>(checkouts);
 	}
 	
 	@Override
-	public void addCheckout(Checkout checkout)  throws AlreadyExistException {
+	public void saveCheckout(Checkout checkout) {
 		DataAccess da = new DataAccessFacade();
-		boolean result = da.saveNewCheckout(checkout);		
-		if (!result)
-			throw new AlreadyExistException("The checkout with this ID is already exists!");
+		da.saveCheckout(checkout);		
 	}
 	@Override
 	public void updateCheckout(Checkout checkout) {
@@ -207,5 +219,33 @@ public class SystemController implements ControllerInterface {
 		DataAccess da = new DataAccessFacade();
 		da.deleteCheckout(id);						
 	}	
+	@Override
+	public Checkout getMemberCheckout(LibraryMember member) {
+		DataAccess da = new DataAccessFacade();
+		
+		return da.getMemberCheckout(member);
+	}
 	// CHECKOUT END
+	
+	// CHECKOUT ENTRY START
+	
+	@Override
+	public void deleteCheckoutEntry(CheckoutEntry entry) {
+		Checkout checkout = getMemberCheckout(entry.getMember());
+
+		List<CheckoutEntry> list = checkout.getCheckoutEntries();
+		for (int i = 0; i < list.size(); i++) {
+			CheckoutEntry e = list.get(i);
+			if (e.getBook().getCopyNum() == entry.getBook().getCopyNum() && 
+				e.getBook().getBook().getIsbn().equals(entry.getBook().getBook().getIsbn()) 
+				) {
+				checkout.getCheckoutEntries().remove(i);
+				break;
+			}
+		}
+			
+		saveCheckout(checkout);
+	}
+	
+	// CHECKOUT ENTRY END
 }

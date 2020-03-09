@@ -65,6 +65,7 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 	private Book book;
 
 	public void setBook(Book book) {
+		System.out.println("Set Data");
 		this.book = book;
 	}
 	public boolean isInitialized() {
@@ -106,12 +107,12 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 
 	public void init() {
 		G6BorderPane mainPane = new G6BorderPane();
-		mainPane.setPadding(new Insets(25));
+		mainPane.setPadding(new Insets(Constants.WINDOW_DEFAULT_PADDING));
 		mainPane.setId("top-container");
 		
 		// Rendering top
 		
-		scenetitle = new G6Text("Add a new book copy for book ID: #" + book.getId().substring(0, 5));
+		scenetitle = new G6Text("Add a new book copy for book");
 		StackPane sceneTitlePane = G6Text.withPaddings(scenetitle, new Insets(0));
 
 		scenetitle.setFont(Font.font("Harlow Solid Italic", FontWeight.NORMAL, Constants.PANE_TITLE_FONT_SIZE));
@@ -137,7 +138,7 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 		G6GridPane grid = new G6GridPane();
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(10);
-		grid.setVgap(5);
+		grid.setVgap(10);
 		grid.setPadding(new Insets(25, 25, 25, 25));
 
 		
@@ -160,7 +161,7 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 
 		G6Label authorsLbl = new G6Label("Authors: ");
 		grid.add(authorsLbl, 0, 4);
-		List<String> authorsFullnames = book.getAuthors().stream().map(a -> (a.getFirstName() + a.getLastName()))
+		List<String> authorsFullnames = book.getAuthors().stream().map(a -> (a.getFirstName() + " " + a.getLastName()))
 				.collect(Collectors.toList());
 		G6Text authorsTxt = new G6Text(String.join(", ", authorsFullnames));
 		grid.add(authorsTxt, 1, 4);
@@ -220,10 +221,13 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 
 						if (result.get() == ButtonType.OK) {
 							ControllerInterface c = new SystemController();
-							BookCopy bookCopy = new BookCopy(book, copyNumInt, isAvailable);
-							book.addCopy(bookCopy);
+							List<BookCopy> cps = new ArrayList<>(copyNumInt);
+							for (int i = 0; i < copyNumInt; i++) 
+								cps.add(new BookCopy(book, 0, isAvailable));
+							
+							book.addCopies(cps);
 							c.updateBook(book);
-							result = new G6Alert(AlertType.NONE, "Success", "The bookCopy is added successful",
+							result = new G6Alert(AlertType.NONE, "Success", "The copies are added successful",
 									ButtonType.OK).showAndWait();
 							if (result.get() == ButtonType.OK) {
 								clearFields();

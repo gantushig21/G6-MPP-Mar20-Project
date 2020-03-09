@@ -20,11 +20,13 @@ public interface ControllerInterface {
 	public void addMember(LibraryMember member)  throws AlreadyExistException;
 	public void deleteMember(String memberId);
 	public void updateMember(LibraryMember member);
+	public LibraryMember getMemberById(String memberId);
 
 	
 	public void addBook(Book book) throws AlreadyExistException;
 	public void deleteBook(String isbn);
 	public void updateBook(Book book);
+	public Book getBookByISBN(String isbn);
 	
 
 	public void addAuthor(Author author)  throws AlreadyExistException;
@@ -39,7 +41,10 @@ public interface ControllerInterface {
 	public List<BookCopy> allBookCopies();
 
 	public List<Checkout> allCheckouts();
-	public void addCheckout(Checkout checkou)  throws AlreadyExistException;
+	public Checkout getMemberCheckout(LibraryMember member);
+	public void saveCheckout(Checkout checkou);
 	public void updateCheckout(Checkout checkout);
 	public void deleteCheckout(String id);
+	
+	public void deleteCheckoutEntry(CheckoutEntry entry);
 }

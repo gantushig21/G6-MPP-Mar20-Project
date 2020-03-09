@@ -36,6 +36,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
 import ui.LibWindow;
 import ui.Start;
 import ui.components.G6Alert;

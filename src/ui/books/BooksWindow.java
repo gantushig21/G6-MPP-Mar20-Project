@@ -33,6 +33,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import jfxtras.styles.jmetro.JMetro;
 import ui.LibWindow;
 import ui.Start;
 import ui.components.G6Alert;
@@ -94,7 +95,7 @@ public class BooksWindow extends Stage implements LibWindow {
 			@Override
 			public void handle(ActionEvent e) {
 				Start.homeWindow();
-				
+
 			}
 		});
 
@@ -116,7 +117,7 @@ public class BooksWindow extends Stage implements LibWindow {
 				ControllerInterface ci = new SystemController();
 				List<Author> authors = ci.allAuthors();
 				BooksInfoWindow.INSTANCE.show();
-				// BooksInfoWindow.INSTANCE.updateMember(member);
+				BooksInfoWindow.INSTANCE.setData(authors);
 			}
 		});
 		/*
@@ -136,9 +137,9 @@ public class BooksWindow extends Stage implements LibWindow {
         	}
 		});
         
-        G6Label searchLbl = new G6Label("Search books by ISBN (input keyword then press Enter): ");
+//        G6Label searchLbl = new G6Label("Search books by ISBN (input keyword then press Enter): ");
         VBox vboxTop = new VBox();
-        vboxTop.getChildren().addAll(searchLbl, searchInput);
+        vboxTop.getChildren().addAll(searchInput);
     	nextPane.setLeft(vboxTop);
 	        
 		nextPane.setPadding(new Insets(0, 10, 10, 0));
@@ -208,9 +209,7 @@ public class BooksWindow extends Stage implements LibWindow {
 								}
 								BooksInfoWindow.INSTANCE.show();
 								BooksInfoWindow.INSTANCE.updateBook(book);
-
-								System.out.println("update");
-
+								Start.searchAuthors("", "addBook");
 							});
 
 							btnDelete.setOnAction(event -> {
@@ -222,12 +221,11 @@ public class BooksWindow extends Stage implements LibWindow {
 
 								if (result.get() == ButtonType.OK) {
 									ControllerInterface c = new SystemController();
+									System.out.println(book.getIsbn());
 									c.deleteBook(book.getIsbn());
 
 									tblBooks.getItems().remove(getIndex());
 								}
-
-								System.out.println("delete" + getIndex());
 
 							});
 
@@ -259,6 +257,8 @@ public class BooksWindow extends Stage implements LibWindow {
 		mainPane.setCenter(vbox);
 
 		Scene scene = new Scene(mainPane, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+		JMetro jMetro = new JMetro();
+		jMetro.setScene(scene);
 		// scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
 		setScene(scene);
 

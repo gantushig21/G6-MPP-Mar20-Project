@@ -61,6 +61,7 @@ public class AuthorsWindow extends Stage implements LibWindow {
 	private TableView<Author> tableView;
 
 	public void setData(List<Author> data) {
+		System.out.println("Printed");
 		tableView.setItems(FXCollections.observableList(data));
 	}
 
@@ -103,7 +104,7 @@ public class AuthorsWindow extends Stage implements LibWindow {
         searchInput.setOnAction(new EventHandler<ActionEvent>() {
         	@Override
         	public void handle(ActionEvent e) {
-//        		Start.searchAuthors(searchInput.getText().trim().toLowerCase());
+        		Start.searchAuthors(searchInput.getText().trim().toLowerCase(), "showTable");
         	}
 		});
 
@@ -158,7 +159,6 @@ public class AuthorsWindow extends Stage implements LibWindow {
 
 					final G6Button btnUpdate = new G6Button("Update");
 					final G6Button btnDelete = new G6Button("Delete");
-					final G6Button btnCheckout = new G6Button("Checkout");
 
 					@Override
 					public void updateItem(String item, boolean empty) {
@@ -200,12 +200,7 @@ public class AuthorsWindow extends Stage implements LibWindow {
 								System.out.println("delete" + getIndex());
 							});
 
-							btnCheckout.setOnAction(event -> {
-								Author author = getTableView().getItems().get(getIndex());
-								System.out.println("checkout");
-							});
-
-							hbox.getChildren().addAll(btnUpdate, btnDelete, btnCheckout);
+							hbox.getChildren().addAll(btnUpdate, btnDelete);
 
 							setGraphic(hbox);
 							setText(null);

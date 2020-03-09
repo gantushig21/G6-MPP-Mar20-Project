@@ -1,11 +1,22 @@
 package config;
 
 public final class Constants {
+	// Table
+	public final static int TABLE_TITLE_LENGTH = 200;
+	public final static int TABLE_BOOK_ISBN_LENGTH = 100;
+	public final static int TABLE_BOOK_AUTHORS_LENGTH = 200;
+	public final static int TABLE_DATE_LENGTH = 100;
+	
+	// Checkout
+	public final static int CHECKOUT_DAY_LIMIT = 21;
+	
+	// Table
 	public final static int PAGE_LIMIT = 5;
 	
 	// Window
-	public final static int WINDOW_WIDTH = 1000;
-	public final static int WINDOW_HEIGHT = 600;
+	public final static int WINDOW_WIDTH = 1200;
+	public final static int WINDOW_HEIGHT = 760;
+	public final static int WINDOW_DEFAULT_PADDING = 35;
 	
 	// Pane
 	public final static int PANE_TITLE_FONT_SIZE = 25;

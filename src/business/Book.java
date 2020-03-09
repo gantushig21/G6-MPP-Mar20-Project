@@ -13,7 +13,7 @@ import java.util.Optional;
 final public class Book implements Serializable {
 
 	private static final long serialVersionUID = 6110690276665962829L;
-	private String id;
+	private int total;
 	private BookCopy[] copies;
 	private List<Author> authors;
 	private String isbn;
@@ -21,7 +21,7 @@ final public class Book implements Serializable {
 	private int maxCheckoutLength;
 
 	public Book(String isbn, String title, int maxCheckoutLength, List<Author> authors) {
-		this.id = "Book_" + (System.currentTimeMillis() / 1000);
+		this.total = 0;
 		this.isbn = isbn;
 		this.title = title;
 		this.maxCheckoutLength = maxCheckoutLength;
@@ -46,13 +46,29 @@ final public class Book implements Serializable {
 			retVal.add(c.getCopyNum());
 		}
 		return retVal;
-
+	}
+	
+	public int getTotal() {
+		return total;
 	}
 
 	public void addCopy(BookCopy bc) {
+		total++;
 		BookCopy[] newArr = new BookCopy[copies.length + 1];
 		System.arraycopy(copies, 0, newArr, 0, copies.length);
 		newArr[copies.length] = bc;
+		copies = newArr;
+	}
+	
+	public void addCopies(List<BookCopy> cps) {
+		int size = cps.size();
+		
+		BookCopy[] newArr = new BookCopy[copies.length + size];
+		System.arraycopy(copies, 0, newArr, 0, copies.length);
+		for (int i = 0; i < size; i++) {
+			cps.get(i).setCopyNum(copies.length + i + 1);
+			newArr[copies.length + i] = cps.get(i); 
+		}
 		copies = newArr;
 	}
 
@@ -79,12 +95,24 @@ final public class Book implements Serializable {
 		}
 
 		return Arrays.stream(copies).map(l -> l.getIsAvailable()).reduce(false, (x, y) -> x || y);
-
 	}
 
+	public BookCopy getAvailableBookCopy() {
+		for (BookCopy copy: copies) {
+			if (copy.getIsAvailable())
+				return copy;
+		}
+		
+		return null;
+	}
+	
 	@Override
 	public String toString() {
-		return "isbn: " + isbn + ", maxLength: " + maxCheckoutLength + ", available: " + isAvailable();
+		return "isbn: " + isbn + 
+				", maxLength: " + maxCheckoutLength + 
+				", available: " + isAvailable() +
+				Arrays.toString(copies) + 
+				authors.toString();
 	}
 
 	public String getId() {

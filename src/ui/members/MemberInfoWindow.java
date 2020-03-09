@@ -2,13 +2,10 @@ package ui.members;
 
 import java.util.Optional;
 
-import javax.swing.JOptionPane;
-
 import business.Address;
 import business.AlreadyExistException;
 import business.ControllerInterface;
 import business.LibraryMember;
-import business.LoginException;
 import business.SystemController;
 import config.Constants;
 import javafx.event.ActionEvent;
@@ -324,7 +321,6 @@ public class MemberInfoWindow extends Stage implements LibWindow {
 	}
 	public Text getMessageBar() {
 		return messageBar;
-	}	
-    
+	}	   
 }
 

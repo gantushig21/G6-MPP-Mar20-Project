@@ -33,6 +33,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import jfxtras.styles.jmetro.JMetro;
 import ui.LibWindow;
 import ui.Start;
 import ui.components.G6Alert;
@@ -77,17 +78,17 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 
 	public void init() {
 		G6BorderPane mainPane = new G6BorderPane();
-		mainPane.setPadding(new Insets(25));
+		mainPane.setPadding(new Insets(35));
 		mainPane.setId("top-container");
 
 		// Rendering top
-		Text scenetitle = new Text("Manage bookCopies");
+		Text scenetitle = new Text("Manage Copies");
 		StackPane sceneTitlePane = G6Text.withPaddings(scenetitle, new Insets(0));
 
 		scenetitle.setFont(Font.font("Harlow Solid Italic", FontWeight.NORMAL, Constants.PANE_TITLE_FONT_SIZE));
 		G6BorderPane topPane = new G6BorderPane();
 		topPane.setCenter(sceneTitlePane);
-		topPane.setPadding(new Insets(0, 10, 20, 0));
+//		topPane.setPadding(new Insets(0, 10, 20, 0));
 
 		G6Button backBtn = new G6Button("Back");
 
@@ -107,7 +108,6 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 		bookInfoGrid.setAlignment(Pos.CENTER);
 		bookInfoGrid.setHgap(10);
 		bookInfoGrid.setVgap(5);
-		bookInfoGrid.setPadding(new Insets(25, 25, 25, 25));
 
 		G6Label titleLbl = new G6Label("Title: ");
 		bookInfoGrid.add(titleLbl, 0, 2);
@@ -121,14 +121,13 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 
 		G6Label authorsLbl = new G6Label("Authors: ");
 		bookInfoGrid.add(authorsLbl, 0, 4);
-		List<String> authorsFullnames = book.getAuthors().stream().map(a -> (a.getFirstName() + a.getLastName()))
+		List<String> authorsFullnames = book.getAuthors().stream().map(a -> (a.getFirstName() + " " + a.getLastName()))
 				.collect(Collectors.toList());
 		G6Text authorsTxt = new G6Text(String.join(", ", authorsFullnames));
 		bookInfoGrid.add(authorsTxt, 1, 4);
 		bookInfoGrid.setMaxWidth(Double.MAX_VALUE);
 
 		G6Button addBtn = new G6Button("Add a new book copy");
-
 		addBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
@@ -243,6 +242,10 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 		mainPane.setBottom(vbox);
 
 		Scene scene = new Scene(mainPane, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+		
+		JMetro jMetro = new JMetro();
+		jMetro.setScene(scene);
+		
 		// scene.getStylesheets().add(getClass().getResource("../library.css").toExternalForm());
 		setScene(scene);
 

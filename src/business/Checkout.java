@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Checkout  implements Serializable{
+public class Checkout implements Serializable{
 	/**
 	 * 
 	 */
@@ -33,5 +33,9 @@ public class Checkout  implements Serializable{
 	
 	public String getId() {
 		return id;
+	}
+	
+	public String toString() {
+		return member.getFirstName() + " => " + entries.toString();
 	}
 }

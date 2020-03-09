@@ -1,5 +1,6 @@
 package dataaccess;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -19,6 +20,7 @@ import business.Author;
 import business.Book;
 import business.BookCopy;
 import business.Checkout;
+import business.CheckoutEntry;
 import business.LibraryMember;
 
 public class DataAccessFacade implements DataAccess {
@@ -66,6 +68,12 @@ public class DataAccessFacade implements DataAccess {
 		mems.put(member.getMemberId(), member);
 		saveToStorage(StorageType.MEMBERS, mems);
 	}
+	
+	public LibraryMember getMemberById(String memberId) {
+		HashMap<String, LibraryMember> mems = readMemberMap();
+		
+		return mems.get(memberId);
+	}
 
 	// START BOOK
 
@@ -106,7 +114,6 @@ public class DataAccessFacade implements DataAccess {
 		HashMap<String, Book> books = readBooksMap();
 		String isbn = book.getIsbn();
 		if (!books.containsKey(isbn)) {
-			// book.setAuthors(new ArrayList<Author>());
 			books.put(isbn, book);
 			saveToStorage(StorageType.BOOKS, books);
 
@@ -115,16 +122,22 @@ public class DataAccessFacade implements DataAccess {
 		return false;
 	}
 
-	public void deleteBook(String id) {
+	public void deleteBook(String isbn) {
 		HashMap<String, Book> books = readBooksMap();
-		books.remove(id);
+		books.remove(isbn);
 		saveToStorage(StorageType.BOOKS, books);
 	}
 
 	public void updateBook(Book book) {
 		HashMap<String, Book> books = readBooksMap();
-		books.put(book.getId(), book);
+		books.put(book.getIsbn(), book);
 		saveToStorage(StorageType.BOOKS, books);
+	}
+	
+	public Book getBookByISBN(String isbn) {
+		HashMap<String, Book> books = readBooksMap();
+		
+		return books.get(isbn);
 	}
 
 	// END BOOK
@@ -140,7 +153,9 @@ public class DataAccessFacade implements DataAccess {
 	public HashMap<String, Book> readBooksMap() {
 		// Returns a Map with name/value pairs being
 		// isbn -> Book
-		return (HashMap<String, Book>) readFromStorage(StorageType.BOOKS);
+		Object object = readFromStorage(StorageType.BOOKS);
+		
+		return object == null ? new HashMap<String, Book>() : (HashMap<String, Book>) object;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -204,12 +219,13 @@ public class DataAccessFacade implements DataAccess {
 			in = new ObjectInputStream(Files.newInputStream(path));
 			retVal = in.readObject();
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 		} finally {
 			if (in != null) {
 				try {
 					in.close();
 				} catch (Exception e) {
+					System.out.println("HERE 2");
 				}
 			}
 		}
@@ -302,7 +318,8 @@ public class DataAccessFacade implements DataAccess {
 	}
 
 	public HashMap<String, Author> readAuthorMap() {
-		return (HashMap<String, Author>) readFromStorage(StorageType.AUTHORS);
+		Object object = readFromStorage(StorageType.AUTHORS);
+		return object == null ? new HashMap<String, Author>() : (HashMap<String, Author>) object;
 	}
 	// AUTHOR END
 
@@ -359,7 +376,8 @@ public class DataAccessFacade implements DataAccess {
 	}
 
 	public HashMap<String, BookCopy> readBookCopiesMap() {
-		return (HashMap<String, BookCopy>) readFromStorage(StorageType.BOOKCOPIES);
+		Object object = readFromStorage(StorageType.BOOKCOPIES);;
+		return object == null ? new HashMap<String, BookCopy>() : (HashMap<String, BookCopy>) object;
 	}
 	// BOOKCOPY END
 
@@ -382,7 +400,7 @@ public class DataAccessFacade implements DataAccess {
 			Checkout checkout = new Checkout(member);
 //				checkout.addEntry(entry);
 
-			Checkouts.put("test", checkout);
+			Checkouts.put(member.getMemberId(), checkout);
 //				printHashMap(Checkouts);
 			saveToStorage(StorageType.CHECKOUTS, Checkouts);
 			return true;
@@ -394,16 +412,13 @@ public class DataAccessFacade implements DataAccess {
 
 	}
 
-	public boolean saveNewCheckout(Checkout checkout) {
-		HashMap<String, Checkout> Checkouts = readCheckoutsMap();
-		String id = checkout.getId();
-		if (!Checkouts.containsValue(checkout)) {
-			Checkouts.put(id, checkout);
-			saveToStorage(StorageType.CHECKOUTS, Checkouts);
+	public boolean saveCheckout(Checkout checkout) {
+		HashMap<String, Checkout> checkouts = readCheckoutsMap();
+		String memberId = checkout.getMember().getMemberId();
+		checkouts.put(memberId, checkout);
+		saveToStorage(StorageType.CHECKOUTS, checkouts);
 
-			return true;
-		}
-		return false;
+		return true;
 	}
 
 	public void deleteCheckout(String id) {
@@ -422,10 +437,22 @@ public class DataAccessFacade implements DataAccess {
 		saveToStorage(StorageType.CHECKOUTS, Checkouts);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public HashMap<String, Checkout> readCheckoutsMap() {
-		// TODO Auto-generated method stub
-		return (HashMap<String, Checkout>) readFromStorage(StorageType.CHECKOUTS);
+		Object object = readFromStorage(StorageType.CHECKOUTS);
+		
+		return object != null ? (HashMap<String, Checkout>) object : new HashMap<String, Checkout>(); 
+	}
+	@Override 
+	public Checkout getMemberCheckout(LibraryMember member) {
+		HashMap<String, Checkout> checkouts = readCheckoutsMap();
+		Checkout checkout = checkouts.get(member.getMemberId());
+		if (checkout == null) {
+			checkout = new Checkout(member);
+		}
+		
+		return checkout;
 	}
 	// CHECKOUT END
 

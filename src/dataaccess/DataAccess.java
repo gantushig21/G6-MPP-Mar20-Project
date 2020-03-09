@@ -15,11 +15,12 @@ public interface DataAccess {
 	public boolean saveNewMember(LibraryMember member); 
 	public void deleteMember(String memberId);
 	public void updateMember(LibraryMember member);
-	
+	public LibraryMember getMemberById(String memberId);
 
 	public boolean saveNewBook(Book book);
 	public void deleteBook(String isbn);
 	public void updateBook(Book book);
+	public Book getBookByISBN(String isbn);
 	
 	public boolean saveNewAuthor(Author author);
 	public void deleteAuthor(String authorId);
@@ -32,8 +33,9 @@ public interface DataAccess {
 	public void updateBookCopy(BookCopy bookCopy);
 	public HashMap<String, BookCopy> readBookCopiesMap();
 	
-	public boolean saveNewCheckout(Checkout checkout);
+	public boolean saveCheckout(Checkout checkout);
 	public void deleteCheckout(String id);
 	public void updateCheckout(Checkout checkout);
 	public HashMap<String, Checkout> readCheckoutsMap();
+	public Checkout getMemberCheckout(LibraryMember member);
 }
