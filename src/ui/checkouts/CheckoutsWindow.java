@@ -204,30 +204,6 @@ public class CheckoutsWindow extends Stage implements LibWindow {
 		                        } else {
 		                        	G6HBox hbox = new G6HBox(5);
 		                        	
-		                        	btnUpdate.setOnAction(event -> {
-		                                System.out.println("update " + getIndex());
-		                            });
-		                            
-		                            btnDelete.setOnAction(event -> {		                                
-//		                                Optional<ButtonType> result = new G6Alert(AlertType.CONFIRMATION, "Confirmation", "Are you sure to delete this record").showAndWait();
-//		                                
-//		                                if (result.get() == ButtonType.OK) {
-//			                                CheckoutEntry entry = getTableView().getItems().get(getIndex());
-//			                                ControllerInterface c = new SystemController();
-//			                                
-//			                                c.deleteCheckoutEntry(entry);
-////			                                c.deleteCheckout(checkout.getCheckoutId());
-//			                                
-//			                                tableView.getItems().remove(getIndex());
-//		                                }
-//		                                
-		                                System.out.println("delete " + getIndex());
-		                            });
-		                            
-		                            btnCheckout.setOnAction(event -> {
-//		                                Checkout checkout = getTableView().getItems().get(getIndex());
-		                                System.out.println("checkout");
-		                            });
 		                            
 		                            btnReturn.setOnAction(event -> {
 		                            	Optional<ButtonType> result = new G6Alert(AlertType.CONFIRMATION, "Confirmation", "Are you sure to return this book?").showAndWait();

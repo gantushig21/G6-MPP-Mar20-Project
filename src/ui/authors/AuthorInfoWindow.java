@@ -239,17 +239,6 @@ public class AuthorInfoWindow extends Stage implements LibWindow {
 					Optional<ButtonType> result;
 					
 	        		if (actionBtn.getText().equals("Add")) {
-	            	   System.out.println(firstNameStr + " " +
-	            			   lastNameStr + " " +
-	            			   streetStr + " " + 
-	            			   cityStr + " " +
-	            			   stateStr + " " +
-	            			   zipStr + " " + 
-	            			   phoneNumberStr + " " + 
-	            			   bioStr + " " + 
-	            			   credentialsStr
-	            	   );
-            	   
        					
        					result = new G6Alert(AlertType.CONFIRMATION, "Confirmation", "Are you sure to create a new author?").showAndWait();
        					
@@ -269,9 +258,7 @@ public class AuthorInfoWindow extends Stage implements LibWindow {
 	           					clearFields();
 	           					Start.showAuthors(true);
        	            	   }       	            	   
-       					} else {
-       						System.out.println("Canceled");
-       					}
+       					} 
        					
 	        		} else if (actionBtn.getText().equals("Update")) {
 	        			currentAuthor.setFirstName(firstNameStr);

@@ -211,15 +211,6 @@ public class MemberInfoWindow extends Stage implements LibWindow {
 					Optional<ButtonType> result;
 					
 	        		if (actionBtn.getText().equals("Add")) {
-	            	   System.out.println(firstNameStr + " " +
-	            			   lastNameStr + " " +
-	            			   streetStr + " " + 
-	            			   cityStr + " " +
-	            			   stateStr + " " +
-	            			   zipStr + " " + 
-	            			   phoneNumberStr
-	            	   );
-            	   
        					
        					result = new G6Alert(AlertType.CONFIRMATION, "Confirmation", "Are you sure to create a new member?").showAndWait();
        					
@@ -237,9 +228,7 @@ public class MemberInfoWindow extends Stage implements LibWindow {
 	           					clearFields();
 	           					Start.showMembers(true);
        	            	   }       	            	   
-       					} else {
-       						System.out.println("Canceled");
-       					}
+       					} 
        					
 	        		} else if (actionBtn.getText().equals("Update")) {
 	        			currentMember.setFirstName(firstNameStr);

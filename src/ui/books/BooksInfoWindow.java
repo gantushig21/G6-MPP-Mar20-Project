@@ -456,10 +456,7 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 								clearFields();
 								Start.showBooks();
 							}
-						} else {
-							System.out.println("Canceled");
-						}
-
+						} 
 					} else if (actionBtn.getText().equals("Update")) {
 						List<Author> auths = new ArrayList<Author>();
 						for (Author author: authors)

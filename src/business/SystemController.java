@@ -200,7 +200,6 @@ public class SystemController implements ControllerInterface {
 	public List<Checkout> allCheckouts() {
 		DataAccess da = new DataAccessFacade();
 		Collection<Checkout> checkouts = da.readCheckoutsMap().values();
-		System.out.println(checkouts);
 		return new ArrayList<Checkout>(checkouts);
 	}
 	

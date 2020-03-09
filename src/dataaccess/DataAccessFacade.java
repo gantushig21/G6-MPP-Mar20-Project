@@ -33,14 +33,12 @@ public class DataAccessFacade implements DataAccess {
 	public static final String DATE_PATTERN = "MM/dd/yyyy";
 
 	public void printHashMap(HashMap hm) {
-		System.out.println("Deserialized HashMap");
 		// Display content using Iterator
 		Set set = hm.entrySet();
 		Iterator iterator = set.iterator();
 		while (iterator.hasNext()) {
 			Map.Entry mentry = (Map.Entry) iterator.next();
 			System.out.print("key: " + mentry.getKey() + " & Value: ");
-			System.out.println(mentry.getValue());
 		}
 	}
 
@@ -221,7 +219,6 @@ public class DataAccessFacade implements DataAccess {
 				try {
 					in.close();
 				} catch (Exception e) {
-					System.out.println("HERE 2");
 				}
 			}
 		}

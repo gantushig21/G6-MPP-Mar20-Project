@@ -66,7 +66,6 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 	private Book book;
 
 	public void setBook(Book book) {
-		System.out.println("Set Data");
 		this.book = book;
 	}
 	public boolean isInitialized() {
@@ -100,7 +99,6 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 		actionBtn.setText("Update");
 		
 		copyNumTxtf.setText(Integer.toString(bookCopy.getCopyNum()) );
-		System.out.println(bookCopy.getCopyNum());
 		isAvailableCb.setSelected(bookCopy.getIsAvailable());
 		
 		currentBookCopy = bookCopy;
@@ -234,9 +232,7 @@ public class BookCopyInfoWindow extends Stage implements LibWindow {
 								clearFields();
 								Start.showBookCopies(book);
 							}
-						} else {
-							System.out.println("Canceled");
-						}
+						} 
 
 					} else if (actionBtn.getText().equals("Update")) {
 					
