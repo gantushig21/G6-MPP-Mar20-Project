@@ -8,9 +8,12 @@ import java.util.Optional;
 import business.AlreadyExistException;
 import business.Author;
 import business.Book;
+import business.BookCopy;
 import business.ControllerInterface;
 import business.SystemController;
 import config.Constants;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -71,7 +74,9 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 	private G6Button actionBtn;
 	private G6TableView<Author> table;
 	private G6TextField txtTitle;
+	private G6TextField copyNumTxtf;
 	private G6TextField txtIsbn;
+	private G6TextField borrowDayLimitTxtf;
 	private ListView<Author> listView;
 	private Book currentBook;
 	private G6TextField maxCheckoutLengthTxtf;
@@ -94,12 +99,35 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 		}
 		 table.setItems(FXCollections.observableList(newAuthors));
 	}
+	
+	public void disableAddButton() {
+		actionBtn.setDisable(
+			txtTitle.getText().isEmpty() ||
+			txtIsbn.getText().isEmpty() ||
+			copyNumTxtf.getText().isEmpty() ||
+			maxCheckoutLengthTxtf.getText().isEmpty() ||
+			borrowDayLimitTxtf.getText().isEmpty() ||
+			listView.getItems().size() == 0
+		);
+	}
 
 	private void clearFields() {
 		txtTitle.setText("");
 		txtIsbn.setText("");
 		listView.getItems().clear();
 		maxCheckoutLengthTxtf.setText("");
+	}
+
+	public void startBook() {
+		actionBtn.setText("Add");
+
+		txtTitle.setText("");
+		txtIsbn.setText("");
+
+		copyNumTxtf.setText("1");
+//		listView.getItems().addAll();
+		maxCheckoutLengthTxtf.setText("");
+		borrowDayLimitTxtf.setText("21");
 	}
 
 	public void updateBook(Book book) {
@@ -110,8 +138,11 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 		txtIsbn.setText(book.getIsbn());
 		txtIsbn.setDisable(true);
 
+		copyNumTxtf.setText(book.getNumCopies() + "");
+		copyNumTxtf.setDisable(true);
 		listView.getItems().addAll(book.getAuthors());
 		maxCheckoutLengthTxtf.setText(book.getMaxCheckoutLength() + "");
+		borrowDayLimitTxtf.setText(book.getBorrowDayLimit() + "");
 	}
 	
 	private void selectAuthor(Author author) {
@@ -229,16 +260,32 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 		txtIsbn.setPromptText("ISBN");
 		grid.add(txtIsbn, 1, 1);
 
-		HBox boxAuthor = new HBox(5);
-		boxAuthor.setAlignment(Pos.TOP_LEFT);
+		G6Label copyNumberLbl = new G6Label("Number of copies: ");
+		grid.add(copyNumberLbl, 0, 2);
+		copyNumTxtf = new G6TextField();
+		copyNumTxtf.setPromptText("Number of Copies");
+		grid.add(copyNumTxtf, 1, 2);
+
+		copyNumTxtf.textProperty().addListener(new ChangeListener<String>() {
+		    @Override
+		    public void changed(ObservableValue<? extends String> observable, String oldValue, 
+		        String newValue) {
+		        if (!newValue.matches("\\d*")) {
+		        	copyNumTxtf.setText(newValue.replaceAll("[^\\d]", ""));
+		        }
+		    }
+		});
+		
+//		HBox boxAuthor = new HBox(5);
+//		boxAuthor.setAlignment(Pos.TOP_LEFT);
 		G6Label lblAuthors = new G6Label("Authors: ");
-		lblAuthors.setAlignment(Pos.TOP_LEFT);
-		boxAuthor.getChildren().add(lblAuthors);
-		grid.add(boxAuthor, 0, 6);
+//		lblAuthors.setAlignment(Pos.TOP_LEFT);
+//		boxAuthor.getChildren().add(lblAuthors);
+		grid.add(lblAuthors, 0, 5);
 		// TODO Authors List
 
 		listView = new ListView<Author>();
-		listView.setPrefHeight(250);
+		listView.setPrefHeight(235);
 		listView.setCellFactory(param -> new ListCell<Author>() {
 			@Override
 			protected void updateItem(Author item, boolean empty) {
@@ -260,7 +307,7 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 		    }
 		});
 
-		grid.add(listView, 1, 6);
+		grid.add(listView, 1, 5);
 
 //		ControllerInterface ci = new SystemController();
 //		List<Author> data = ci.allAuthors();
@@ -326,15 +373,36 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 //		grid.add(boxCombo, 1, 7);
 
 		G6Label lblLength = new G6Label("Checkout Length: ");
-//		lblLength.setWrapText(true);
 		maxCheckoutLengthTxtf = new G6TextField();
-		HBox boxLength = new HBox(5);
-		boxLength.setAlignment(Pos.TOP_LEFT);
-		boxLength.getChildren().add(lblLength);
-		boxLength.setPrefWidth(80);
-		grid.add(boxLength, 0, 5);		
-		grid.add(maxCheckoutLengthTxtf, 1, 5);
+		grid.add(lblLength, 0, 3);		
+		maxCheckoutLengthTxtf.setPromptText("Checkout Length");
+		grid.add(maxCheckoutLengthTxtf, 1, 3);
 
+		maxCheckoutLengthTxtf.textProperty().addListener(new ChangeListener<String>() {
+		    @Override
+		    public void changed(ObservableValue<? extends String> observable, String oldValue, 
+		        String newValue) {
+		        if (!newValue.matches("\\d*")) {
+		        	maxCheckoutLengthTxtf.setText(newValue.replaceAll("[^\\d]", ""));
+		        }
+		    }
+		});
+		
+		G6Label lblBorrowDay = new G6Label("Borrow Day Limit: ");
+		borrowDayLimitTxtf = new G6TextField();
+		grid.add(lblBorrowDay, 0, 4);		
+		borrowDayLimitTxtf.setPromptText("Borrow Day Limit");
+		grid.add(borrowDayLimitTxtf, 1, 4);
+
+		borrowDayLimitTxtf.textProperty().addListener(new ChangeListener<String>() {
+		    @Override
+		    public void changed(ObservableValue<? extends String> observable, String oldValue, 
+		        String newValue) {
+		        if (!newValue.matches("\\d*")) {
+		        	borrowDayLimitTxtf.setText(newValue.replaceAll("[^\\d]", ""));
+		        }
+		    }
+		});
 		actionBtn = new G6Button("Add");
 		HBox hbBtn = new HBox(11);
 		hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
@@ -354,6 +422,8 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 				String isbn = txtIsbn.getText().trim();
 				List<Author> authors = listView.getItems();
 				String maxLength = maxCheckoutLengthTxtf.getText();
+				String numberOfCopies = copyNumTxtf.getText();
+				String borrowDayLimit = borrowDayLimitTxtf.getText();
 
 				try {
 					RuleSet ruleSet = RuleSetFactory.getRuleSet(BooksInfoWindow.this);
@@ -370,7 +440,14 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 							List<Author> auths = new ArrayList<Author>();
 							for (Author author: authors)
 								auths.add(author);
+							
 							Book book = new Book(isbn, title, Integer.parseInt(maxLength), auths);
+							List<BookCopy> cps = new ArrayList<>(Integer.parseInt(numberOfCopies));
+							for (int i = 0; i < Integer.parseInt(numberOfCopies); i++) 
+								cps.add(new BookCopy(book, 0, true));
+							
+							book.addCopies(cps);
+							book.setBorrowDayLimit(Integer.parseInt(borrowDayLimit));
 							c.addBook(book);
 
 							result = new G6Alert(AlertType.NONE, "Success", "The book is added successful",
@@ -392,6 +469,7 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 						currentBook.setIsbn(isbn);
 						currentBook.setAuthors(auths);
 						currentBook.setMaxCheckoutLength(Integer.parseInt(maxLength));
+						currentBook.setBorrowDayLimit(Integer.parseInt(borrowDayLimit));
 
 						result = new G6Alert(AlertType.CONFIRMATION, "Confirmation", "Are you sure to update this book")
 								.showAndWait();
@@ -456,6 +534,14 @@ public class BooksInfoWindow extends Stage implements LibWindow {
 	
 	public String getMaxCheckoutLengthValue() {
 		return maxCheckoutLengthTxtf.getText();
+	}
+	
+	public String getNumberOfCopiesValue() {
+		return copyNumTxtf.getText();
+	}
+	
+	public String getBorrowDayLimitValue() {
+		return borrowDayLimitTxtf.getText();
 	}
 
 }

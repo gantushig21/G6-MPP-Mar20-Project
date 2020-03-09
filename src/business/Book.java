@@ -19,9 +19,11 @@ final public class Book implements Serializable {
 	private String isbn;
 	private String title;
 	private int maxCheckoutLength;
-	private int checkedOut = 0;
+	private int checkedOut;
+	private int borrowDayLimit;
 
 	public Book(String isbn, String title, int maxCheckoutLength, List<Author> authors) {
+		this.borrowDayLimit = 0;
 		this.checkedOut = 0;
 		this.total = 0;
 		this.isbn = isbn;
@@ -52,6 +54,10 @@ final public class Book implements Serializable {
 	
 	public int getTotal() {
 		return total;
+	}
+	
+	public int getBorrowDayLimit() {
+		return borrowDayLimit;
 	}
 
 	public void addCopy(BookCopy bc) {
@@ -168,7 +174,10 @@ final public class Book implements Serializable {
 	public void setCopies(BookCopy[] copies) {
 		this.copies = copies;
 	}
-
+	public void setBorrowDayLimit(int borrowDayLimit) {
+		this.borrowDayLimit = borrowDayLimit;
+	}
+	
 	public void setAuthors(List<Author> authors) {
 		this.authors = authors;
 	}

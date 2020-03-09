@@ -70,6 +70,7 @@ public class CheckoutInfoWindow extends Stage implements LibWindow {
 	
 	private G6Label bookCopyLbl;
 	private G6Label checkoutDateLbl;
+	private G6Label dueDateLbl0;
 	private G6DatePicker dueDateDTDtpckr;
 	
 	private Optional<ButtonType> result;
@@ -87,16 +88,33 @@ public class CheckoutInfoWindow extends Stage implements LibWindow {
 		isInitialized = val;
 	}
 	private Text messageBar = new Text();
-	public void clear() {
-		messageBar.setText("");
+	
+	public void start() {
 		checkoutDate = LocalDate.now();
-		dueDate = checkoutDate.plusDays(Constants.CHECKOUT_DAY_LIMIT);
-		String formattedDate = checkoutDate.format(DateTimeFormatter.ofPattern("M/d/YYYY"));
-		checkoutDateLbl.setText(formattedDate);
 		
-		limitDate = checkoutDate.plusDays(Constants.CHECKOUT_DAY_LIMIT);
+		setVisible(false);
 		
-		dueDateDTDtpckr.setValue(dueDate);
+	}
+	
+	private void searchBook() {
+		setVisible(selectedBook != null);
+		
+		if (selectedBook != null) {
+			dueDate = checkoutDate.plusDays(selectedBook.getBorrowDayLimit());
+			String formattedDate = checkoutDate.format(DateTimeFormatter.ofPattern("M/d/YYYY"));
+			checkoutDateLbl.setText(formattedDate);
+			
+			limitDate = checkoutDate.plusDays(selectedBook.getBorrowDayLimit());
+			
+			dueDateDTDtpckr.setValue(dueDate);			
+		}
+	}
+	
+	private void setVisible(boolean value) {
+		dueDateDTDtpckr.setVisible(value);
+		dueDateLbl0.setVisible(value);
+		actionBtn.setVisible(value);
+		
 	}
 	
 	/* This class is a singleton */
@@ -190,6 +208,8 @@ public class CheckoutInfoWindow extends Stage implements LibWindow {
 					result = new G6Alert(AlertType.WARNING, "Sorry", "Book with this ISBN is not found!").showAndWait();
 				} else if (!book.isAvailable()) {
 					result = new G6Alert(AlertType.WARNING, "Sorry", "There is not available copy!").showAndWait();
+				} else if (book.getMaxCheckoutLength() <= book.getCheckedOut()) {
+					result = new G6Alert(AlertType.WARNING, "Sorry", "The maximum checkout length is " + book.getMaxCheckoutLength()).showAndWait();
 				} else {
 					selectedBook = book;
 					titleLbl.setText(book.getTitle());
@@ -200,6 +220,7 @@ public class CheckoutInfoWindow extends Stage implements LibWindow {
 					
 				}
 				handleAddButtonDisabled();
+				searchBook();
 			}
 		});
         
@@ -269,7 +290,7 @@ public class CheckoutInfoWindow extends Stage implements LibWindow {
         checkoutDateLbl = new G6Label(LocalDate.now().toString());
         grid.add(checkoutDateLbl, 1, 7);
         
-        G6Label dueDateLbl0 = new G6Label("Due Date: ");
+        dueDateLbl0 = new G6Label("Due Date: ");
         grid.add(dueDateLbl0, 0, 8);
         dueDateDTDtpckr = new G6DatePicker();
         grid.add(dueDateDTDtpckr, 1, 8);
@@ -317,9 +338,10 @@ public class CheckoutInfoWindow extends Stage implements LibWindow {
 					
 					BookCopy copy = selectedBook.getAvailableBookCopy();
 					copy.changeAvailability();
+					System.out.println(selectedBook.getCheckedOut());
 					selectedBook.setCheckedOut(selectedBook.getCheckedOut() + 1);
-					
 					c.updateBook(selectedBook);
+					System.out.println(selectedBook.getCheckedOut());
 					
 					CheckoutEntry checkoutEntry = new CheckoutEntry(
 						copy, 

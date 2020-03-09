@@ -11,6 +11,8 @@ public class BookRuleSet implements RuleSet {
 		booksInfoWindow = (BooksInfoWindow) ob;
 		nonemptyRule();
 		maxCheckoutLengthNumericRule();
+		numberOfCopiesNumericRule();
+		borrowDayLimitNumericRule();
 		// zipCodeRule();
 	}
 
@@ -32,7 +34,27 @@ public class BookRuleSet implements RuleSet {
 			throw new RuleException("Maximum checkout length must be numeric");
 		}		
 	}
-	/*
+	
+	private void numberOfCopiesNumericRule() throws RuleException {
+		String val = booksInfoWindow.getNumberOfCopiesValue().trim();
+		try {
+			Integer.parseInt(val);
+			//val is numeric
+		} catch(NumberFormatException e) {
+			throw new RuleException("Maximum checkout length must be numeric");
+		}		
+	}
+
+	private void borrowDayLimitNumericRule() throws RuleException {
+		String val = booksInfoWindow.getBorrowDayLimitValue().trim();
+		try {
+			Integer.parseInt(val);
+			//val is numeric
+		} catch(NumberFormatException e) {
+			throw new RuleException("Maximum checkout length must be numeric");
+		}		
+	}
+/*
 	 * private void zipCodeRule() throws RuleException { String zipCode =
 	 * booksInfoWindow.getZipValue();
 	 * 

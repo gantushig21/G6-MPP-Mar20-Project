@@ -12,6 +12,7 @@ import business.BookCopy;
 import business.ControllerInterface;
 import business.SystemController;
 import config.Constants;
+import dataaccess.Auth;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -110,15 +111,7 @@ public class BooksWindow extends Stage implements LibWindow {
 		btnAdd.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				Start.hideAllWindows();
-				if (!BooksInfoWindow.INSTANCE.isInitialized()) {
-					BooksInfoWindow.INSTANCE.init();
-				}
-				// BooksInfoWindow.INSTANCE.clear();
-				ControllerInterface ci = new SystemController();
-				List<Author> authors = ci.allAuthors();
-				BooksInfoWindow.INSTANCE.show();
-				BooksInfoWindow.INSTANCE.setData(authors);
+				Start.addBook();
 			}
 		});
 		/*
@@ -144,7 +137,12 @@ public class BooksWindow extends Stage implements LibWindow {
     	nextPane.setLeft(vboxTop);
 	        
 		nextPane.setPadding(new Insets(0, 10, 10, 0));
-		nextPane.setRight(btnAdd);
+		if (SystemController.currentAuth.equals(Auth.ADMIN) ||
+				SystemController.currentAuth.equals(Auth.BOTH) 
+				) {
+			nextPane.setRight(btnAdd);
+		}
+		
 		nextPane.setTop(topPane);
 
 		mainPane.setTop(nextPane);
@@ -258,7 +256,12 @@ public class BooksWindow extends Stage implements LibWindow {
 								Book book =  getTableView().getItems().get(getIndex());
 								Start.showBookCopies(book);
 							});
-							hbox.getChildren().addAll(btnUpdate, btnDelete, btnManageCopies);
+							if (SystemController.currentAuth.equals(Auth.ADMIN) ||
+									SystemController.currentAuth.equals(Auth.BOTH) 
+									) {
+								hbox.getChildren().addAll(btnUpdate, btnDelete);
+							}
+							hbox.getChildren().addAll(btnManageCopies);
 							setGraphic(hbox);
 							setText(null);
 						}

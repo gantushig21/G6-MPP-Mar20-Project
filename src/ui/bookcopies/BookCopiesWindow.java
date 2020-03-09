@@ -12,6 +12,7 @@ import business.ControllerInterface;
 import business.BookCopy;
 import business.SystemController;
 import config.Constants;
+import dataaccess.Auth;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -146,7 +147,12 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 		centerHBox.setAlignment(Pos.BOTTOM_RIGHT);
 
 		G6HBox.setHgrow(bookInfoGrid, Priority.ALWAYS);
-		centerHBox.getChildren().addAll(bookInfoGrid, addBtn);
+		centerHBox.getChildren().addAll(bookInfoGrid);
+		if (SystemController.currentAuth.equals(Auth.ADMIN) ||
+				SystemController.currentAuth.equals(Auth.BOTH) 
+				) {
+			centerHBox.getChildren().addAll(addBtn);
+		}
 		mainPane.setCenter(centerHBox);
 
 		// Rendering center

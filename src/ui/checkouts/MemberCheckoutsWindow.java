@@ -1,6 +1,7 @@
 package ui.checkouts;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -217,20 +218,25 @@ public class MemberCheckoutsWindow extends Stage implements LibWindow {
 			                                ControllerInterface c = new SystemController();
 			                                c.saveCheckout(checkout);
 			                                startMemberCheckout(checkout);
-//			                                table.setItems(FXCollections.observableList(entries));
 			                                
 			                                Book bk = entry.getBook().getBook();
 			                                BookCopy[] copies = bk.getCopies();
+			                                System.out.println(Arrays.toString(copies));
+			                                System.out.println("Entry copy: " + entry.getBook());
 			                                for (BookCopy copy: copies) {
 			                                	if (copy.equals(entry.getBook())) {
 			                                		copy.changeAvailability();
-			                                		if (copy.getIsAvailable()) {
-			                                			bk.setCheckedOut(bk.getCheckedOut() - 1);
-			                                		}
+					                                System.out.println("Found copy: " + entry.getBook());
+					                                System.out.println("First: " + bk.getCheckedOut());
+		                                			bk.setCheckedOut(bk.getCheckedOut() - 1);
+					                                System.out.println("Second: " + bk.getCheckedOut());
 			                                		break;
 			                                	}
 			                                }
 			                                c.updateBook(bk);
+			                                
+//			                                table.setItems(FXCollections.observableList(entries));
+			                                Start.showMemberCheckouts(checkout.getMember());
 		                            	}
 
 		                                
