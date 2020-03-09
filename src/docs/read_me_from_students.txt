@@ -4,6 +4,16 @@
 //This is a note from the team responsible for this project.
 //It tells the professor about any extra work that was done or other things
 //that need to be mentioned.
+0. Access to system
+librarian  - 	username: librarian
+		password: 101
+
+admin - username: admin
+	password: 102
+
+both  - username: both
+	password: 103
+
 1. Features and DIAGRAMS. 
 We have draw all related CLASS DIAGRAM, USE-CASE DIAGRAM and SEQUENCE DIAGRAM for below features. And implemented
 	- Login
