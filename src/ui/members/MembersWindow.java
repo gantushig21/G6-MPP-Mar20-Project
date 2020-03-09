@@ -11,6 +11,7 @@ import business.ControllerInterface;
 import business.LibraryMember;
 import business.SystemController;
 import config.Constants;
+import dataaccess.Auth;
 import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -181,7 +182,10 @@ public class MembersWindow extends Stage implements LibWindow {
         });
         
     	top2.setLeft(searchInput);
-    	top2.setRight(addMemberBtn);
+    	if (SystemController.currentAuth.equals(Auth.ADMIN) ||
+				SystemController.currentAuth.equals(Auth.BOTH)) {
+        	top2.setRight(addMemberBtn);    		
+    	}
 
         
         topPane.getChildren().addAll(top1, top2);
@@ -267,7 +271,12 @@ public class MembersWindow extends Stage implements LibWindow {
 		                                Start.showMemberCheckouts(member);
 		                            });
 		                            
-		                            hbox.getChildren().addAll(btnUpdate, btnDelete, btnCheckout);
+		                        	if (SystemController.currentAuth.equals(Auth.ADMIN) ||
+		                    				SystemController.currentAuth.equals(Auth.BOTH)) {
+		                        		hbox.getChildren().addAll(btnUpdate, btnDelete);
+		                        	}
+
+		                            hbox.getChildren().addAll(btnCheckout);
 		                            
 		                            setGraphic(hbox);
 		                            setText(null);

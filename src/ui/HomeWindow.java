@@ -112,10 +112,12 @@ public class HomeWindow extends Stage implements LibWindow {
 			centerPane.getChildren().addAll(checkoutBtn);
 		}
 		
+		centerPane.getChildren().add(membersBtn);
+		
 		if (SystemController.currentAuth.equals(Auth.ADMIN) ||
 				SystemController.currentAuth.equals(Auth.BOTH) 
 				) {
-				centerPane.getChildren().addAll(membersBtn, booksBtn, authorsBtn);
+				centerPane.getChildren().addAll(booksBtn, authorsBtn);
 		}
 		
 //		centerPane.getChildren().addAll(overdueBookReportBtn);

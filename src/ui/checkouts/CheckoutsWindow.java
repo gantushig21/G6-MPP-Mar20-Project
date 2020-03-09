@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import business.Address;
+import business.Book;
 import business.ControllerInterface;
+import business.LibraryMember;
 import business.CheckoutEntry;
 import business.Checkout;
 import business.SystemController;
@@ -191,6 +193,7 @@ public class CheckoutsWindow extends Stage implements LibWindow {
 							final G6Button btnUpdate = new G6Button("Update");
 							final G6Button btnDelete = new G6Button("Delete");
 							final G6Button btnCheckout = new G6Button("Checkout");
+							final G6Button btnReturn = new G6Button("Returned");
 							
 		                    @Override
 		                    public void updateItem(String item, boolean empty) {
@@ -226,7 +229,20 @@ public class CheckoutsWindow extends Stage implements LibWindow {
 		                                System.out.println("checkout");
 		                            });
 		                            
+		                            btnReturn.setOnAction(event -> {
+		                            	Optional<ButtonType> result = new G6Alert(AlertType.CONFIRMATION, "Confirmation", "Are you sure to return this book?").showAndWait();
+		                                CheckoutEntry entry = getTableView().getItems().get(getIndex());
+		                                ControllerInterface c = new SystemController();
+		                                
+		                                LibraryMember mem = entry.getMember();
+//		                                c.deleteCheckoutEntry(entry);
+////		                                c.deleteCheckout(checkout.getCheckoutId());
+//		                                
+//		                                tableView.getItems().remove(getIndex());
+		                            });
+		                            
 //		                            hbox.getChildren().addAll(btnUpdate, btnDelete, btnCheckout);
+//		                            hbox.getChildren().addAll(btnReturn);
 		                            
 		                            setGraphic(hbox);
 		                            setText(null);

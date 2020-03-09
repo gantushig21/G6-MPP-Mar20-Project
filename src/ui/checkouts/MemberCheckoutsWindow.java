@@ -1,11 +1,15 @@
 package ui.checkouts;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import business.Address;
+import business.Book;
+import business.BookCopy;
 import business.ControllerInterface;
+import business.LibraryMember;
 import business.CheckoutEntry;
 import business.Checkout;
 import business.SystemController;
@@ -181,6 +185,72 @@ public class MemberCheckoutsWindow extends Stage implements LibWindow {
         column7.setPrefWidth(Constants.TABLE_DATE_LENGTH);
         column7.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
         
+        TableColumn<CheckoutEntry, String> actionColumn = new TableColumn<>("Action");
+        Callback<TableColumn<CheckoutEntry, String>, TableCell<CheckoutEntry, String>> cellFactory =
+        		new Callback<TableColumn<CheckoutEntry,String>, TableCell<CheckoutEntry,String>>() {
+
+					@Override
+					public TableCell<CheckoutEntry, String> call(TableColumn<CheckoutEntry, String> arg0) {
+						final TableCell<CheckoutEntry, String> cell = new TableCell<CheckoutEntry, String>() {
+
+							final G6Button btnReturn = new G6Button("Return");
+							
+		                    @Override
+		                    public void updateItem(String item, boolean empty) {
+		                        super.updateItem(item, empty);
+		                        if (empty) {
+		                            setGraphic(null);
+		                            setText(null);
+		                        } else {
+		                        	G6HBox hbox = new G6HBox(5);
+		                        	
+		                            
+		                            btnReturn.setOnAction(event -> {
+		                            	Optional<ButtonType> result = new G6Alert(AlertType.CONFIRMATION, "Confirmation", "Are you sure to return this book?").showAndWait();
+		                            	if (result.get() == ButtonType.OK) {
+			                                CheckoutEntry entry = getTableView().getItems().get(getIndex());
+			                                entries.get(getIndex()).setReturnDate(LocalDate.now());
+			                                
+			                                checkout.setEntries(entries);
+			                                
+			                                ControllerInterface c = new SystemController();
+			                                c.saveCheckout(checkout);
+			                                table.setItems(FXCollections.observableList(entries));
+			                                
+			                                Book bk = entry.getBook().getBook();
+			                                BookCopy[] copies = bk.getCopies();
+			                                for (BookCopy copy: copies) {
+			                                	if (copy.equals(entry.getBook())) {
+			                                		copy.changeAvailability();
+			                                		if (copy.getIsAvailable()) {
+			                                			bk.setCheckedOut(bk.getCheckedOut() - 1);
+			                                		}
+			                                		break;
+			                                	}
+			                                }
+			                                c.updateBook(bk);
+		                            	}
+
+		                                
+//		                                c.deleteCheckoutEntry(entry);
+////		                                c.deleteCheckout(checkout.getCheckoutId());
+//		                                
+//		                                tableView.getItems().remove(getIndex());
+		                            });
+		                            
+		                            hbox.getChildren().addAll(btnReturn);
+		                            
+		                            setGraphic(hbox);
+		                            setText(null);
+		                        }
+		                    }
+		                };
+		                return cell;
+					}
+				};
+        
+		actionColumn.setCellFactory(cellFactory);
+        
         table.getColumns().add(column1);
         table.getColumns().add(column2);
         table.getColumns().add(column3);
@@ -188,10 +258,23 @@ public class MemberCheckoutsWindow extends Stage implements LibWindow {
         table.getColumns().add(column5);
         table.getColumns().add(column6);
         table.getColumns().add(column7);
+        table.getColumns().add(actionColumn);
         
         VBox vbox = new VBox(table);
         vbox.setPadding(new Insets(0));
         mainPane.setCenter(vbox);
+        
+        G6HBox printPane = new G6HBox(10);
+        printPane.setAlignment(Pos.TOP_RIGHT);
+        G6Button printBtn = new G6Button("Print");
+        printPane.getChildren().add(printBtn);
+        mainPane.setBottom(printPane);
+        printBtn.setOnAction(new EventHandler<ActionEvent>() {
+        	@Override
+        	public void handle(ActionEvent e) {
+        		System.out.print(checkout);
+        	}
+		});
         
         Scene scene = new Scene(mainPane, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
         JMetro jMetro = new JMetro();

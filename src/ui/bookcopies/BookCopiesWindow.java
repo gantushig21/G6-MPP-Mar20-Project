@@ -142,6 +142,7 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 		});
 
 		G6HBox centerHBox = new G6HBox(2);
+		centerHBox.setPadding(new Insets(0, 0, 20, 0));
 		centerHBox.setAlignment(Pos.BOTTOM_RIGHT);
 
 		G6HBox.setHgrow(bookInfoGrid, Priority.ALWAYS);
@@ -221,7 +222,7 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 //								System.out.println("checkout");
 //							});
 
-							hbox.getChildren().addAll(btnUpdate, btnDelete, btnCheckout);
+//							hbox.getChildren().addAll(btnUpdate, btnDelete, btnCheckout);
 
 							setGraphic(hbox);
 							setText(null);
@@ -238,7 +239,7 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 		tableView.getColumns().add(column1);
 		tableView.getColumns().add(column2);
 
-		tableView.getColumns().add(actionColumn);
+//		tableView.getColumns().add(actionColumn);
 
 		VBox vbox = new VBox(tableView);
 		vbox.setPadding(new Insets(0));

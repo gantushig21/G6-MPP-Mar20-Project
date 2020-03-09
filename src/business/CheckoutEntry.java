@@ -41,9 +41,17 @@ public class CheckoutEntry implements Serializable, Comparable<CheckoutEntry> {
 		return returnDate;
 	}
 	
+	public void setReturnDate(LocalDate date) {
+		returnDate = date;
+	}
+	
 	@Override
 	public String toString() {
-		return bookCopy.getBook().getIsbn() + " " + bookCopy.getCopyNum();
+		return "\nISBN: " + bookCopy.getBook().getIsbn() + 
+				"\nCopy Number: " + bookCopy.getCopyNum() + 
+				"\nChecked out data: " + checkoutDate + 
+				"\nDue date: " + dueDate + 
+				"\nReturn date: " + (returnDate != null ? returnDate : "not yet") + "\n";
 	}
 	
 	@Override
