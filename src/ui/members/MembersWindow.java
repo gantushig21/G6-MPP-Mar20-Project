@@ -213,6 +213,7 @@ public class MembersWindow extends Stage implements LibWindow {
         
 
         TableColumn<LibraryMember, String> actionColumn = new TableColumn<>("Action");
+        actionColumn.setPrefWidth(300);
 
         Callback<TableColumn<LibraryMember, String>, TableCell<LibraryMember, String>> cellFactory =
         		new Callback<TableColumn<LibraryMember,String>, TableCell<LibraryMember,String>>() {

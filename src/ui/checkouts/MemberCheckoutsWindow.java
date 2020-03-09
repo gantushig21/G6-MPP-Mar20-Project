@@ -186,6 +186,7 @@ public class MemberCheckoutsWindow extends Stage implements LibWindow {
         column7.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
         
         TableColumn<CheckoutEntry, String> actionColumn = new TableColumn<>("Action");
+        actionColumn.setPrefWidth(150);
         Callback<TableColumn<CheckoutEntry, String>, TableCell<CheckoutEntry, String>> cellFactory =
         		new Callback<TableColumn<CheckoutEntry,String>, TableCell<CheckoutEntry,String>>() {
 
@@ -203,19 +204,20 @@ public class MemberCheckoutsWindow extends Stage implements LibWindow {
 		                            setText(null);
 		                        } else {
 		                        	G6HBox hbox = new G6HBox(5);
+	                                CheckoutEntry entry = getTableView().getItems().get(getIndex());
 		                        	
-		                            
+		                            System.out.println("Hello");
 		                            btnReturn.setOnAction(event -> {
 		                            	Optional<ButtonType> result = new G6Alert(AlertType.CONFIRMATION, "Confirmation", "Are you sure to return this book?").showAndWait();
 		                            	if (result.get() == ButtonType.OK) {
-			                                CheckoutEntry entry = getTableView().getItems().get(getIndex());
 			                                entries.get(getIndex()).setReturnDate(LocalDate.now());
 			                                
 			                                checkout.setEntries(entries);
 			                                
 			                                ControllerInterface c = new SystemController();
 			                                c.saveCheckout(checkout);
-			                                table.setItems(FXCollections.observableList(entries));
+			                                startMemberCheckout(checkout);
+//			                                table.setItems(FXCollections.observableList(entries));
 			                                
 			                                Book bk = entry.getBook().getBook();
 			                                BookCopy[] copies = bk.getCopies();
@@ -238,7 +240,10 @@ public class MemberCheckoutsWindow extends Stage implements LibWindow {
 //		                                tableView.getItems().remove(getIndex());
 		                            });
 		                            
-		                            hbox.getChildren().addAll(btnReturn);
+		                            System.out.println("Return date: " + entry.getReturnDate());
+	                            	if (entry.getReturnDate() == null) {
+			                             hbox.getChildren().addAll(btnReturn);
+	                            	}
 		                            
 		                            setGraphic(hbox);
 		                            setText(null);
