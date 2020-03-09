@@ -96,10 +96,6 @@ public class DataAccessFacade implements DataAccess {
 			Book b4 = new Book("PO-M34K", "Improve Self", 15, as);
 
 			HashMap<String, Book> books = new HashMap<String, Book>();
-			books.put(b1.getId(), b1);
-			books.put(b2.getId(), b2);
-			books.put(b3.getId(), b3);
-			books.put(b4.getId(), b4);
 			saveToStorage(StorageType.BOOKS, books);
 			return true;
 		} catch (Exception e) {

@@ -182,41 +182,44 @@ public class BookCopiesWindow extends Stage implements LibWindow {
 						} else {
 							G6HBox hbox = new G6HBox(5);
 
-							btnUpdate.setOnAction(event -> {
-								BookCopy bookCopy = getTableView().getItems().get(getIndex());
+//							btnUpdate.setOnAction(event -> {
+//								BookCopy bookCopy = getTableView().getItems().get(getIndex());
+//
+//								Start.hideAllWindows();
+//								BookCopyInfoWindow.INSTANCE.setBook(book);
+//								if (!BookCopyInfoWindow.INSTANCE.isInitialized()) {
+//									BookCopyInfoWindow.INSTANCE.init();
+//								}
+//								BookCopyInfoWindow.INSTANCE.clear();
+//								BookCopyInfoWindow.INSTANCE.show();
+//								
+//								BookCopyInfoWindow.INSTANCE.updateBookCopy(bookCopy);
+//
+//								System.out.println("update");
+//							});
 
-								Start.hideAllWindows();
-								BookCopyInfoWindow.INSTANCE.setBook(book);
-								if (!BookCopyInfoWindow.INSTANCE.isInitialized()) {
-									BookCopyInfoWindow.INSTANCE.init();
-								}
-								BookCopyInfoWindow.INSTANCE.clear();
-								BookCopyInfoWindow.INSTANCE.show();
-								
-								BookCopyInfoWindow.INSTANCE.updateBookCopy(bookCopy);
+//							btnDelete.setOnAction(event -> {
+//								BookCopy bookCopy = getTableView().getItems().get(getIndex());
+//
+//								Optional<ButtonType> result = new G6Alert(AlertType.CONFIRMATION, "Confirmation",
+//										"Are you sure to delete this record").showAndWait();
+//
+//								if (result.get() == ButtonType.OK) {
+//									ControllerInterface c = new SystemController();
+//									BookCopy[] copies = book.getCopies();
+//									BookCopy[] newCopies = 
+//									for (int i = )
+//									c.deleteBookCopy(bookCopy.getId());
+//									tableView.getItems().remove(getIndex());
+//								}
+//
+//								System.out.println("delete" + getIndex());
+//							});
 
-								System.out.println("update");
-							});
-
-							btnDelete.setOnAction(event -> {
-								BookCopy bookCopy = getTableView().getItems().get(getIndex());
-
-								Optional<ButtonType> result = new G6Alert(AlertType.CONFIRMATION, "Confirmation",
-										"Are you sure to delete this record").showAndWait();
-
-								if (result.get() == ButtonType.OK) {
-									ControllerInterface c = new SystemController();
-									c.deleteBookCopy(bookCopy.getId());
-									tableView.getItems().remove(getIndex());
-								}
-
-								System.out.println("delete" + getIndex());
-							});
-
-							btnCheckout.setOnAction(event -> {
-								BookCopy bookCopy = getTableView().getItems().get(getIndex());
-								System.out.println("checkout");
-							});
+//							btnCheckout.setOnAction(event -> {
+//								BookCopy bookCopy = getTableView().getItems().get(getIndex());
+//								System.out.println("checkout");
+//							});
 
 							hbox.getChildren().addAll(btnUpdate, btnDelete, btnCheckout);
 

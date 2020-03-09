@@ -219,7 +219,7 @@ public class MembersWindow extends Stage implements LibWindow {
 
 							final G6Button btnUpdate = new G6Button("Update");
 							final G6Button btnDelete = new G6Button("Delete");
-							final G6Button btnCheckout = new G6Button("Checkout");
+							final G6Button btnCheckout = new G6Button("Checkouts");
 							
 		                    @Override
 		                    public void updateItem(String item, boolean empty) {
@@ -264,7 +264,7 @@ public class MembersWindow extends Stage implements LibWindow {
 		                            
 		                            btnCheckout.setOnAction(event -> {
 		                                LibraryMember member = getTableView().getItems().get(getIndex());
-		                                System.out.println("checkout");
+		                                Start.showMemberCheckouts(member);
 		                            });
 		                            
 		                            hbox.getChildren().addAll(btnUpdate, btnDelete, btnCheckout);

@@ -106,8 +106,19 @@ public class HomeWindow extends Stage implements LibWindow {
 //			
 //		});
 
+		if (SystemController.currentAuth.equals(Auth.LIBRARIAN) ||
+			SystemController.currentAuth.equals(Auth.BOTH) 
+			) {
+			centerPane.getChildren().addAll(checkoutBtn);
+		}
 		
-		centerPane.getChildren().addAll(checkoutBtn, membersBtn, booksBtn, authorsBtn, overdueBookReportBtn);
+		if (SystemController.currentAuth.equals(Auth.ADMIN) ||
+				SystemController.currentAuth.equals(Auth.BOTH) 
+				) {
+				centerPane.getChildren().addAll(membersBtn, booksBtn, authorsBtn);
+		}
+		
+//		centerPane.getChildren().addAll(overdueBookReportBtn);
 				
 		G6Button logoutBtn = new G6Button("Logout");
 		logoutBtn.setOnAction(new EventHandler<ActionEvent>() {
